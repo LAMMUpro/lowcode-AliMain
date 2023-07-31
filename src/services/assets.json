@@ -204,6 +204,22 @@
       "id": "LCC-6B91-AE87JJVTDSQF26LK508C3-9EOQFOCL-0",
       "type": "lowcode",
       "version": "0.1.0"
+    },
+    {
+      "urls": [
+        "https://g.alicdn.com/legao-comp/web_bundle_0724/@alife/theme-254/1.29.5/@alilc/lowcode-materials/1.0.6/theme.7c897c2.css",
+        "https://g.alicdn.com/legao-comp/web_bundle_0724/@alilc/lowcode-materials/1.0.6/main.e953b84.js"
+      ],
+      "library": "AlilcLowcodeMaterials",
+      "package": "@alilc/lowcode-materials",
+      "id": "@alilc/lowcode-materials",
+      "advancedUrls": {
+        "default": [
+          "https://g.alicdn.com/legao-comp/web_bundle_0724/@alife/theme-254/1.29.5/@alilc/lowcode-materials/1.0.6/theme.7c897c2.css",
+          "https://g.alicdn.com/legao-comp/web_bundle_0724/@alilc/lowcode-materials/1.0.6/main.e953b84.js"
+        ]
+      },
+      "version": "1.0.6"
     }
   ],
   "components": [
@@ -306,6 +322,22 @@
       ],
       "docUrl": "",
       "componentName": "LccLcofqh6f"
+    },
+    {
+      "reference": {
+        "package": "@alilc/lowcode-materials",
+        "id": "@alilc/lowcode-materials"
+      },
+      "urls": {
+        "default": "https://alifd.alicdn.com/npm/@alilc/lowcode-materials@1.0.7/build/lowcode/meta.js",
+        "design": "https://alifd.alicdn.com/npm/@alilc/lowcode-materials@1.0.7/build/lowcode/meta.design.js"
+      },
+      "devMode": "procode",
+      "npm": {
+        "package": "@alilc/lowcode-materials"
+      },
+      "exportName": "AlilcLowcodeMaterialsMeta",
+      "url": "https://alifd.alicdn.com/npm/@alilc/lowcode-materials@1.0.7/build/lowcode/meta.js"
     }
   ],
   "sort": {
