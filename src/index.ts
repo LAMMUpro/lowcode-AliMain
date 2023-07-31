@@ -18,6 +18,7 @@ import PreviewSamplePlugin from './plugins/plugin-preview-sample';
 import CustomSetterSamplePlugin from './plugins/plugin-custom-setter-sample';
 import SetRefPropPlugin from '@alilc/lowcode-plugin-set-ref-prop';
 import LogoSamplePlugin from './plugins/plugin-logo-sample';
+import PagesManagePlugin from './plugins/plugin-pages-manage';
 import './global.scss';
 
 async function registerPlugins() {
@@ -36,6 +37,9 @@ async function registerPlugins() {
     },
   });
 
+  /** 页面管理器 */
+  await plugins.register(PagesManagePlugin);
+  
   // 设置内置 setter 和事件绑定、插件绑定面板
   await plugins.register(DefaultSettersRegistryPlugin);
 
