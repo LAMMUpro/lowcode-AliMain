@@ -3,7 +3,7 @@
 ├─plugin-custom-setter-sample - ？？（？？）
 │  └─setters
 ├─plugin-default-setters-registry - Setter（右侧）
-├─plugin-editor-init - ？？（？？）
+├─plugin-editor-init - github（左上）
 ├─plugin-load-incremental-assets-widget - 异步加载资源（右上）
 ├─plugin-logo-sample - LOGO（左上）
 ├─plugin-pages-manage - 页面管理（左侧）

@@ -20,7 +20,7 @@ const SaveSamplePlugin = (ctx: IPublicModelPluginContext) => {
           align: 'right',
         },
         content: (
-          <Button onClick={() => saveSchema(scenarioName)}>
+          <Button type="primary" onClick={() => saveSchema(scenarioName)}>
             保存
           </Button>
         ),

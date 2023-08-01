@@ -25,8 +25,8 @@ async function registerPlugins() {
   await plugins.register(InjectPlugin);
 
   await plugins.register(EditorInitPlugin, {
-    scenarioName: 'basic-antd',
-    displayName: 'AntD-4.21.4',
+    scenarioName: '/index',
+    displayName: '/index',
     info: {
       urls: [
         {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
-import { Dropdown, Menu } from '@alifd/next';
+import { Tag } from '@alifd/next';
 import './index.scss';
 export interface IProps {
   logo?: string;
@@ -15,31 +15,32 @@ const Logo: React.FC<IProps> = (props): React.ReactElement => {
   return (
     <div className="lowcode-plugin-logo">
       <a className="logo" target="blank" href={props.href || 'https://lowcode-engine.cn'} style={{ backgroundImage: `url(${props.logo})` }} />
-      <div className="scenario-name">{scenarioDisplayName}</div>
-      {
-      urls && (
-        <Dropdown
-          className="info-dropdown"
-          trigger={(
-            <img
-              style={{
-                height: '18px',
-                position: 'relative',
-                top: '-2px',
-              }}
-              src="https://img.alicdn.com/imgextra/i4/O1CN013upU1R1yl5wVezP8k_!!6000000006618-2-tps-512-512.png"
-            />
-          )}
-          triggerType="click"
-        >
-          <Menu onItemClick={(key, item) => window.open(key, '_blank')}>
-            {
-              urls.map((url: any) => <Menu.Item key={url.value}>{url.key}</Menu.Item>)
-            }
-          </Menu>
-        </Dropdown>
-      )
-    }
+      {/* <div className="scenario-name">当前路径:{scenarioDisplayName}</div> */}
+      <Tag color="#2db7f5">{scenarioDisplayName}</Tag>
+      {/* {
+        urls && (
+          <Dropdown
+            className="info-dropdown"
+            trigger={(
+              <img
+                style={{
+                  height: '18px',
+                  position: 'relative',
+                  top: '-2px',
+                }}
+                src="https://img.alicdn.com/imgextra/i4/O1CN013upU1R1yl5wVezP8k_!!6000000006618-2-tps-512-512.png"
+              />
+            )}
+            triggerType="click"
+          >
+            <Menu onItemClick={(key, item) => window.open(key, '_blank')}>
+              {
+                urls.map((url: any) => <Menu.Item key={url.value}>{url.key}</Menu.Item>)
+              }
+            </Menu>
+          </Dropdown>
+        )
+      } */}
     </div>
   );
 };
