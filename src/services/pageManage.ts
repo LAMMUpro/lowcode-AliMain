@@ -2,7 +2,8 @@ import { material, project } from '@alilc/lowcode-engine';
 import { filterPackages } from '@alilc/lowcode-plugin-inject'
 import { Message, Dialog } from '@alifd/next';
 import { IPublicEnumTransformStage } from '@alilc/lowcode-types';
-const schema = {
+import { getPageInfo } from './api';
+const defaultSchema = {
   "componentName": "Page",
   "id": "node_dockcviv8fo1",
   "props": {
@@ -157,7 +158,6 @@ export const getPackagesFromLocalStorage = (scenarioName: string) => {
 
 /** 获取Schema */
 export const getPageSchema = async (scenarioName: string = 'unknown') => {
-  const response = await fetch("http://127.0.0.1:5500/api/scheme.json");
-  const res = await response.json();
-  return res || schema;
+  const res = await getPageInfo({path: '/index'});
+  return res.data.projectSchema?.componentsTree?.[0] || defaultSchema;
 };
