@@ -6,7 +6,7 @@ import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
 import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
 
-import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from './services/mockService';
+import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from './services/pageManage';
 
 const getScenarioName = function () {
   if (location.search) {
@@ -20,8 +20,8 @@ const SamplePreview = () => {
 
   async function init() {
     const scenarioName = getScenarioName();
-    const packages = getPackagesFromLocalStorage(scenarioName);
-    const projectSchema = getProjectSchemaFromLocalStorage(scenarioName);
+    const packages = await getPackagesFromLocalStorage(scenarioName);
+    const projectSchema = await getProjectSchemaFromLocalStorage(scenarioName);
     const { componentsMap: componentsMapArray, componentsTree } = projectSchema;
     const componentsMap: any = {};
     componentsMapArray.forEach((component: any) => {

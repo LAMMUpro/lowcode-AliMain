@@ -2,7 +2,8 @@ import { material, project } from '@alilc/lowcode-engine';
 import { filterPackages } from '@alilc/lowcode-plugin-inject'
 import { Message, Dialog } from '@alifd/next';
 import { IPublicEnumTransformStage } from '@alilc/lowcode-types';
-import { getPageInfo } from './api';
+import { getPageInfo, savePageInfo, PackageType, ProjectSchemaType } from './api';
+
 const defaultSchema = {
   "componentName": "Page",
   "id": "node_dockcviv8fo1",
@@ -78,9 +79,14 @@ const defaultSchema = {
 }
 
 export const saveSchema = async (scenarioName: string = 'unknown') => {
-  setProjectSchemaToLocalStorage(scenarioName);
-  await setPackagesToLocalStorage(scenarioName);
-  Message.success('成功保存到本地');
+  await savePageInfo({
+    path: '/index',
+    projectSchema: project.exportSchema(IPublicEnumTransformStage.Save),
+    packages: await filterPackages(material?.getAssets()?.packages),
+  })
+  // await setProjectSchemaToLocalStorage(scenarioName);
+  // await setPackagesToLocalStorage(scenarioName);
+  Message.success('成功保存到远端');
 };
 
 export const resetSchema = async (scenarioName: string = 'unknown') => {
@@ -100,60 +106,53 @@ export const resetSchema = async (scenarioName: string = 'unknown') => {
     return;
   }
 
-  let defaultSchema = schema || {
+  let schema = defaultSchema || {
     componentsTree: [{ componentName: 'Page', fileName: 'sample' }],
     componentsMap: material.componentsMap,
     version: '1.0.0',
     i18n: {},
   };
 
-  project.getCurrentDocument()?.importSchema(defaultSchema as any);
+  project.getCurrentDocument()?.importSchema(schema as any);
   project.simulatorHost?.rerender();
 
-  setProjectSchemaToLocalStorage(scenarioName);
-  await setPackagesToLocalStorage(scenarioName);
+  await saveSchema(scenarioName);
   Message.success('成功重置页面');
 }
 
-const getLSName = (scenarioName: string, ns: string = 'projectSchema') => `${scenarioName}:${ns}`;
+// const getLSName = (scenarioName: string, ns: string = 'projectSchema') => `${scenarioName}:${ns}`;
 
-export const getProjectSchemaFromLocalStorage = (scenarioName: string) => {
-  if (!scenarioName) {
-    console.error('scenarioName is required!');
-    return;
-  }
-  return JSON.parse(window.localStorage.getItem(getLSName(scenarioName)) || '{}');
+// const setProjectSchemaToLocalStorage = (scenarioName: string) => {
+//   if (!scenarioName) {
+//     console.error('scenarioName is required!');
+//     return;
+//   }
+//   window.localStorage.setItem(
+//     getLSName(scenarioName),
+//     JSON.stringify(project.exportSchema(IPublicEnumTransformStage.Save))
+//   );
+// }
+
+// const setPackagesToLocalStorage = async (scenarioName: string) => {
+//   if (!scenarioName) {
+//     console.error('scenarioName is required!');
+//     return;
+//   }
+//   const packages = await filterPackages(material.getAssets().packages);
+//   window.localStorage.setItem(
+//     getLSName(scenarioName, 'packages'),
+//     JSON.stringify(packages),
+//   );
+// }
+
+export const getProjectSchemaFromLocalStorage = async (scenarioName: string) => {
+  const res = await getPageInfo({path: '/index'});
+  return res.data.projectSchema || {};
 }
 
-const setProjectSchemaToLocalStorage = (scenarioName: string) => {
-  if (!scenarioName) {
-    console.error('scenarioName is required!');
-    return;
-  }
-  window.localStorage.setItem(
-    getLSName(scenarioName),
-    JSON.stringify(project.exportSchema(IPublicEnumTransformStage.Save))
-  );
-}
-
-const setPackagesToLocalStorage = async (scenarioName: string) => {
-  if (!scenarioName) {
-    console.error('scenarioName is required!');
-    return;
-  }
-  const packages = await filterPackages(material.getAssets().packages);
-  window.localStorage.setItem(
-    getLSName(scenarioName, 'packages'),
-    JSON.stringify(packages),
-  );
-}
-
-export const getPackagesFromLocalStorage = (scenarioName: string) => {
-  if (!scenarioName) {
-    console.error('scenarioName is required!');
-    return;
-  }
-  return JSON.parse(window.localStorage.getItem(getLSName(scenarioName, 'packages')) || '{}');
+export const getPackagesFromLocalStorage = async (scenarioName: string) => {
+  const res = await getPageInfo({path: '/index'});
+  return res.data.packages || [];
 }
 
 /** 获取Schema */

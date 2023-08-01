@@ -2,10 +2,10 @@
 
 const host = 'http://lowcodeengine.lammu.cn'
 
-interface PackageType {
-
+export interface PackageType {
+  
 }
-interface ProjectSchemaType {
+export interface ProjectSchemaType {
   componentsMap: Array<any>
   componentsTree: Array<any>
   version: string

@@ -2,7 +2,7 @@ import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import { Button } from '@alifd/next';
 import {
   saveSchema,
-} from '../../services/mockService';
+} from '../../services/pageManage';
 
 // 保存功能示例
 const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
@@ -11,6 +11,7 @@ const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
       const { skeleton, config } = ctx;
       const doPreview = () => {
         const scenarioName = config.get('scenarioName');
+
         saveSchema(scenarioName);
         setTimeout(() => {
           const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;

@@ -3,7 +3,7 @@ import { Button } from '@alifd/next';
 import {
   saveSchema,
   resetSchema,
-} from '../../services/mockService';
+} from '../../services/pageManage';
 
 // 保存功能示例
 const SaveSamplePlugin = (ctx: IPublicModelPluginContext) => {
@@ -21,7 +21,7 @@ const SaveSamplePlugin = (ctx: IPublicModelPluginContext) => {
         },
         content: (
           <Button onClick={() => saveSchema(scenarioName)}>
-            保存到本地
+            保存
           </Button>
         ),
       });
