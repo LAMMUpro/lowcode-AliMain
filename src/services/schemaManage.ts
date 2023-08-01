@@ -155,12 +155,9 @@ export const getPackagesFromLocalStorage = (scenarioName: string) => {
   return JSON.parse(window.localStorage.getItem(getLSName(scenarioName, 'packages')) || '{}');
 }
 
+/** 获取Schema */
 export const getPageSchema = async (scenarioName: string = 'unknown') => {
-  const pageSchema = getProjectSchemaFromLocalStorage(scenarioName).componentsTree?.[0];
-debugger
-  if (pageSchema) {
-    return pageSchema;
-  }
-
-  return schema;
+  const response = await fetch("http://127.0.0.1:5500/api/scheme.json");
+  const res = await response.json();
+  return res || schema;
 };
