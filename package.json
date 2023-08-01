@@ -31,7 +31,6 @@
     "@alilc/lowcode-react-renderer": "^1.1.2",
     "@alilc/lowcode-setter-behavior": "^1.0.0",
     "@alilc/lowcode-setter-title": "^1.0.2",
-    "antd": "^4.21.4",
     "moment": "^2.29.3",
     "uuid": "^8.3.2"
   },
