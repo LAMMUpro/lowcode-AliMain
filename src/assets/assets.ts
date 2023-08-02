@@ -57,10 +57,8 @@ const assets:IPublicTypeAssetsJson = {
     ...AntdMeterial.components,
   ],
   sort: {
-    groupList: ["AntD", "自定义组件"],
-    categoryList: ["通用", "导航", "信息输入", "信息展示", "信息反馈"]
+    groupList: ["自定义组件", "默认分组"],
+    categoryList: ["布局", "通用", "表单", "反馈", "导航", "信息输入", "信息展示"]
   },
-  // groupList: ["AndtD", "自定义组件"],
-  // ignoreComponents: {},
 };
 export default assets;
