@@ -4,9 +4,9 @@ import { Button, Icon } from '@alifd/next';
 
 const _PluginName_ = 'BlockPlugin';
 const BlockPlugin = (ctx: IPublicModelPluginContext) => {
-  let blockListRef:InstanceType<typeof BlockList>;
+  let blockListRef:InstanceType<typeof BlockList>|null;
   function refreshBlocks() {
-    console.log(blockListRef.initComponentList());
+    blockListRef?.initComponentList?.();
   }
   return {
     name: _PluginName_,

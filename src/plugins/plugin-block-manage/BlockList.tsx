@@ -1,13 +1,8 @@
 import React from 'react';
-import { Search } from '@alifd/next';
+import { Message } from '@alifd/next';
 import { PluginProps } from '@alilc/lowcode-types';
 import cls from 'classnames/bind';
-// import { debounce } from 'lodash';
 import style from './index.module.scss';
-// import IconOfPane from '../Icon';  
-// import Category from '../components/Category';
-// import List from '../components/List';
-// import Component from '../components/Component';
 import ComponentManager from './store';
 import transform, { getTextReader, SortedGroups, Text, StandardComponentMeta, SnippetMeta, createI18n } from './transform';
 import { getBlockList } from 'src/services/api';
@@ -132,7 +127,6 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
 
     const res = await getBlockList();
 
-    console.log('请求block', res);
     this.setState({
       blocks: res.data || []
     })
@@ -150,6 +144,8 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
       groups,
       filter: groups,
     });
+
+    Message.success("加载区块数据成功！");
   }
 
   registerAdditive = (shell: HTMLDivElement | null) => {
