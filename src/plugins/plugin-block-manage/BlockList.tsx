@@ -1,17 +1,14 @@
 import React from 'react';
-import { Message } from '@alifd/next';
+import { Message, Loading } from '@alifd/next';
 import { PluginProps } from '@alilc/lowcode-types';
-import cls from 'classnames/bind';
-import style from './index.module.scss';
+import './index.scss';
 import ComponentManager from './store';
-import transform, { getTextReader, SortedGroups, Text, StandardComponentMeta, SnippetMeta, createI18n } from './transform';
+import { getTextReader, SortedGroups, Text } from './transform';
 import { getBlockList } from 'src/services/api';
 
 const { material, common, project, event } = window.AliLowCodeEngine || {};
 
 const store = new ComponentManager();
-
-const cx = cls.bind(style);
 
 interface ComponentPaneProps extends PluginProps {
   [key: string]: any;
@@ -21,7 +18,8 @@ interface ComponentPaneState {
   groups: SortedGroups[];
   filter: SortedGroups[];
   keyword: string;
-  blocks: any[]
+  blocks: any[];
+  loading: boolean
 }
 
 export default class ComponentPane extends React.Component<ComponentPaneProps, ComponentPaneState> {
@@ -36,68 +34,16 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
     filter: [],
     keyword: '',
     blocks: [],
+    loading: false,
   };
 
   store = store;
 
   t: (input: Text) => string;
 
-  // getStrKeywords: (keywords: Text[]) => string;
-
-  // getKeyToSearch (c:StandardComponentMeta|SnippetMeta){
-  //   const strTitle = this.t(c.title);
-  //   const strComponentName = this.t((c as SnippetMeta).schema?.componentName);
-  //   const strDescription = "description" in c ? this.t(c.description):'';
-  //   const strKeywords = "keywords" in c ? this.getStrKeywords(c.keywords||[]):'';
-  //   return  `${strTitle}#${strComponentName}#${strDescription}#${strKeywords}`.toLowerCase();
-  // }
-
-  // getFilteredComponents = debounce(() => {
-  //   const { groups = [], keyword } = this.state;
-  //   if (!keyword) {
-  //     this.setState({
-  //       filter: groups,
-  //     });
-  //     return;
-  //   }
-
-
-
-  //   const filter = groups.map((group) => ({
-  //     ...group,
-  //     categories: group.categories
-  //       .map((category) => ({
-  //         ...category,
-  //         components: category.components.filter((c) => {
-  //           let keyToSearch =  this.getKeyToSearch(c);
-  //           if(c.snippets){
-  //             c.snippets.map((item)=>{
-  //               keyToSearch += `_${this.getKeyToSearch(item)}`
-  //             })
-  //           }
-  //           return keyToSearch.includes(keyword);
-  //         }),
-  //       }))
-  //       .filter((c) => c?.components?.length),
-  //   }));
-
-  //   this.setState({
-  //     filter,
-  //   });
-  // }, 200);
-
   constructor(props) {
     super(props);
     this.t = getTextReader(props.lang);
-    // this.getStrKeywords = (keywords: Text[]): string => {
-    //   if (typeof keywords === 'string') {
-    //     return keywords;
-    //   }
-    //   if (keywords && Array.isArray(keywords) && keywords.length) {
-    //     return keywords.map(keyword => this.t(keyword)).join('-');
-    //   }
-    //   return '';
-    // };
   }
 
   componentDidMount() {
@@ -119,31 +65,20 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
 
   /**
    * 初始化组件列表
-   * TODO: 无副作用，可多次执行
    */
   async initComponentList() {
-    const { editor } = this.props;
-    const rawData = material.getAssets();
+    this.setState({
+      loading: true
+    })
 
     const res = await getBlockList();
 
     this.setState({
+      loading: false,
       blocks: res.data || []
     })
 
-    const meta = transform(rawData, this.t);
-
-    const { groups, snippets } = meta;
-
-    console.log('snippets', snippets)
-
-    // this.store.setSnippets(snippets);
     this.store.setSnippets(res.data);
-
-    this.setState({
-      groups,
-      filter: groups,
-    });
 
     Message.success("加载区块数据成功！");
   }
@@ -173,7 +108,6 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
       return;
     }
 
-    // eslint-disable-next-line
     const click = (e: Event) => {};
 
     shell.addEventListener('click', click);
@@ -197,161 +131,43 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
     shell.dataset.registered = 'true';
   };
 
-  // handleSearch = (keyword = '') => {
-  //   this.setState({
-  //     keyword: keyword.toLowerCase(),
-  //   });
-  //   this.getFilteredComponents();
-  // };
-
-  // renderEmptyContent() {
-  //   return (
-  //     <div className={cx('empty')}>
-  //       <img src="//g.alicdn.com/uxcore/pic/empty.png" />
-  //       <div className={cx('content')}>{this.t(createI18n('暂无组件，请在物料站点添加', 'No components, please add materials'))}</div>
-  //     </div>
-  //   )
-  // }
-
   renderContent() {
-    const { filter = [], keyword, blocks } = this.state;
+    const { blocks } = this.state;
     
-    // const hasContent = filter.filter(item => {
-    //   return item?.categories?.filter(category => {
-    //     return category?.components?.length;
-    //   }).length;
-    // }).length;
-    // if (!hasContent) {
-    //   return this.renderEmptyContent();
-    // }
-    // if (keyword) {
-    //   return (
-    //     <div ref={this.registerAdditive} className={cx('filtered-content')}>
-    //       {filter.map((group) => {
-    //         const { categories } = group;
-    //         {return categories.map((category) => {
-    //           const { components } = category;
-    //           const cname = this.t(category.name);
-    //           return (
-    //             // Category
-    //             <div key={cname} name={cname}>
-    //               <List>
-    //                 {components.map((component) => {
-    //                   const { componentName, snippets = [] } = component;
-    //                   return snippets.filter(snippet => snippet.id && this.getKeyToSearch(snippet).toLowerCase().includes(keyword)).map(snippet => {
-    //                     return (
-    //                       // Component
-    //                       <div
-    //                         data={{
-    //                           title: snippet.title || component.title,
-    //                           icon: snippet.screenshot || component.icon,
-    //                           snippets: [snippet]
-    //                         }}
-    //                         key={`${this.t(group.name)}_${this.t(componentName)}_${this.t(snippet.title)}`}
-    //                         t={this.t}
-    //                       />
-    //                     );
-    //                   });
-    //                 })}
-    //               </List>
-    //             </div>
-    //           );
-    //         })}
-    //       })}
-    //     </div>
-    //   )
-    // }
-    console.log('filter', filter);
-    console.log('blocks', blocks);
     return (
-      <div ref={this.registerAdditive}>
-        {
-          blocks.map(block=> {
-            return (
-              <div
-                className="snippet" 
-                data-id={block.blockName} 
-                title={this.t(block.blockNameCh)}
-                style={{display: 'flex',}}
-              >
-                <div className={cx('name')} style={{}}>
-                  {this.t(block.blockNameCh)}
+      <Loading visible={this.state.loading} tip="区块数据加载中...">
+        <div ref={this.registerAdditive} className='block-list'>
+          {
+            blocks.map(block=> {
+              return (
+                <div className="contrainer">
+                  <div
+                    className={'snippet block-item'}
+                    data-id={block.blockName} 
+                    title={this.t(block.blockNameCh)}
+                  >
+                    <img 
+                      className="screenshot" 
+                      src={block.screenshot || 'http://lowcode.flyowl.com.cn/media/files/4/a/4a845cefa96ff8e09c5028b1fb55f187.jpeg'}
+                    />
+                    <span className="block-name">
+                      {this.t(block.blockNameCh)}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            )
-          })
-        }
-      </div>
-      
-      // <Tab className={cx('tabs')}>
-      //   {filter.map((group) => {
-      //     const { categories } = group;
-      //     return (
-      //       <Tab.Item title={this.t(group.name)} key={this.t(group.name)}>
-      //         <div ref={this.registerAdditive}>
-      //           {categories.map((category) => {
-      //             const { components } = category;
-      //             const cname = this.t(category.name);
-      //             return (
-      //               <div key={cname} name={cname}>
-      //                   {components.map((component) => {
-      //                     const { componentName, snippets = [] } = component;
-      //                     return snippets.filter(snippet => snippet.id).map(snippet => {
-      //                       return (
-      //                         //Component
-      //                         // <div
-      //                         //   data={{
-      //                         //     title: snippet.title || component.title,
-      //                         //     icon: snippet.screenshot || component.icon,
-      //                         //     snippets: [snippet]
-      //                         //   }}
-      //                         //   t={this.t}
-      //                         //   key={`${this.t(group.name)}_${this.t(componentName)}_${this.t(snippet.title)}`}
-      //                         // />
-      //                         // <div
-      //                         //   data={{
-      //                         //     title: snippet.title || component.title,
-      //                         //     icon: snippet.screenshot || component.icon,
-      //                         //     snippets: [snippet]
-      //                         //   }}
-      //                         // >
-      //                         //   {this.t(componentName)}
-      //                         // </div>
-      //                         <div className="snippet" data-id={snippet.id} title={this.t(snippet.title || component.title)}>
-      //                           <div className={cx('name')}>{this.t(snippet.title || component.title)}</div>
-      //                         </div>
-      //                       );
-      //                     });
-      //                   })}
-      //               </div>
-      //             );
-      //           })}
-      //         </div>
-      //       </Tab.Item>
-      //     );
-      //   })}
-      // </Tab>
+              )
+            })
+          }
+        </div>
+      </Loading>
     );
   }
 
   render() {
     return (
-      <div className={cx('lowcode-component-panel')}>
-        {/* <div className={cx('header')}>
-          <Search
-            className={cx('search')}
-            placeholder={this.t(createI18n('搜索组件', 'Search components'))}
-            shape="simple"
-            hasClear
-            autoFocus
-            onSearch={this.handleSearch}
-            onChange={this.handleSearch}
-          />
-        </div> */}
+      <div className={'lowcode-block-panel'}>
         {this.renderContent()}
       </div>
     );
   }
 }
-
-// export const PaneIcon = IconOfPane;
