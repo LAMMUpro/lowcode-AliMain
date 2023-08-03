@@ -20,10 +20,21 @@ export interface PageInfoType {
 
 /** 区块结构 */
 export interface BlockInfoType {
-  blockNameEn: string
-  blockNameECh: string
-  title: string
-  schema: Object
+  blockName: string
+  blockNameCh: string
+  icon?: string
+  screenshot?: string
+  category?: string
+  priority?: number
+  keywords?: string
+  schema: {
+    children?: Array<any>
+    componentName: string
+    /** 是不是得去除？ */
+    id: string
+    props: Object
+    title: string
+  }
 }
 
 /**
@@ -90,6 +101,25 @@ export async function getBlockInfo(params:{
   if (res.code == 1) {
     res.data.packages = JSON.parse(res.data.packages);
     res.data.projectSchema = JSON.parse(res.data.projectSchema);
+  }
+  return res;
+}
+
+/**
+ * [获取区块信息列表]
+ */
+export async function getBlockList():Promise<{
+  code: number
+  data: Array<BlockInfoType>
+}> {
+  const response = await fetch(`${host}/getBlocks`, {
+    method: 'GET',
+  });
+  const res = await response.json();
+  if (res.code == 1) {
+    res.data.forEach((item:BlockInfoType) => {
+      item.schema = JSON.parse(item.schema as any);
+    })
   }
   return res;
 }
