@@ -1,4 +1,4 @@
-import { init, plugins } from '@alilc/lowcode-engine';
+import { init, material, plugins } from '@alilc/lowcode-engine';
 import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
 import EditorInitPlugin from './plugins/plugin-editor-init';
 import UndoRedoPlugin from '@alilc/lowcode-plugin-undo-redo';
@@ -19,9 +19,13 @@ import CustomSetterSamplePlugin from './plugins/plugin-custom-setter-sample';
 import SetRefPropPlugin from '@alilc/lowcode-plugin-set-ref-prop';
 import LogoSamplePlugin from './plugins/plugin-logo-sample';
 import PagesManagePlugin from './plugins/plugin-pages-manage';
+import saveAsBlock from './actions/saveAsBlock';
 import './global.scss';
 
 async function registerPlugins() {
+  /** 保存为区块 */
+  material.addBuiltinComponentAction(saveAsBlock);
+
   await plugins.register(InjectPlugin);
 
   await plugins.register(EditorInitPlugin, {

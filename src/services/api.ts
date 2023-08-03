@@ -45,3 +45,13 @@ export async function savePageInfo(params: {
   });
   return await response.json();
 }
+
+export async function saveBlock(params: {
+  blockNameEn: string
+  blockNameECh: string
+  title: string
+  schema: Object
+  
+}) {
+  
+}
