@@ -8,9 +8,9 @@ import style from './index.module.scss';
 // import Category from '../components/Category';
 // import List from '../components/List';
 // import Component from '../components/Component';
-import { Tab, List } from '@alifd/next';
 import ComponentManager from './store';
 import transform, { getTextReader, SortedGroups, Text, StandardComponentMeta, SnippetMeta, createI18n } from './transform';
+import { getBlockList } from 'src/services/api';
 
 const { material, common, project, event } = window.AliLowCodeEngine || {};
 
@@ -26,6 +26,7 @@ interface ComponentPaneState {
   groups: SortedGroups[];
   filter: SortedGroups[];
   keyword: string;
+  blocks: any[]
 }
 
 export default class ComponentPane extends React.Component<ComponentPaneProps, ComponentPaneState> {
@@ -39,6 +40,7 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
     groups: [],
     filter: [],
     keyword: '',
+    blocks: [],
   };
 
   store = store;
@@ -124,15 +126,25 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
    * 初始化组件列表
    * TODO: 无副作用，可多次执行
    */
-  initComponentList() {
+  async initComponentList() {
     const { editor } = this.props;
     const rawData = material.getAssets();
+
+    const res = await getBlockList();
+
+    console.log('请求block', res);
+    this.setState({
+      blocks: res.data || []
+    })
 
     const meta = transform(rawData, this.t);
 
     const { groups, snippets } = meta;
 
-    this.store.setSnippets(snippets);
+    console.log('snippets', snippets)
+
+    // this.store.setSnippets(snippets);
+    this.store.setSnippets(res.data);
 
     this.setState({
       groups,
@@ -206,7 +218,7 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
   // }
 
   renderContent() {
-    const { filter = [], keyword } = this.state;
+    const { filter = [], keyword, blocks } = this.state;
     
     // const hasContent = filter.filter(item => {
     //   return item?.categories?.filter(category => {
@@ -253,59 +265,76 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
     //     </div>
     //   )
     // }
-    console.log(filter)
+    console.log('filter', filter);
+    console.log('blocks', blocks);
     return (
-      <Tab className={cx('tabs')}>
-        {filter.map((group) => {
-          const { categories } = group;
-          return (
-            <Tab.Item title={this.t(group.name)} key={this.t(group.name)}>
-              <div ref={this.registerAdditive}>
-                {categories.map((category) => {
-                  const { components } = category;
-                  const cname = this.t(category.name);
-                  return (
-                    // Category
-                    <div key={cname} name={cname}>
-                      {/* <List> */}
-                        {components.map((component) => {
-                          const { componentName, snippets = [] } = component;
-                          return snippets.filter(snippet => snippet.id).map(snippet => {
-                            return (
-                              //Component
-                              // <div
-                              //   data={{
-                              //     title: snippet.title || component.title,
-                              //     icon: snippet.screenshot || component.icon,
-                              //     snippets: [snippet]
-                              //   }}
-                              //   t={this.t}
-                              //   key={`${this.t(group.name)}_${this.t(componentName)}_${this.t(snippet.title)}`}
-                              // />
-                              // <div
-                              //   data={{
-                              //     title: snippet.title || component.title,
-                              //     icon: snippet.screenshot || component.icon,
-                              //     snippets: [snippet]
-                              //   }}
-                              // >
-                              //   {this.t(componentName)}
-                              // </div>
-                              <div className="snippet" data-id={snippet.id} title={this.t(snippet.title || component.title)}>
-                                <div className={cx('name')}>{this.t(snippet.title || component.title)}</div>
-                              </div>
-                            );
-                          });
-                        })}
-                      {/* </List> */}
-                    </div>
-                  );
-                })}
+      <div ref={this.registerAdditive}>
+        {
+          blocks.map(block=> {
+            return (
+              <div
+                className="snippet" 
+                data-id={block.blockName} 
+                title={this.t(block.blockNameCh)}
+                style={{display: 'flex',}}
+              >
+                <div className={cx('name')} style={{}}>
+                  {this.t(block.blockNameCh)}
+                </div>
               </div>
-            </Tab.Item>
-          );
-        })}
-      </Tab>
+            )
+          })
+        }
+      </div>
+      
+      // <Tab className={cx('tabs')}>
+      //   {filter.map((group) => {
+      //     const { categories } = group;
+      //     return (
+      //       <Tab.Item title={this.t(group.name)} key={this.t(group.name)}>
+      //         <div ref={this.registerAdditive}>
+      //           {categories.map((category) => {
+      //             const { components } = category;
+      //             const cname = this.t(category.name);
+      //             return (
+      //               <div key={cname} name={cname}>
+      //                   {components.map((component) => {
+      //                     const { componentName, snippets = [] } = component;
+      //                     return snippets.filter(snippet => snippet.id).map(snippet => {
+      //                       return (
+      //                         //Component
+      //                         // <div
+      //                         //   data={{
+      //                         //     title: snippet.title || component.title,
+      //                         //     icon: snippet.screenshot || component.icon,
+      //                         //     snippets: [snippet]
+      //                         //   }}
+      //                         //   t={this.t}
+      //                         //   key={`${this.t(group.name)}_${this.t(componentName)}_${this.t(snippet.title)}`}
+      //                         // />
+      //                         // <div
+      //                         //   data={{
+      //                         //     title: snippet.title || component.title,
+      //                         //     icon: snippet.screenshot || component.icon,
+      //                         //     snippets: [snippet]
+      //                         //   }}
+      //                         // >
+      //                         //   {this.t(componentName)}
+      //                         // </div>
+      //                         <div className="snippet" data-id={snippet.id} title={this.t(snippet.title || component.title)}>
+      //                           <div className={cx('name')}>{this.t(snippet.title || component.title)}</div>
+      //                         </div>
+      //                       );
+      //                     });
+      //                   })}
+      //               </div>
+      //             );
+      //           })}
+      //         </div>
+      //       </Tab.Item>
+      //     );
+      //   })}
+      // </Tab>
     );
   }
 

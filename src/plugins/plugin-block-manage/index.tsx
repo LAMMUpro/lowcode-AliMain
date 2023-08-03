@@ -1,8 +1,13 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import BlockList from './BlockList';
+import { Button, Icon } from '@alifd/next';
 
 const _PluginName_ = 'BlockPlugin';
 const BlockPlugin = (ctx: IPublicModelPluginContext) => {
+  let blockListRef:InstanceType<typeof BlockList>;
+  function refreshBlocks() {
+    console.log(blockListRef.initComponentList());
+  }
   return {
     name: _PluginName_,
     width: 300,
@@ -15,16 +20,24 @@ const BlockPlugin = (ctx: IPublicModelPluginContext) => {
         props: {
           icon: "A-B",
           description: '区块',
-          onClick: () => {}
+          onClick: async() => {}
         },
         panelProps: {
           width: '300px',
-          title: '区块'
+          title: (
+            <div>
+              <span style={{marginRight: '20px'}}>区块库</span>
+              <Button type="primary" size="small" iconSize={14} onClick={refreshBlocks}>
+                <Icon type="refresh"></Icon>
+                <span style={{paddingLeft: '8px'}}>刷新区块</span>
+              </Button>
+            </div>
+          )
         },
         content: (
-          <BlockList>
-
-          </BlockList>
+          <div>
+            <BlockList ref={ref => blockListRef= ref}></BlockList>
+          </div>
         )
       });
     }
