@@ -19,6 +19,7 @@ import CustomSetterSamplePlugin from './plugins/plugin-custom-setter-sample';
 import SetRefPropPlugin from '@alilc/lowcode-plugin-set-ref-prop';
 import LogoSamplePlugin from './plugins/plugin-logo-sample';
 import PagesManagePlugin from './plugins/plugin-pages-manage';
+import BlockPlugin from './plugins/plugin-block-manage';
 import saveAsBlock from './actions/saveAsBlock';
 import './global.scss';
 
@@ -44,6 +45,9 @@ async function registerPlugins() {
   /** 页面管理器 */
   await plugins.register(PagesManagePlugin);
   
+  /** 区块管理器 */
+  await plugins.register(BlockPlugin);
+
   // 设置内置 setter 和事件绑定、插件绑定面板
   await plugins.register(DefaultSettersRegistryPlugin);
 
