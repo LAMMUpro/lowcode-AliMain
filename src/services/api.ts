@@ -11,16 +11,30 @@ export interface ProjectSchemaType {
   version: string
 }
 
+/** 页面结构 */
+export interface PageInfoType {
+  path: string
+  projectSchema: ProjectSchemaType
+  packages: Array<PackageType>
+}
+
+/** 区块结构 */
+export interface BlockInfoType {
+  blockNameEn: string
+  blockNameECh: string
+  title: string
+  schema: Object
+}
+
+/**
+ * [获取页面信息]
+ */
 export async function getPageInfo(params: {
   /** 页面路径 */
   path: string
 }):Promise<{
   code: number
-  data: {
-    path: string
-    projectSchema: ProjectSchemaType
-    packages: Array<PackageType>
-  }
+  data: PageInfoType
 }> {
   const response = await fetch(`${host}/getPage?path=${params.path}`, {
     method: 'GET',
@@ -33,6 +47,9 @@ export async function getPageInfo(params: {
   return res;
 }
 
+/**
+ * [保存页面信息]
+ */
 export async function savePageInfo(params: {
   /** 页面路径 */
   path: string
@@ -46,12 +63,33 @@ export async function savePageInfo(params: {
   return await response.json();
 }
 
-export async function saveBlock(params: {
+/**
+ * [保存区块信息]
+ */
+export async function saveBlockInfo(params: BlockInfoType) {
+  const response = await fetch(`${host}/saveBlock`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  });
+  return await response.json();
+}
+
+/**
+ * [获取区块信息]
+ */
+export async function getBlockInfo(params:{
   blockNameEn: string
-  blockNameECh: string
-  title: string
-  schema: Object
-  
-}) {
-  
+}):Promise<{
+  code: number
+  data: BlockInfoType
+}> {
+  const response = await fetch(`${host}/getBlock?name=${params.blockNameEn}`, {
+    method: 'GET',
+  });
+  const res = await response.json();
+  if (res.code == 1) {
+    res.data.packages = JSON.parse(res.data.packages);
+    res.data.projectSchema = JSON.parse(res.data.projectSchema);
+  }
+  return res;
 }
