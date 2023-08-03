@@ -173,6 +173,7 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
     _dragon.from(shell, (e: Event) => {
       const doc = project.getCurrentDocument();
       const id = getSnippetId(e.target);
+      
       if (!doc || !id) {
         return false;
       }
@@ -281,9 +282,17 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
                               //   t={this.t}
                               //   key={`${this.t(group.name)}_${this.t(componentName)}_${this.t(snippet.title)}`}
                               // />
-                              <div>
-                                {this.t(group.name)}-
-                                {this.t(componentName)}
+                              // <div
+                              //   data={{
+                              //     title: snippet.title || component.title,
+                              //     icon: snippet.screenshot || component.icon,
+                              //     snippets: [snippet]
+                              //   }}
+                              // >
+                              //   {this.t(componentName)}
+                              // </div>
+                              <div className="snippet" data-id={snippet.id} title={this.t(snippet.title || component.title)}>
+                                <div className={cx('name')}>{this.t(snippet.title || component.title)}</div>
                               </div>
                             );
                           });
