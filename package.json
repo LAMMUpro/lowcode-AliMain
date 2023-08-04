@@ -14,7 +14,8 @@
     "antd": "^4.23.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-router-dom": "^5.3.4"
+    "react-router-dom": "^5.3.4",
+    "@alilc/lowcode-react-renderer": "^1.1.2"
   },
   "devDependencies": {
     "@types/react": "^16.14.43",

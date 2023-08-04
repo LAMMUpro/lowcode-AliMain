@@ -4,6 +4,7 @@ import home from './pages/home';
 import Header from './layouts/Header';
 import Aside from './layouts/Aside';
 import Footer from './layouts/Footer';
+import lowcode from './pages/lowcode';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <section>
         <BrowserRouter>
           <Switch>
+            <Route path='/lowcode' component={lowcode}></Route>
             <Route path='/404' component={page404}></Route>
             <Route path='/' component={home}></Route>
             <Redirect from="/index" to="/"/>
