@@ -1,15 +1,13 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './App.tsx'
-import './index.css'
+import ReactDOM from 'react-dom';
+import App from '@/App.tsx';
+
 /** microApp */
 import microApp from "@micro-zoe/micro-app";
 
 microApp.start({});
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <App />,
   document.getElementById('root')!
 )
