@@ -16,7 +16,8 @@
     "react-dom": "^16.14.0",
     "react-router-dom": "^5.3.4",
     "@alilc/lowcode-react-renderer": "^1.1.2",
-    "@alilc/lowcode-plugin-inject": "^1.1.2"
+    "@alilc/lowcode-plugin-inject": "^1.1.2",
+    "@micro-zoe/micro-app": "^1.0.0-beta.5"
   },
   "devDependencies": {
     "@types/react": "^16.14.43",
