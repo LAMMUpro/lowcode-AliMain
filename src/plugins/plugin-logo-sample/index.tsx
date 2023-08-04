@@ -58,8 +58,8 @@ const LogoSamplePlugin = (ctx: IPublicModelPluginContext) => {
         name: 'logo',
         content: <Logo scenarioDisplayName={scenarioDisplayName} scenarioInfo={scenarioInfo}  />,
         contentProps: {
-          logo: 'https://img.alicdn.com/imgextra/i4/O1CN013w2bmQ25WAIha4Hx9_!!6000000007533-55-tps-137-26.svg',
-          href: 'https://lowcode-engine.cn',
+          logo: '/logo.png',
+          href: '/',
         },
         props: {
           align: 'left',
