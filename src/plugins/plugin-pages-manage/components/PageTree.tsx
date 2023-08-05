@@ -1,4 +1,4 @@
-import { Tree, Icon, Search, Menu, Loading, Dialog } from '@alifd/next';
+import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Balloon } from '@alifd/next';
 import React from 'react';
 import EditNodeInfo from './EditNodeInfo';
 
@@ -60,14 +60,14 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      expandedKeys: ["2"],
+      expandedKeys: ["5", "6", "46"],
       autoExpandParent: true,
       selectedKeys: [],
       loading: false,
       isShowEditNodeInfoDialog: false
     };
 
-    this.matchedKeys = [];
+    this.matchedKeys = null;
 
     this.handleSearch = this.handleSearch.bind(this);
     this.handleExpand = this.handleExpand.bind(this);
@@ -81,6 +81,30 @@ class App extends React.Component {
     selectedKeys: Array<string>
     loading: boolean
     isShowEditNodeInfoDialog: boolean
+  }
+
+  deletePageInfo() {
+    Dialog.confirm({
+      content: '确定要删除该节点页面数据吗？',
+      onOk: () => {
+        // resolve();
+      },
+      onCancel: () => {
+        // reject()
+      },
+    })
+  }
+  
+  deleteNode() {
+    Dialog.confirm({
+      content: '确定要删除该节点吗？对应页面数据及其子节点都会被删除!',
+      onOk: () => {
+        // resolve();
+      },
+      onCancel: () => {
+        // reject()
+      },
+    })
   }
 
   onRightClick = ({event: e, node}: any) => {
@@ -103,8 +127,8 @@ class App extends React.Component {
         <Item key="1">编辑当前页面</Item>,
         <Item key="2" onClick={()=>this.handleEditNodeInfo(node.props)}>编辑节点信息(父级)</Item>,
         <Divider key="divider-1" />,
-        <Item key="4">删除页面</Item>,
-        <Item key="3">删除节点</Item>
+        <Item key="4" onClick={this.deletePageInfo}>删除页面</Item>,
+        <Item key="3" onClick={this.deleteNode}>删除节点</Item>
       ]
     });
   }
@@ -120,6 +144,10 @@ class App extends React.Component {
     value = value.trim();
     if (!value) {
       this.matchedKeys = null;
+      this.setState({
+        expandedKeys: ["5", "6", "46"],
+        autoExpandParent: true
+      });
       return;
     }
 
@@ -134,7 +162,7 @@ class App extends React.Component {
         }
       });
     loop(data);
-
+    debugger
     this.setState({
       expandedKeys: [...matchedKeys],
       autoExpandParent: true
@@ -143,6 +171,7 @@ class App extends React.Component {
   }
 
   handleExpand(keys: Array<string>) {
+    debugger
     this.setState({
       expandedKeys: keys,
       autoExpandParent: false
@@ -156,6 +185,11 @@ class App extends React.Component {
   render() {
     const { expandedKeys, autoExpandParent } = this.state;
     const filterTreeNode = (node:any) => {
+      // if (this.matchedKeys === null) {
+      //   this.setState({
+      //     expandedKeys: [...this.state.expandedKeys, node.props.eventKey]
+      //   })
+      // }
       return (
         this.matchedKeys! && this.matchedKeys.indexOf(node.props.eventKey) > -1
       );
@@ -166,6 +200,8 @@ class App extends React.Component {
           shape="simple"
           size="medium"
           style={{ width: "100%", marginBottom: "10px" }}
+          hasClear
+          onSearch={this.handleSearch}
           onChange={this.handleSearch}
         />
         <Tree

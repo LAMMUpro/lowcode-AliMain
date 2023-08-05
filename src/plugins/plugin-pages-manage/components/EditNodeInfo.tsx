@@ -25,10 +25,12 @@ class EditNodeInfoDialog extends React.Component<PropsType> {
   render() {
     return (
       <Dialog
+        wrapperClassName="hidenBottom"
         v2
         title="编辑节点信息"
         width='400px'
         visible={this.props.visible}
+        onClose={this.props.onClose}
       >
         <div style={{width: '400px'}}>
           <Form 
