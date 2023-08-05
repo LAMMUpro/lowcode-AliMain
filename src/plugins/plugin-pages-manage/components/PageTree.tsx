@@ -1,4 +1,4 @@
-import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Balloon } from '@alifd/next';
+import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Balloon, Select } from '@alifd/next';
 import React from 'react';
 import EditNodeInfo from './EditNodeInfo';
 
@@ -182,6 +182,18 @@ class App extends React.Component {
 
   }
 
+  handleDeleteApplication() {
+    Dialog.confirm({
+      content: '确定要删除该应用吗？对应节点/页面信息也将被删除!',
+      onOk: () => {
+        // resolve();
+      },
+      onCancel: () => {
+        // reject()
+      },
+    })
+  }
+
   render() {
     const { expandedKeys, autoExpandParent } = this.state;
     const filterTreeNode = (node:any) => {
@@ -195,7 +207,32 @@ class App extends React.Component {
       );
     };
     return (
-      <Loading visible={this.state.loading} tip="数据加载中..." style={{width: '100%', height: '100%', padding: "0 15px"}}>
+      <Loading 
+        visible={this.state.loading} 
+        tip="数据加载中..." 
+        style={{width: '100%', height: '100%', padding: "0 15px"}}
+      >
+        <div style={{display: 'flex'}}>
+          <Select 
+            label="当前应用:"
+            defaultValue="clear" 
+            style={{ flex: 1, marginBottom: '10px' }}
+          >
+            <Select.Option value="jack">Jack</Select.Option>
+            <Select.Option value="frank">Frank</Select.Option>
+            <Select.Option value="clear">clear</Select.Option>
+          </Select>
+          <Button type="primary" size="small" style={{marginLeft: '5px'}}
+
+          >新增</Button>
+          <Button type="normal" size="small" style={{marginLeft: '5px'}}
+          
+          >编辑</Button>
+          <Button type="primary" warning size="small" style={{marginLeft: '5px'}}
+            onClick={this.handleDeleteApplication}
+          >删除</Button>
+        </div>
+
         <Search
           shape="simple"
           size="medium"
