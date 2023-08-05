@@ -1,5 +1,5 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
-import PageTree from './PageTree';
+import PageTree from './components/PageTree';
 
 
 const _PluginName_ = 'PagesManagePlugin';
