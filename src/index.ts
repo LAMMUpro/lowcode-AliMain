@@ -51,6 +51,7 @@ async function registerPlugins() {
   // 设置内置 setter 和事件绑定、插件绑定面板
   await plugins.register(DefaultSettersRegistryPlugin);
 
+  // Logo + pageInfo
   await plugins.register(LogoSamplePlugin);
 
   await plugins.register(ComponentPanelPlugin);

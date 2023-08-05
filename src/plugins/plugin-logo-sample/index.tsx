@@ -13,10 +13,16 @@ const Logo: React.FC<IProps> = (props): React.ReactElement => {
   const { scenarioDisplayName, scenarioInfo } = props;
   const urls = scenarioInfo?.urls || [];
   return (
-    <div className="lowcode-plugin-logo">
-      <a className="logo" target="blank" href={props.href || 'https://lowcode-engine.cn'} style={{ backgroundImage: `url(${props.logo})` }} />
+    <div className="lowcode-plugin-logo" style={{width: '400px'}}>
+      <a className="logo" target="blank" href={props.href || 'https://lowcode-engine.cn'} style={{ backgroundImage: `url(${props.logo})`, flexShrink: '0' }} />
       {/* <div className="scenario-name">当前路径:{scenarioDisplayName}</div> */}
-      <Tag color="#2db7f5">{scenarioDisplayName}</Tag>
+      <div style={{flex: 1, overflow: 'hidden'}}>
+        <span style={{display: 'block', fontSize: '14px', fontWeight: 'bold', textWrap: 'nowrap'}}>
+          当前页面:
+          <a style={{color: '#3e71f7', cursor: "pointer"}}>/crm/contract/list/23243242343/423423</a>
+        </span>
+        <span>描述信息</span>
+      </div>
       {/* {
         urls && (
           <Dropdown
