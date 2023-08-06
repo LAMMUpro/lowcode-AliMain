@@ -119,8 +119,60 @@ export async function getBlockList():Promise<{
   if (res.code == 1) {
     res.data.forEach((item:BlockInfoType) => {
       item.schema = JSON.parse(item.schema as any);
-      item.id = item.blockName;
+      (item as any).id = item.blockName;
     })
   }
   return res;
+}
+
+/**
+ * 保存应用信息
+ */
+export async function saveApplication(params: {
+  name: string
+  _describe: string
+}) {
+  const response = await fetch(`${host}/saveApplication`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  });
+  return await response.json();
+}
+
+/**
+ * 删除应用信息
+ */
+export async function deleteApplication(params: {
+  id: number
+}) {
+  const response = await fetch(`${host}/deleteApplication`, {
+    method: 'DELETE',
+    body: JSON.stringify(params)
+  });
+  return await response.json();
+}
+
+/**
+ * 删除应用信息
+ */
+export async function getApplicationList() {
+  const response = await fetch(`${host}/getApplications`, {
+    method: 'GET',
+  });
+  return await response.json();
+}
+
+/**
+ * 修改应用信息
+ */
+export async function updateApplication(params: {
+  id?: number
+  name: string
+  _describe: string
+}) {
+  const response = await fetch(`${host}/updateApplication`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  });
+  return await response.json();
 }

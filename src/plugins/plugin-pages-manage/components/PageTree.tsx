@@ -1,6 +1,8 @@
-import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Balloon, Select } from '@alifd/next';
+import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Balloon, Select, Message } from '@alifd/next';
 import React from 'react';
 import EditNodeInfo from './EditNodeInfo';
+import AddEditApplicationDialog from './AddEditApplication';
+import { deleteApplication, getApplicationList } from 'src/services/api';
 
 const data = [
   {
@@ -55,6 +57,13 @@ const data = [
 
 const { Item, Divider } = Menu;
 
+function getDefaultApplication() {
+  return {
+    name: '',
+    _describe: ''
+  }
+}
+
 class App extends React.Component {
   constructor(props:any) {
     super(props);
@@ -64,14 +73,25 @@ class App extends React.Component {
       autoExpandParent: true,
       selectedKeys: [],
       loading: false,
-      isShowEditNodeInfoDialog: false
+      isShowEditNodeInfoDialog: false,
+      isShowEditApplicationInfoDialog: false,
+      appDialogType: 'add',
+      applicationId: undefined,
+      applicationList: [],
+      applicationInfo: getDefaultApplication(),
     };
 
     this.matchedKeys = null;
 
     this.handleSearch = this.handleSearch.bind(this);
     this.handleExpand = this.handleExpand.bind(this);
+    this.updateApplicationList = this.updateApplicationList.bind(this);
+    this.handleDeleteApplication = this.handleDeleteApplication.bind(this);
+    this.handleAddApplicationInfo = this.handleAddApplicationInfo.bind(this);
+    this.handleEditApplicationInfo = this.handleEditApplicationInfo.bind(this);
+    this.handleAddEditAppSuccess = this.handleAddEditAppSuccess.bind(this);
 
+    this.updateApplicationList();
   }
 
   matchedKeys: Array<string>|null;
@@ -81,6 +101,54 @@ class App extends React.Component {
     selectedKeys: Array<string>
     loading: boolean
     isShowEditNodeInfoDialog: boolean
+    isShowEditApplicationInfoDialog: boolean
+    appDialogType: 'add'|'edit'
+    applicationInfo: {
+      id?: number
+      name: string
+      _describe: string
+    }
+    applicationId?: number
+    applicationList: Array<{
+      id: number
+      name: string
+      _describe: string
+    }>
+  }
+
+  async updateApplicationList() {
+    const res = await getApplicationList();
+    if (res.code == 1) {
+      this.setState({
+        applicationList: res.data,
+      })
+    }
+  }
+
+  /** 新增用户信息 */
+  handleAddApplicationInfo(node: any) {
+    this.setState({
+      appDialogType: 'add',
+      isShowEditApplicationInfoDialog: true,
+      applicationInfo: getDefaultApplication(),
+    })
+  }
+
+  /** 编辑应用信息 */
+  handleEditApplicationInfo(node: any) {
+    this.setState({
+      appDialogType: 'edit',
+      isShowEditApplicationInfoDialog: true,
+      applicationInfo: this.state.applicationList.find(item=>item.id == this.state.applicationId)
+    })
+  }
+
+  /** 新增/编辑应用信息 成功回调 */
+  handleAddEditAppSuccess() {
+    this.updateApplicationList();
+    // if (this.state.appDialogType == 'add') {
+
+    // }
   }
 
   deletePageInfo() {
@@ -162,7 +230,6 @@ class App extends React.Component {
         }
       });
     loop(data);
-    debugger
     this.setState({
       expandedKeys: [...matchedKeys],
       autoExpandParent: true
@@ -171,7 +238,6 @@ class App extends React.Component {
   }
 
   handleExpand(keys: Array<string>) {
-    debugger
     this.setState({
       expandedKeys: keys,
       autoExpandParent: false
@@ -185,11 +251,18 @@ class App extends React.Component {
   handleDeleteApplication() {
     Dialog.confirm({
       content: '确定要删除该应用吗？对应节点/页面信息也将被删除!',
-      onOk: () => {
-        // resolve();
-      },
-      onCancel: () => {
-        // reject()
+      onOk: async () => {
+        const res = await deleteApplication({id: this.state.applicationId!});
+        if (res.code == 1) {
+          Message.show({
+            type: "success",
+            content: "应用删除成功"
+          });
+          this.setState({
+            applicationId: undefined
+          });
+          this.updateApplicationList();
+        }
       },
     })
   }
@@ -215,20 +288,26 @@ class App extends React.Component {
         <div style={{display: 'flex'}}>
           <Select 
             label="当前应用:"
-            defaultValue="clear" 
+            value={this.state.applicationId}
+            defaultValue={this.state.applicationId}
             style={{ flex: 1, marginBottom: '10px' }}
+            onChange={id => this.setState({applicationId: id})}
           >
-            <Select.Option value="jack">Jack</Select.Option>
-            <Select.Option value="frank">Frank</Select.Option>
-            <Select.Option value="clear">clear</Select.Option>
+            {
+              this.state.applicationList.map(item=>(
+                <Select.Option value={item.id}>{item.name}</Select.Option>
+              ))
+            }
           </Select>
           <Button type="primary" size="small" style={{marginLeft: '5px'}}
-
+            onClick={this.handleAddApplicationInfo}
           >新增</Button>
           <Button type="normal" size="small" style={{marginLeft: '5px'}}
-          
+            disabled={!this.state.applicationId}
+            onClick={this.handleEditApplicationInfo}
           >编辑</Button>
           <Button type="primary" warning size="small" style={{marginLeft: '5px'}}
+            disabled={!this.state.applicationId}
             onClick={this.handleDeleteApplication}
           >删除</Button>
         </div>
@@ -266,6 +345,14 @@ class App extends React.Component {
           }}
           onClose={()=>this.setState({isShowEditNodeInfoDialog: false})}
         ></EditNodeInfo>
+
+        <AddEditApplicationDialog 
+          visible={this.state.isShowEditApplicationInfoDialog}
+          type={this.state.appDialogType}
+          originInfo={this.state.applicationInfo}
+          onClose={()=>this.setState({isShowEditApplicationInfoDialog: false})}
+          success={this.handleAddEditAppSuccess}
+        ></AddEditApplicationDialog>
       </Loading>
     );
   }
