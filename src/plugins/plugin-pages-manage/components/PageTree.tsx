@@ -90,6 +90,7 @@ class App extends React.Component {
     this.handleAddApplicationInfo = this.handleAddApplicationInfo.bind(this);
     this.handleEditApplicationInfo = this.handleEditApplicationInfo.bind(this);
     this.handleAddEditAppSuccess = this.handleAddEditAppSuccess.bind(this);
+    this.handleAppIdChange = this.handleAppIdChange.bind(this);
 
     this.updateApplicationList();
   }
@@ -146,9 +147,14 @@ class App extends React.Component {
   /** 新增/编辑应用信息 成功回调 */
   handleAddEditAppSuccess() {
     this.updateApplicationList();
-    // if (this.state.appDialogType == 'add') {
+  }
 
-    // }
+  /** 切换应用 */
+  handleAppIdChange(id: number) {
+    this.setState({
+      applicationId: id,
+    })
+    
   }
 
   deletePageInfo() {
@@ -291,7 +297,7 @@ class App extends React.Component {
             value={this.state.applicationId}
             defaultValue={this.state.applicationId}
             style={{ flex: 1, marginBottom: '10px' }}
-            onChange={id => this.setState({applicationId: id})}
+            onChange={id => this.handleAppIdChange(id)}
           >
             {
               this.state.applicationList.map(item=>(
