@@ -2,58 +2,56 @@ import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Balloon, Select, Mes
 import React from 'react';
 import EditNodeInfo from './EditNodeInfo';
 import AddEditApplicationDialog from './AddEditApplication';
-import { deleteApplication, getApplicationList } from 'src/services/api';
+import { PageNode, deleteApplication, deleteNode, deletePage, getApplicationList, getNodes } from 'src/services/api';
 
-const data = [
-  {
-      label: 'crm',
-      key: '1',
-      icon: <Icon type="eye" />,
-      children: [
-          {
-              label: 'contract',
-              key: '2',
-              icon: 'eye',
-              children: [
-                  {
-                      label: 'Input',
-                      key: '4',
-                      children: [
-                        {
-                            label: 'Input',
-                            key: '44',
-                            children: [
-                              {
-                                icon: <Icon type="eye" />,
-                                  label: 'Input',
-                                  key: '46',
-                              },
-                            ]
-                        },
-                      ]
-                  },
-                  {
-                      label: 'Select',
-                      key: '5',
-                  },
-              ],
-          },
-          {
-              label: 'Display',
-              key: '3',
-              icon: 'eye',
-              children: [
-                  {
-                      label: 'Table',
-                      key: '6',
-                  },
-              ],
-          },
-      ],
-  },
-];
-
-
+// const data = [
+//   {
+//       label: 'crm',
+//       key: '1',
+//       icon: <Icon type="eye" />,
+//       children: [
+//           {
+//               label: 'contract',
+//               key: '2',
+//               icon: 'eye',
+//               children: [
+//                   {
+//                       label: 'Input',
+//                       key: '4',
+//                       children: [
+//                         {
+//                             label: 'Input',
+//                             key: '44',
+//                             children: [
+//                               {
+//                                 icon: <Icon type="eye" />,
+//                                   label: 'Input',
+//                                   key: '46',
+//                               },
+//                             ]
+//                         },
+//                       ]
+//                   },
+//                   {
+//                       label: 'Select',
+//                       key: '5',
+//                   },
+//               ],
+//           },
+//           {
+//               label: 'Display',
+//               key: '3',
+//               icon: 'eye',
+//               children: [
+//                   {
+//                       label: 'Table',
+//                       key: '6',
+//                   },
+//               ],
+//           },
+//       ],
+//   },
+// ];
 
 const { Item, Divider } = Menu;
 
@@ -64,21 +62,36 @@ function getDefaultApplication() {
   }
 }
 
+function getDefaultNode() {
+  return {
+    name: '',
+    parent_id: null,
+    _describe: ''
+  }
+}
+
 class App extends React.Component {
   constructor(props:any) {
     super(props);
 
     this.state = {
-      expandedKeys: ["5", "6", "46"],
+      expandedKeys: [],
+      leafIds: [],
       autoExpandParent: true,
       selectedKeys: [],
       loading: false,
       isShowEditNodeInfoDialog: false,
+      nodeDialogType: 'add',
+      nodeId: undefined,
+      nodeInfo: getDefaultNode(),
+
       isShowEditApplicationInfoDialog: false,
       appDialogType: 'add',
       applicationId: undefined,
       applicationList: [],
       applicationInfo: getDefaultApplication(),
+      pageNodes: [],
+      nodeList: [],
     };
 
     this.matchedKeys = null;
@@ -91,17 +104,27 @@ class App extends React.Component {
     this.handleEditApplicationInfo = this.handleEditApplicationInfo.bind(this);
     this.handleAddEditAppSuccess = this.handleAddEditAppSuccess.bind(this);
     this.handleAppIdChange = this.handleAppIdChange.bind(this);
+    this.updatePageNodes = this.updatePageNodes.bind(this);
+    this.handleAddNodeInfo = this.handleAddNodeInfo.bind(this);
+    this.handleEditNodeInfo = this.handleEditNodeInfo.bind(this);
+    this.handleAddEditNodeSuccess = this.handleAddEditNodeSuccess.bind(this);
 
     this.updateApplicationList();
+    this.updatePageNodes();
   }
 
   matchedKeys: Array<string>|null;
   state: {
-    expandedKeys: Array<string>
+    expandedKeys: Array<number>
+    leafIds: Array<number>
     autoExpandParent: boolean
     selectedKeys: Array<string>
     loading: boolean
     isShowEditNodeInfoDialog: boolean
+    nodeDialogType: 'add'|'edit'
+    nodeId?: number
+    nodeInfo: Omit<PageNode, 'id'|'depth'|'children'>
+
     isShowEditApplicationInfoDialog: boolean
     appDialogType: 'add'|'edit'
     applicationInfo: {
@@ -115,6 +138,8 @@ class App extends React.Component {
       name: string
       _describe: string
     }>
+    pageNodes: Array<PageNode>
+    nodeList: Array<PageNode>
   }
 
   async updateApplicationList() {
@@ -122,6 +147,18 @@ class App extends React.Component {
     if (res.code == 1) {
       this.setState({
         applicationList: res.data,
+      })
+    }
+  }
+
+  async updatePageNodes() {
+    const res = await getNodes();
+    if (res.code == 1) {
+      this.setState({
+        pageNodes: res.data,
+        nodeList: res.originList,
+        leafIds: res.leafIds,
+        expandedKeys: res.leafIds,
       })
     }
   }
@@ -154,29 +191,36 @@ class App extends React.Component {
     this.setState({
       applicationId: id,
     })
-    
+
   }
 
-  deletePageInfo() {
+  deletePageInfo(id: number) {
     Dialog.confirm({
       content: '确定要删除该节点页面数据吗？',
-      onOk: () => {
-        // resolve();
-      },
-      onCancel: () => {
-        // reject()
+      onOk: async () => {
+        const res = await deletePage({id});
+        if (res.code == 1) {
+          Message.show({
+            type: "success",
+            content: "清空页面数据成功"
+          });
+        }
       },
     })
   }
   
-  deleteNode() {
+  deleteNode(id: number) {
     Dialog.confirm({
       content: '确定要删除该节点吗？对应页面数据及其子节点都会被删除!',
-      onOk: () => {
-        // resolve();
-      },
-      onCancel: () => {
-        // reject()
+      onOk: async () => {
+        const res = await deleteNode({id});
+        if (res.code == 1) {
+          Message.show({
+            type: "success",
+            content: "节点删除成功"
+          });
+          this.updatePageNodes();
+        }
       },
     })
   }
@@ -201,17 +245,34 @@ class App extends React.Component {
         <Item key="1">编辑当前页面</Item>,
         <Item key="2" onClick={()=>this.handleEditNodeInfo(node.props)}>编辑节点信息(父级)</Item>,
         <Divider key="divider-1" />,
-        <Item key="4" onClick={this.deletePageInfo}>删除页面</Item>,
-        <Item key="3" onClick={this.deleteNode}>删除节点</Item>
+        <Item key="4" onClick={()=>this.deletePageInfo(node.props.eventKey)}>删除页面</Item>,
+        <Item key="3" onClick={()=>this.deleteNode(node.props.eventKey)}>删除节点</Item>
       ]
     });
+  }
+
+
+  /** 新增节点信息 */
+  handleAddNodeInfo(node: any) {
+    this.setState({
+      nodeDialogType: 'add',
+      isShowEditNodeInfoDialog: true,
+      nodeInfo: getDefaultNode()
+    })
   }
 
   /** 编辑节点信息 */
   handleEditNodeInfo(node: any) {
     this.setState({
-      isShowEditNodeInfoDialog: true
+      nodeDialogType: 'edit',
+      isShowEditNodeInfoDialog: true,
+      nodeInfo: this.state.nodeList.find(item=>item.id == node.eventKey)
     })
+  }
+
+  /** 新增/编辑 节点成功 回调 */
+  handleAddEditNodeSuccess() {
+    this.updatePageNodes();
   }
 
   handleSearch(value: string) {
@@ -219,7 +280,7 @@ class App extends React.Component {
     if (!value) {
       this.matchedKeys = null;
       this.setState({
-        expandedKeys: ["5", "6", "46"],
+        expandedKeys: this.state.leafIds,
         autoExpandParent: true
       });
       return;
@@ -228,14 +289,14 @@ class App extends React.Component {
     const matchedKeys: Array<string> = [];
     const loop = (data:any) =>
       data.forEach((item:any) => {
-        if (item.label.indexOf(value) > -1) {
-          matchedKeys.push(item.key);
+        if (item.name.indexOf(value) > -1) {
+          matchedKeys.push(item.id);
         }
         if (item.children && item.children.length) {
           loop(item.children);
         }
       });
-    loop(data);
+    loop(this.state.pageNodes);
     this.setState({
       expandedKeys: [...matchedKeys],
       autoExpandParent: true
@@ -317,39 +378,43 @@ class App extends React.Component {
             onClick={this.handleDeleteApplication}
           >删除</Button>
         </div>
-
-        <Search
-          shape="simple"
-          size="medium"
-          style={{ width: "100%", marginBottom: "10px" }}
-          hasClear
-          onSearch={this.handleSearch}
-          onChange={this.handleSearch}
-        />
+        <div style={{display: 'flex'}}>
+          <Search
+            shape="simple"
+            size="medium"
+            style={{ width: "100%", marginBottom: "10px" }}
+            hasClear
+            onSearch={this.handleSearch}
+            onChange={this.handleSearch}
+          />
+          <Button type="primary" size="small" style={{marginLeft: '5px'}}
+            onClick={this.handleAddNodeInfo}
+          >新增</Button>
+        </div>
         <Tree
           draggable
           editable
           showLine
           isNodeBlock
           defaultExpandAll 
-          dataSource={data}
           expandedKeys={expandedKeys}
           autoExpandParent={autoExpandParent}
           filterTreeNode={filterTreeNode}
           onExpand={this.handleExpand}
           onRightClick={this.onRightClick}
-        />
+        >
+          {
+            this.state.pageNodes.map(item=> renderNode(item))
+          }
+        </Tree>
 
         <EditNodeInfo 
           visible={this.state.isShowEditNodeInfoDialog}
-          originInfo={{
-            id: 'string',
-            label: 'string',
-            parentId: 'string',
-            parentName: 'string',
-            describe: 'string'
-          }}
+          type={this.state.nodeDialogType}
+          originInfo={this.state.nodeInfo}
+          pageNodes={this.state.pageNodes}
           onClose={()=>this.setState({isShowEditNodeInfoDialog: false})}
+          success={this.handleAddEditNodeSuccess}
         ></EditNodeInfo>
 
         <AddEditApplicationDialog 
@@ -362,6 +427,20 @@ class App extends React.Component {
       </Loading>
     );
   }
+}
+
+function renderNode(node: PageNode) {
+  return <Tree.Node key={node.id} label={node.name}>
+    {
+      node.children.map(item=> (
+        <Tree.Node key={item.id} label={item.name}>
+          {
+            item.children.map(item2 => renderNode(item2))
+          }
+        </Tree.Node>
+      ))
+    }
+  </Tree.Node>
 }
 
 export default App;

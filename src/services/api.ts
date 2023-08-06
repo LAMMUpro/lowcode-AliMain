@@ -14,7 +14,7 @@ export interface ProjectSchemaType {
 /** 页面结构 */
 export interface PageInfoType {
   path: string
-  projectSchema: ProjectSchemaType
+  project_schema: ProjectSchemaType
   packages: Array<PackageType>
 }
 
@@ -37,6 +37,15 @@ export interface BlockInfoType {
   }
 }
 
+export interface PageNode {
+  "id": number,
+  "name": string,
+  "parent_id": number|null,
+  "_describe": string,
+  "depth": number,
+  "children": Array<PageNode>
+}
+
 /**
  * [获取页面信息]
  */
@@ -53,7 +62,7 @@ export async function getPageInfo(params: {
   const res = await response.json();
   if (res.code == 1) {
     res.data.packages = JSON.parse(res.data.packages);
-    res.data.projectSchema = JSON.parse(res.data.projectSchema);
+    res.data.project_schema = JSON.parse(res.data.project_schema);
   }
   return res;
 }
@@ -64,7 +73,7 @@ export async function getPageInfo(params: {
 export async function savePageInfo(params: {
   /** 页面路径 */
   path: string
-  projectSchema: Object
+  project_schema: Object
   packages: Array<Object>
 }) {
   const response = await fetch(`${host}/savePage`, {
@@ -100,7 +109,7 @@ export async function getBlockInfo(params:{
   const res = await response.json();
   if (res.code == 1) {
     res.data.packages = JSON.parse(res.data.packages);
-    res.data.projectSchema = JSON.parse(res.data.projectSchema);
+    res.data.project_schema = JSON.parse(res.data.project_schema);
   }
   return res;
 }
@@ -157,7 +166,7 @@ export async function deleteApplication(params: {
  */
 export async function getApplicationList() {
   const response = await fetch(`${host}/getApplications`, {
-    method: 'GET',
+    method: 'DELETE',
   });
   return await response.json();
 }
@@ -171,6 +180,111 @@ export async function updateApplication(params: {
   _describe: string
 }) {
   const response = await fetch(`${host}/updateApplication`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  });
+  return await response.json();
+}
+
+/**
+ * [新增节点]
+ */
+export async function saveNode(params: Omit<PageNode, 'id'|'depth'|'children'>) {
+  const response = await fetch(`${host}/saveNode`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  });
+  const res = await response.json();
+  return res;
+}
+
+/**
+ * 删除节点
+ */
+export async function deleteNode(params: {
+  id: number
+}) {
+  const response = await fetch(`${host}/deleteNode?id=${params.id}`, {
+    method: 'DELETE',
+    body: JSON.stringify(params)
+  });
+  return await response.json();
+}
+
+/**
+ * 删除页面
+ */
+export async function deletePage(params: {
+  id: number
+}) {
+  const response = await fetch(`${host}/deletePage?id=${params.id}`, {
+    method: 'DELETE',
+  });
+  return await response.json();
+}
+
+/**
+ * [获取节点列表]
+ */
+export async function getNodes():Promise<{
+  code: number
+  data: Array<PageNode>
+  originList: Array<PageNode>
+  leafIds: Array<number>
+}> {
+  const response = await fetch(`${host}/getNodes`, {
+    method: 'GET',
+  });
+  const res = await response.json();
+  return res;
+}
+
+/**
+ * [获取节点页面数据]
+ */
+export async function getPage(params: {id: number}):Promise<{
+  code: number
+  data: {
+    project_schema: any
+    packages: Array<any>
+  }
+}> {
+  const response = await fetch(`${host}/getPage?id=${params.id}`, {
+    method: 'GET',
+  });
+  const res = await response.json();
+  if (res.code == 1) {
+    res.data.packages = JSON.parse(res.data.packages);
+    res.data.project_schema = JSON.parse(res.data.project_schema);
+  }
+  return res;
+}
+
+/**
+ * 修改node信息
+ */
+export async function updateNode(params: {
+  id: number
+  name: string
+  parent_id: number|null
+  _describe: string
+}) {
+  const response = await fetch(`${host}/updateNode`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  });
+  return await response.json();
+}
+
+/**
+ * 修改node页面信息
+ */
+export async function updatePage(params: {
+  id: number
+  project_schema: any
+  packages: any
+}) {
+  const response = await fetch(`${host}/updatePage`, {
     method: 'POST',
     body: JSON.stringify(params)
   });

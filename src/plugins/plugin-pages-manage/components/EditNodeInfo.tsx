@@ -1,16 +1,14 @@
-import { Form, Input, Dialog, Icon, CascaderSelect, Button } from '@alifd/next';
+import { Form, Input, Dialog, Icon, CascaderSelect, Button, Message } from '@alifd/next';
 import React from 'react';
+import { PageNode, saveNode, updateNode } from 'src/services/api';
 
 interface PropsType {
   visible: boolean
-  originInfo: {
-    id: string
-    label: string
-    parentId: string
-    parentName: string
-    describe: string
-  }
+  type: 'add'|'edit'
+  originInfo: Omit<PageNode, 'id'|'depth'|'children'> & { id?: number }
   onClose: () => void
+  success: () => void
+  pageNodes: Array<PageNode>
 }
 
 class EditNodeInfoDialog extends React.Component<PropsType> {
@@ -18,8 +16,32 @@ class EditNodeInfoDialog extends React.Component<PropsType> {
     super(props);
   }
 
-  handleSubmit(values: PropsType['originInfo']) {
+  async handleSubmit(values: Omit<PropsType['originInfo'], 'id'>) {
     console.log(values);
+    if (this.props.type == 'add') {
+      const res = await saveNode(values);
+      if (res.code == 1) {
+        Message.show({
+          type: "success",
+          content: "新增节点成功"
+        });
+        this.props.onClose();
+        this.props.success();
+      }
+    } else {
+      const res = await updateNode({
+        id: this.props.originInfo.id!,
+        ...values,
+      });
+      if (res.code == 1) {
+        Message.show({
+          type: "success",
+          content: "修改节点信息成功"
+        });
+        this.props.onClose();
+        this.props.success();
+      }
+    }
   };
 
   render() {
@@ -27,7 +49,7 @@ class EditNodeInfoDialog extends React.Component<PropsType> {
       <Dialog
         wrapperClassName="hidenBottom"
         v2
-        title="编辑节点信息"
+        title={this.props.type=='add'?"新增节点信息":"编辑节点信息"}
         width='400px'
         visible={this.props.visible}
         onClose={this.props.onClose}
@@ -43,27 +65,29 @@ class EditNodeInfoDialog extends React.Component<PropsType> {
               requiredMessage="节点名称不能为空"
             >
               <Input 
-                name="label" 
-                defaultValue={this.props.originInfo.label}
+                name="name" 
+                defaultValue={this.props.originInfo.name}
               />
             </Form.Item>
             <Form.Item
               label="父节点"
             >
               <CascaderSelect
-                name="parentId" 
+                name="parent_id"
+                style={{width: '100%'}}
                 showSearch
+                changeOnSelect
                 canOnlyCheckLeaf={false}
-                dataSource={data}
-                defaultValue={this.props.originInfo.parentId}
+                dataSource={this.props.pageNodes}
+                defaultValue={this.props.originInfo.parent_id as unknown as string}
               />
             </Form.Item>
             <Form.Item
               label="节点描述"
             >
               <Input 
-                name="describe" 
-                defaultValue={this.props.originInfo.describe}
+                name="_describe" 
+                defaultValue={this.props.originInfo._describe}
               />
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 7 }}>
