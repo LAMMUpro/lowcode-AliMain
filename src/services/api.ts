@@ -191,7 +191,7 @@ export async function updateApplication(params: {
 /**
  * [新增节点]
  */
-export async function saveNode(params: Omit<PageNode, 'id'|'depth'|'children'>) {
+export async function saveNode(params: Omit<PageNode, 'id'|'depth'|'children'> & {app_id: number}) {
   const response = await fetch(`${host}/saveNode`, {
     method: 'POST',
     body: JSON.stringify(params)
@@ -228,13 +228,13 @@ export async function deletePage(params: {
 /**
  * [获取节点列表]
  */
-export async function getNodes():Promise<{
+export async function getNodes(params: {app_id: number}):Promise<{
   code: number
   data: Array<PageNode>
   originList: Array<PageNode>
   leafIds: Array<number>
 }> {
-  const response = await fetch(`${host}/getNodes`, {
+  const response = await fetch(`${host}/getNodes?app_id=${params.app_id}`, {
     method: 'GET',
   });
   const res = await response.json();

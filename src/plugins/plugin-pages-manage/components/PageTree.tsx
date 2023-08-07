@@ -113,7 +113,7 @@ class App extends React.Component {
     this.handleEditPage = this.handleEditPage.bind(this);
 
     this.updateApplicationList();
-    this.updatePageNodes();
+    // this.updatePageNodes();
   }
 
   matchedKeys: Array<string>|null;
@@ -155,7 +155,11 @@ class App extends React.Component {
   }
 
   async updatePageNodes() {
-    const res = await getNodes();
+    if (!this.state.applicationId) return Message.show({
+      type: "warning",
+      content: "请先选择应用"
+    });
+    const res = await getNodes({app_id: this.state.applicationId});
     if (res.code == 1) {
       this.setState({
         pageNodes: res.data,
@@ -194,7 +198,7 @@ class App extends React.Component {
     this.setState({
       applicationId: id,
     })
-
+    setTimeout(()=> this.updatePageNodes());
   }
 
   deletePageInfo(id: number) {
@@ -418,9 +422,20 @@ class App extends React.Component {
             onChange={this.handleSearch}
           />
           <Button type="primary" size="small" style={{marginLeft: '5px'}}
+            disabled={!this.state.applicationId}
             onClick={this.handleAddNodeInfo}
           >新增</Button>
         </div>
+        {
+          (!this.state.applicationId) ? (
+            <div style={{textAlign: 'center', marginTop: '10px'}}>请先选择应用!</div>
+          ) : <></>
+        }
+        {
+          (this.state.applicationId && !this.state.pageNodes.length) ? (
+            <div style={{textAlign: 'center', marginTop: '10px'}}>该应该暂无节点, 请先新增节点!</div>
+          ) : <></>
+        }
         <Tree
           draggable
           editable
@@ -441,6 +456,7 @@ class App extends React.Component {
         <EditNodeInfo 
           visible={this.state.isShowEditNodeInfoDialog}
           type={this.state.nodeDialogType}
+          applicationId={this.state.applicationId!}
           originInfo={this.state.nodeInfo}
           pageNodes={this.state.pageNodes}
           onClose={()=>this.setState({isShowEditNodeInfoDialog: false})}

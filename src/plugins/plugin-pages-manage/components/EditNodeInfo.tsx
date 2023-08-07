@@ -5,6 +5,7 @@ import { PageNode, saveNode, updateNode } from 'src/services/api';
 interface PropsType {
   visible: boolean
   type: 'add'|'edit'
+  applicationId: number
   originInfo: Omit<PageNode, 'id'|'depth'|'children'> & { id?: number }
   onClose: () => void
   success: () => void
@@ -19,7 +20,10 @@ class EditNodeInfoDialog extends React.Component<PropsType> {
   async handleSubmit(values: Omit<PropsType['originInfo'], 'id'>) {
     console.log(values);
     if (this.props.type == 'add') {
-      const res = await saveNode(values);
+      const res = await saveNode({
+        app_id: this.props.applicationId,
+        ...values,
+      });
       if (res.code == 1) {
         Message.show({
           type: "success",
