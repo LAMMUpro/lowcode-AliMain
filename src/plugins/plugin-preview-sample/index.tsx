@@ -2,6 +2,7 @@ import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import { Button } from '@alifd/next';
 import {
   saveSchema,
+  updatePageInfo
 } from '../../services/pageManage';
 
 // 保存功能示例
@@ -26,7 +27,7 @@ const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
           align: 'right',
         },
         content: (
-          <Button type="primary" onClick={() => doPreview()}>
+          <Button type="primary" onClick={updatePageInfo}>
             预览
           </Button>
         ),
