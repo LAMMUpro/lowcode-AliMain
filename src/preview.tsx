@@ -5,8 +5,9 @@ import { buildComponents, assetBundle, AssetLevel, AssetLoader } from '@alilc/lo
 import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
 import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
-
 import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from './services/pageManage';
+import { config } from '@alilc/lowcode-engine';
+import { getPage } from './services/api';
 
 const getScenarioName = function () {
   if (location.search) {
@@ -15,13 +16,24 @@ const getScenarioName = function () {
   return 'index';
 }
 
+const getNodeId = function () {
+  if (location.search) {
+    return +(new URLSearchParams(location.search.slice(1)).get('nodeId') || 1);
+  }
+  return 1;
+}
+
 const SamplePreview = () => {
   const [data, setData] = useState({});
 
   async function init() {
+    const nodeId = getNodeId();
+    const res = await getPage({id: nodeId});
+    const packages = res.data.packages;
+    const projectSchema = res.data.project_schema;
     const scenarioName = getScenarioName();
-    const packages = await getPackagesFromLocalStorage(scenarioName);
-    const projectSchema = await getProjectSchemaFromLocalStorage(scenarioName);
+    // const packages = await getPackagesFromLocalStorage(scenarioName);
+    // const projectSchema = await getProjectSchemaFromLocalStorage(scenarioName);
     const { componentsMap: componentsMapArray, componentsTree } = projectSchema;
     const componentsMap: any = {};
     componentsMapArray.forEach((component: any) => {

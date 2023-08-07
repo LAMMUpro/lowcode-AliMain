@@ -13,9 +13,10 @@ const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
       const doPreview = () => {
         const scenarioName = config.get('scenarioName');
 
-        saveSchema(scenarioName);
+        // saveSchema(scenarioName);
+        updatePageInfo();
         setTimeout(() => {
-          const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
+          const search = `?nodeId=${config.get('nodeId')}`; //location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
           window.open(`./preview.html${search}`);
         }, 500);
       };
@@ -27,7 +28,7 @@ const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
           align: 'right',
         },
         content: (
-          <Button type="primary" onClick={updatePageInfo}>
+          <Button type="primary" onClick={doPreview}>
             预览
           </Button>
         ),
