@@ -45,6 +45,7 @@ export interface PageNode {
   "_describe": string,
   "depth": number,
   "children": Array<PageNode>
+  "path": string
 }
 
 /**

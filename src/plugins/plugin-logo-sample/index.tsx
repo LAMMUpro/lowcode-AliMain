@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
-import { Tag } from '@alifd/next';
 import './index.scss';
+import { config, event } from '@alilc/lowcode-engine';
+
 export interface IProps {
   logo?: string;
   href?: string;
@@ -12,6 +13,16 @@ export interface IProps {
 const Logo: React.FC<IProps> = (props): React.ReactElement => {
   const { scenarioDisplayName, scenarioInfo } = props;
   const urls = scenarioInfo?.urls || [];
+  // const nodePath = config.get('nodePath');
+
+  const [nodePath, setNodePath] = useState('');
+  const [nodeDescribe, setNodeDescribe] = useState('');
+
+  event.on('common:update:nodePath', function (){
+    setNodePath(config.get('nodePath'));
+    setNodeDescribe(config.get('nodeDescribe'))
+  })
+  
   return (
     <div className="lowcode-plugin-logo" style={{width: '400px'}}>
       <a className="logo" target="blank" href={props.href || 'https://lowcode-engine.cn'} style={{ backgroundImage: `url(${props.logo})`, flexShrink: '0' }} />
@@ -19,9 +30,9 @@ const Logo: React.FC<IProps> = (props): React.ReactElement => {
       <div style={{flex: 1, overflow: 'hidden'}}>
         <span style={{display: 'block', fontSize: '14px', fontWeight: 'bold', textWrap: 'nowrap'}}>
           当前页面:
-          <a style={{color: '#3e71f7', cursor: "pointer"}}>/crm/contract/list/23243242343/423423</a>
+          <a style={{color: '#3e71f7', cursor: "pointer"}}>{nodePath}</a>
         </span>
-        <span>描述信息</span>
+        <span>{nodeDescribe}</span>
       </div>
       {/* {
         urls && (

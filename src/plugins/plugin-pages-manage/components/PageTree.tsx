@@ -3,7 +3,7 @@ import React from 'react';
 import EditNodeInfo from './EditNodeInfo';
 import AddEditApplicationDialog from './AddEditApplication';
 import { PageNode, deleteApplication, deleteNode, deletePage, getApplicationList, getNodes, getPage } from 'src/services/api';
-import { material, project, config } from '@alilc/lowcode-engine';
+import { material, project, config, event } from '@alilc/lowcode-engine';
 import { defaultSchema } from 'src/services/pageManage';
 
 // const data = [
@@ -126,7 +126,7 @@ class App extends React.Component {
     isShowEditNodeInfoDialog: boolean
     nodeDialogType: 'add'|'edit'
     nodeId?: number
-    nodeInfo: Omit<PageNode, 'id'|'depth'|'children'>
+    nodeInfo: Omit<PageNode, 'id'|'depth'|'children'|'path'>
 
     isShowEditApplicationInfoDialog: boolean
     appDialogType: 'add'|'edit'
@@ -246,7 +246,7 @@ class App extends React.Component {
       onSelect: this.handleSelect,
       children: [
         <Item key="1" onClick={()=>this.handleEditPage(node.props)}>编辑当前页面</Item>,
-        <Item key="2" onClick={()=>this.handleEditNodeInfo(node.props)}>编辑节点信息(父级)</Item>,
+        <Item key="2" onClick={()=>this.handleEditNodeInfo(node.props)}>编辑节点信息</Item>,
         <Divider key="divider-1" />,
         <Item key="4" onClick={()=>this.deletePageInfo(node.props.eventKey)}>删除页面</Item>,
         <Item key="3" onClick={()=>this.deleteNode(node.props.eventKey)}>删除节点</Item>
@@ -267,7 +267,15 @@ class App extends React.Component {
   /** 编辑页面 */
   async handleEditPage(node: any) {
     const res = await getPage({id: node.eventKey});
+
+    const _node_ = this.state.nodeList.find(item=>item.id == node.eventKey);
+    
     config.set('nodeId', node.eventKey);
+    config.set('nodePath', _node_?.path);
+    config.set('nodeDescribe', _node_?._describe);
+
+    event.emit('update:nodePath');
+
     const schema = res.data.project_schema?.componentsTree?.[0];
 
     // project.openDocument(JSON.parse(JSON.stringify(defaultSchema)));
