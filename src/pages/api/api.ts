@@ -1,3 +1,4 @@
+import { defaultSchema } from "./pageManage"
 
 
 const host = 'http://lowcodeengine.lammu.cn'

@@ -1,6 +1,6 @@
 import { getPageInfo } from "./api";
 
-const defaultSchema = {
+export const defaultSchema = {
   "componentName": "Page",
   "id": "node_dockcviv8fo1",
   "props": {
