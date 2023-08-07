@@ -2,7 +2,9 @@ import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Balloon, Select, Mes
 import React from 'react';
 import EditNodeInfo from './EditNodeInfo';
 import AddEditApplicationDialog from './AddEditApplication';
-import { PageNode, deleteApplication, deleteNode, deletePage, getApplicationList, getNodes } from 'src/services/api';
+import { PageNode, deleteApplication, deleteNode, deletePage, getApplicationList, getNodes, getPage } from 'src/services/api';
+import { material, project, config } from '@alilc/lowcode-engine';
+import { defaultSchema } from 'src/services/pageManage';
 
 // const data = [
 //   {
@@ -108,6 +110,7 @@ class App extends React.Component {
     this.handleAddNodeInfo = this.handleAddNodeInfo.bind(this);
     this.handleEditNodeInfo = this.handleEditNodeInfo.bind(this);
     this.handleAddEditNodeSuccess = this.handleAddEditNodeSuccess.bind(this);
+    this.handleEditPage = this.handleEditPage.bind(this);
 
     this.updateApplicationList();
     this.updatePageNodes();
@@ -242,7 +245,7 @@ class App extends React.Component {
       selectMode: "multiple",
       onSelect: this.handleSelect,
       children: [
-        <Item key="1">编辑当前页面</Item>,
+        <Item key="1" onClick={()=>this.handleEditPage(node.props)}>编辑当前页面</Item>,
         <Item key="2" onClick={()=>this.handleEditNodeInfo(node.props)}>编辑节点信息(父级)</Item>,
         <Divider key="divider-1" />,
         <Item key="4" onClick={()=>this.deletePageInfo(node.props.eventKey)}>删除页面</Item>,
@@ -259,6 +262,25 @@ class App extends React.Component {
       isShowEditNodeInfoDialog: true,
       nodeInfo: getDefaultNode()
     })
+  }
+
+  /** 编辑页面 */
+  async handleEditPage(node: any) {
+    const res = await getPage({id: node.eventKey});
+    config.set('nodeId', node.eventKey);
+    const schema = res.data.project_schema?.componentsTree?.[0];
+
+    // project.openDocument(JSON.parse(JSON.stringify(defaultSchema)));
+
+    if (schema) {
+      // project.openDocument(schema);
+      project.getCurrentDocument()?.importSchema(schema);
+
+    } else {
+      // project.openDocument(JSON.parse(JSON.stringify(defaultSchema)));
+      project.getCurrentDocument()?.importSchema(JSON.parse(JSON.stringify(defaultSchema)));
+    }
+    project.simulatorHost?.rerender();
   }
 
   /** 编辑节点信息 */

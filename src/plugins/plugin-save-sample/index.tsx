@@ -3,6 +3,7 @@ import { Button } from '@alifd/next';
 import {
   saveSchema,
   resetSchema,
+  updatePageInfo
 } from '../../services/pageManage';
 
 // 保存功能示例
@@ -20,7 +21,7 @@ const SaveSamplePlugin = (ctx: IPublicModelPluginContext) => {
           align: 'right',
         },
         content: (
-          <Button type="primary" onClick={() => saveSchema(scenarioName)}>
+          <Button type="primary" onClick={updatePageInfo}>
             保存
           </Button>
         ),
@@ -40,7 +41,7 @@ const SaveSamplePlugin = (ctx: IPublicModelPluginContext) => {
       });
       hotkey.bind('command+s', (e) => {
         e.preventDefault();
-        saveSchema(scenarioName);
+        updatePageInfo();
       });
     },
   };

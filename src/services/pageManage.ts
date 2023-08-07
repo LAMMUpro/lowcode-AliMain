@@ -1,10 +1,10 @@
-import { material, project } from '@alilc/lowcode-engine';
+import { material, project, config } from '@alilc/lowcode-engine';
 import { filterPackages } from '@alilc/lowcode-plugin-inject'
 import { Message, Dialog } from '@alifd/next';
 import { IPublicEnumTransformStage } from '@alilc/lowcode-types';
-import { getPageInfo, savePageInfo, PackageType, ProjectSchemaType } from './api';
+import { getPageInfo, savePageInfo, PackageType, ProjectSchemaType, updatePage } from './api';
 
-const defaultSchema = {
+export const defaultSchema = {
   "componentName": "Page",
   "id": "node_dockcviv8fo1",
   "props": {
@@ -77,6 +77,18 @@ const defaultSchema = {
   "condition": true,
   "conditionGroup": ""
 }
+
+export const updatePageInfo = async () => {
+  const nodeId = config.get('nodeId');
+  await updatePage({
+    id: +nodeId,
+    project_schema: project.exportSchema(IPublicEnumTransformStage.Save),
+    packages: await filterPackages(material?.getAssets()?.packages),
+  })
+  // await setProjectSchemaToLocalStorage(scenarioName);
+  // await setPackagesToLocalStorage(scenarioName);
+  Message.success('成功保存到远端');
+};
 
 export const saveSchema = async (scenarioName: string = 'unknown') => {
   await savePageInfo({

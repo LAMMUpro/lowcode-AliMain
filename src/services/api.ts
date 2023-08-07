@@ -1,3 +1,4 @@
+import { defaultSchema } from "./pageManage"
 
 
 const host = 'http://lowcodeengine.lammu.cn'
@@ -254,8 +255,8 @@ export async function getPage(params: {id: number}):Promise<{
   });
   const res = await response.json();
   if (res.code == 1) {
-    res.data.packages = JSON.parse(res.data.packages);
-    res.data.project_schema = JSON.parse(res.data.project_schema);
+    res.data.packages = JSON.parse(res.data.packages||'[]');
+    res.data.project_schema = res.data.project_schema ? JSON.parse(res.data.project_schema) : defaultSchema;
   }
   return res;
 }
