@@ -6,7 +6,8 @@ const Header: React.FC = function () {
       style={{
         width: '100%', 
         height: '32px',
-        backgroundColor: 'rgb(181 155 213)'
+        flexShrink: 0,
+        backgroundColor: 'rgb(181 155 213)',
       }}
     >
       <BrowserRouter>

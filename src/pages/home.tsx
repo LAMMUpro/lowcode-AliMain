@@ -2,7 +2,7 @@
 function page404() {
 
   return (
-    <h2>
+    <div>
       首页
       <micro-app 
         iframe
@@ -10,7 +10,7 @@ function page404() {
         url='https://microapp.lammu.cn/microappA/'
         default="/microappA/a"
       ></micro-app>
-    </h2>
+    </div>
   )
 }
 

@@ -17,12 +17,17 @@ function App() {
             flex: '1',
             padding: '8px 10px',
             backgroundColor: '#e2e2e2',
+            overflow: 'scroll',
+            display: 'flex',
+            flexDirection: 'column'
           }}
         >
           <div
             style={{
-              height: '100%',
+              // height: '100%',
+              flex: 1,
               backgroundColor: 'white',
+              // overflow: 'scroll'
             }}
           >
             <BrowserRouter>
