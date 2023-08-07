@@ -20,9 +20,9 @@ const SamplePreview = () => {
     const schema = componentsTree[0];
 
     const libraryMap = {};
-    const libraryAsset = [];
-    packages.forEach(({ package: _package, library, urls, renderUrls }) => {
-      libraryMap[_package] = library;
+    const libraryAsset: Array<any> = [];
+    packages.forEach(({ package: _package, library, urls, renderUrls }: any) => {
+      (libraryMap as any)[_package] = library;
       if (renderUrls) {
         libraryAsset.push(renderUrls);
       } else if (urls) {
@@ -35,13 +35,14 @@ const SamplePreview = () => {
     // TODO asset may cause pollution
     const assetLoader = new AssetLoader();
     await assetLoader.load(libraryAsset);
+    //@ts-ignore
     const components = await injectComponents(buildComponents(libraryMap, componentsMap));
     setData({
       schema,
       components,
     });
   }
-
+  //@ts-ignore
   const { schema, components } = data;
 
   if (!schema || !components) {

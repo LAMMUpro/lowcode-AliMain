@@ -119,6 +119,7 @@ export async function getBlockList():Promise<{
   if (res.code == 1) {
     res.data.forEach((item:BlockInfoType) => {
       item.schema = JSON.parse(item.schema as any);
+      //@ts-ignore
       item.id = item.blockName;
     })
   }
