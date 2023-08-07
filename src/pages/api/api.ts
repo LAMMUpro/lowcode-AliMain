@@ -125,3 +125,25 @@ export async function getBlockList():Promise<{
   }
   return res;
 }
+
+
+/**
+ * [获取节点页面数据]
+ */
+export async function getPage(params: {id: number}):Promise<{
+  code: number
+  data: {
+    project_schema: any
+    packages: Array<any>
+  }
+}> {
+  const response = await fetch(`${host}/getPage?id=${params.id}`, {
+    method: 'GET',
+  });
+  const res = await response.json();
+  if (res.code == 1) {
+    res.data.packages = JSON.parse(res.data.packages||'[]');
+    res.data.project_schema = res.data.project_schema ? JSON.parse(res.data.project_schema) : defaultSchema;
+  }
+  return res;
+}

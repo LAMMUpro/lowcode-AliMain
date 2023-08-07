@@ -8,21 +8,36 @@ import lowcode from './pages/lowcode';
 
 function App() {
   return (
-    <div>
-      <Header></Header>
+    <div style={{display: 'flex', height: '100vh'}}>
       <Aside></Aside>
-      <section>
-        <BrowserRouter>
-          <Switch>
-            <Route path='/lowcode' component={lowcode}></Route>
-            <Route path='/404' component={page404}></Route>
-            <Route path='/' component={home}></Route>
-            <Redirect from="/index" to="/"/>
-            <Route component={ page404 } />
-          </Switch>
-        </BrowserRouter>
-      </section>
-      <Footer></Footer>
+      <div style={{flex: '1', display: 'flex', flexDirection: 'column'}}>
+        <Header></Header>
+        <section
+          style={{
+            flex: '1',
+            padding: '8px 10px',
+            backgroundColor: '#e2e2e2',
+          }}
+        >
+          <div
+            style={{
+              height: '100%',
+              backgroundColor: 'white',
+            }}
+          >
+            <BrowserRouter>
+              <Switch>
+                <Route path='/lowcode' component={lowcode}></Route>
+                <Route path='/404' component={page404}></Route>
+                <Route path='/' component={home}></Route>
+                <Redirect from="/index" to="/"/>
+                <Route component={ page404 } />
+              </Switch>
+            </BrowserRouter>
+            {/* <Footer></Footer> */}
+          </div>
+        </section>
+      </div>
     </div>
   )
 }

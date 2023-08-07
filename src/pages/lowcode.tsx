@@ -4,14 +4,27 @@ import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
 
 import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from './api/pageManage';
+import { getPage } from './api/api';
+
+const getNodeId = function () {
+  if (location.search) {
+    return +(new URLSearchParams(location.search.slice(1)).get('nodeId') || 0);
+  }
+  return 0;
+}
 
 const SamplePreview = () => {
   const [data, setData] = useState({});
-
+  const nodeId = getNodeId();
+  console.log(nodeId);
+  // debugger
   async function init() {
-    const scenarioName = '/index';
-    const packages = await getPackagesFromLocalStorage(scenarioName);
-    const projectSchema = await getProjectSchemaFromLocalStorage(scenarioName);
+    const res = await getPage({id: nodeId});
+    const packages = res.data.packages;
+    const projectSchema = res.data.project_schema;
+    // const scenarioName = '/index';
+    // const packages = await getPackagesFromLocalStorage(scenarioName);
+    // const projectSchema = await getProjectSchemaFromLocalStorage(scenarioName);
     const { componentsMap: componentsMapArray, componentsTree } = projectSchema;
     const componentsMap: any = {};
     componentsMapArray.forEach((component: any) => {
