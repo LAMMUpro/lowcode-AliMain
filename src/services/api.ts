@@ -163,11 +163,11 @@ export async function deleteApplication(params: {
 }
 
 /**
- * 删除应用信息
+ * 获取应用信息
  */
 export async function getApplicationList() {
   const response = await fetch(`${host}/getApplications`, {
-    method: 'DELETE',
+    method: 'GET',
   });
   return await response.json();
 }
