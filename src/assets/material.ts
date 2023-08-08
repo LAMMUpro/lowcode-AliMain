@@ -10,20 +10,20 @@ const CustomMeterial:Meterial = {
   packages: [
     {
       "package": "@lammu/lowcode-component",
-      "version": "0.1.3",
+      "version": "0.1.5",
       "library": "BizComps",
       "urls": [
-        "https://unpkg.com/@lammu/lowcode-component@0.1.3/build/lowcode/render/default/view.js",
-        "https://unpkg.com/@lammu/lowcode-component@0.1.3/build/lowcode/render/default/view.css"
+        "https://unpkg.com/@lammu/lowcode-component@0.1.5/build/lowcode/render/default/view.js",
+        "https://unpkg.com/@lammu/lowcode-component@0.1.5/build/lowcode/render/default/view.css"
       ],
       "editUrls": [
-        "https://unpkg.com/@lammu/lowcode-component@0.1.3/build/lowcode/view.js",
-        "https://unpkg.com/@lammu/lowcode-component@0.1.3/build/lowcode/view.css"
+        "https://unpkg.com/@lammu/lowcode-component@0.1.5/build/lowcode/view.js",
+        "https://unpkg.com/@lammu/lowcode-component@0.1.5/build/lowcode/view.css"
       ],
       "advancedUrls": {
         "default": [
-          "https://unpkg.com/@lammu/lowcode-component@0.1.3/build/lowcode/render/default/view.js",
-          "https://unpkg.com/@lammu/lowcode-component@0.1.3/build/lowcode/render/default/view.css"
+          "https://unpkg.com/@lammu/lowcode-component@0.1.5/build/lowcode/render/default/view.js",
+          "https://unpkg.com/@lammu/lowcode-component@0.1.5/build/lowcode/render/default/view.css"
         ]
       },
       "advancedEditUrls": {}
@@ -34,15 +34,15 @@ const CustomMeterial:Meterial = {
       "exportName": "LammuLowcodeComponentMeta",
       "npm": {
         "package": "@lammu/lowcode-component",
-        "version": "0.1.3"
+        "version": "0.1.5"
       },
-      "url": "https://unpkg.com/@lammu/lowcode-component@0.1.3/build/lowcode/meta.js",
+      "url": "https://unpkg.com/@lammu/lowcode-component@0.1.5/build/lowcode/meta.js",
       "urls": {
-        "default": "https://unpkg.com/@lammu/lowcode-component@0.1.3/build/lowcode/meta.js"
+        "default": "https://unpkg.com/@lammu/lowcode-component@0.1.5/build/lowcode/meta.js"
       },
       "advancedUrls": {
         "default": [
-          "https://unpkg.com/@lammu/lowcode-component@0.1.3/build/lowcode/meta.js"
+          "https://unpkg.com/@lammu/lowcode-component@0.1.5/build/lowcode/meta.js"
         ]
       }
     }
