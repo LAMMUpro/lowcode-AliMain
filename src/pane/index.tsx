@@ -27,7 +27,7 @@ import { createStateService } from '../utils/stateMachine';
 import { DataSourcePaneContext } from '../utils/panel-context';
 import { mergeTwoObjectListByKey } from '../utils/misc';
 import { common } from '@alilc/lowcode-engine';
-
+import { generatorApiFunction } from '../utils/index';
 import './index.scss';
 
 export interface DataSource {
@@ -119,12 +119,38 @@ export default class DataSourcePanePlugin extends PureComponent<
     this.stateService.stop();
   }
 
-  handleSchemaChange = (schema: DataSource) => {
+  handleSchemaChange = ({list: apiList}: DataSource) => {
     const { project, onSchemaChange } = this.props;
     if (project) {
       const docSchema = project.exportSchema(common.designerCabin.TransformStage.Save);
+      if (!docSchema?.componentsTree?.[0]) return;
+      console.log(JSON.parse(JSON.stringify(docSchema.componentsTree[0].methods)))
+      const methods = docSchema.componentsTree[0].methods || {};
+      const methodKeys = Object.keys(methods);
+
+      const apis = docSchema.componentsTree[0].remoteHandle || {};
+      let resultCode = docSchema.componentsTree[0].originCode;
+      // const apiMethods = generatorApiFunction(apis, methods);
+      // docSchema.componentsTree[0].methods['lllllll'] = {
+      //   "type": "JSFunction",
+      //   "value": "function onTestUtilsButtonClicked() {\n  this.utils.demoUtil('param1', 'param2');\n}",
+      //   "source": "function onTestUtilsButtonClicked() {\n  this.utils.demoUtil('param1', 'param2');\n}"
+      // }
       if (!_isEmpty(docSchema)) {
-        _set(docSchema, 'componentsTree[0].dataSource', schema);
+        apiList.forEach(apiInfo => {
+          console.log(methodKeys, apiInfo.id, !methodKeys.includes(apiInfo.id))
+          if (!methodKeys.includes(apiInfo.id)) {
+            /** 设置methods*/
+            _set(docSchema, `componentsTree[0].methods.${apiInfo.id}`, {
+              "type": "JSFunction",
+              "value": `function ${apiInfo.id}() {}`,
+            });
+            resultCode = resultCode.slice(0, resultCode.lastIndexOf('}')) + `	${apiInfo.id}() {\n    this.dataSourceMap['${apiInfo.id}'].load({}).then(res => {})\n	}` + '\n}'
+            _set(docSchema, 'componentsTree[0].originCode', resultCode);
+          }
+        })
+        
+        _set(docSchema, 'componentsTree[0].remoteHandle.list', apiList);
         project.importSchema(docSchema);
       }
     }
@@ -157,7 +183,7 @@ export default class DataSourcePanePlugin extends PureComponent<
       schema = defaultSchema();
     }
     if (!schema) {
-      schema = _get(projectSchema, 'componentsTree[0].dataSource');
+      schema = _get(projectSchema, 'componentsTree[0].remoteHandle');
     }
     if (!isSchemaValid(schema)) {
       logger.warn('发现不合法的 schema', schema);
