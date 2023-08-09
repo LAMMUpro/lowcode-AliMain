@@ -1,5 +1,5 @@
 import { ILowCodePluginContext } from '@alilc/lowcode-engine';
-import DataSourcePanePlugin from './pane';
+import RemoteHandlePane from './pane';
 
 import {
   DataSourcePaneImportPlugin,
@@ -15,7 +15,7 @@ export interface Options {
 // TODO: 2.0插件传参修改，不支持直接options: Options
 const plugin = (ctx: ILowCodePluginContext, options: Options) => {
   return {
-    name: 'com.alibaba.lowcode.datasource.pane',
+    name: 'com.lammu.lowcode.remote.handlePane.pane',
     width: 300,
     // 依赖的插件（插件名数组）
     dep: [],
@@ -25,21 +25,25 @@ const plugin = (ctx: ILowCodePluginContext, options: Options) => {
     },
     // 插件的初始化函数，在引擎初始化之后会立刻调用
     init() {
-      const dataSourceTypes = ctx.preference.getPreferenceValue('dataSourceTypes') || options.dataSourceTypes;
+      const dataSourceTypes = [
+        {
+          type: 'fetch',
+        }
+      ];
       const importPlugins = ctx.preference.getPreferenceValue('importPlugins') || options.importPlugins;
       const schemaDock = ctx.skeleton.add({
         area: 'leftArea',
-        name: 'dataSourcePane',
+        name: 'remoteHandlePane',
         type: 'PanelDock',
         props: {
-          icon: 'shujuyuan',
-          description: '增删改',
+          icon: 'API',
+          description: '增删改API',
         },
         panelProps: {
           width: '300px',
           // title: '源码面板',
         },
-        content: DataSourcePanePlugin,
+        content: RemoteHandlePane,
         contentProps: {
           importPlugins,
           dataSourceTypes,
@@ -58,7 +62,7 @@ const plugin = (ctx: ILowCodePluginContext, options: Options) => {
   };
 };
 
-plugin.pluginName = 'DataSourcePane';
+plugin.pluginName = 'RemoteHandlePane';
 plugin.meta = {
   preferenceDeclaration: {
     title: '数据源面板插件参数定义',

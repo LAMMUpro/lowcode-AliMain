@@ -36,7 +36,7 @@ export interface DataSource {
 
 export { DataSourceForm } from '../components/DataSourceForm';
 
-const PLUGIN_NAME = 'dataSourcePane';
+const PLUGIN_NAME = 'remoteHandlePane';
 
 export interface DataSourcePanePluginProps {
   event: Event;
@@ -75,7 +75,7 @@ export default class DataSourcePanePlugin extends PureComponent<
   DataSourcePanePluginProps,
   DataSourcePanePluginState
 > {
-  static displayName = 'DataSourcePanePlugin';
+  static displayName = 'RemoteHandlePanePlugin';
 
   static defaultProps = {
     dataSourceTypes: [],

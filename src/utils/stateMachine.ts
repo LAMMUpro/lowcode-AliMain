@@ -294,7 +294,7 @@ export const createStateMachine = (dataSourceList: DataSourceConfig[] = []) => c
           actions: assign({
             detail: (context, event) => ({
               visible: true,
-              title: `创建数据源 ${event.dataSourceType.type}`,
+              title: `创建处理函数 ${event.dataSourceType.type}`,
               okText: '创建',
               // target: 'FINISH_CREATE',
               data: {
@@ -315,7 +315,7 @@ export const createStateMachine = (dataSourceList: DataSourceConfig[] = []) => c
               );
               return {
                 visible: true,
-                title: `编辑数据源 ${dataSourceType.type}`,
+                title: `编辑处理函数 ${dataSourceType.type}`,
                 data: {
                   dataSource,
                   dataSourceType,
@@ -333,7 +333,7 @@ export const createStateMachine = (dataSourceList: DataSourceConfig[] = []) => c
               );
               return {
                 visible: true,
-                title: '查看数据源',
+                title: '查看处理函数',
                 ok: false,
                 cancelText: '关闭',
                 data: {
@@ -355,7 +355,7 @@ export const createStateMachine = (dataSourceList: DataSourceConfig[] = []) => c
               );
               return {
                 visible: true,
-                title: '复制数据源',
+                title: '复制处理函数',
                 data: {
                   dataSource: {
                     ...dataSource,

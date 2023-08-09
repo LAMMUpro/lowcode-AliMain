@@ -220,7 +220,7 @@ export class DataSourcePane extends PureComponent<
           });
         };
         if (!_isArray(data) || data.length === 0) {
-          Message.error('没有找到可导入的数据源');
+          Message.error('没有找到可导入的函数');
           return;
         }
         const repeatedDataSourceList = data.filter(
@@ -230,9 +230,9 @@ export class DataSourcePane extends PureComponent<
         );
         if (repeatedDataSourceList.length > 0) {
           Dialog.confirm({
-            content: `数据源（${repeatedDataSourceList
+            content: `函数（${repeatedDataSourceList
               .map((item) => item.id)
-              .join('，')}）已存在，如果导入会替换原数据源，是否继续？`,
+              .join('，')}）已存在，如果导入会替换原函数，是否继续？`,
             onOk: () => {
               importDataSourceList();
             },
@@ -337,7 +337,7 @@ export class DataSourcePane extends PureComponent<
 
     if (!dataSourceTypes || dataSourceTypes.length === 0) {
       return (
-        <div className={generateClassName('error')}>没有找到数据源类型</div>
+        <div className={generateClassName('error')}>没有配置请求类型</div>
       );
     }
 
@@ -357,7 +357,7 @@ export class DataSourcePane extends PureComponent<
         style={style}
       >
         <div className={generateClassName('title')}>
-          数据源
+          事件处理请求
           {helpLink && <Button component="a" href={helpLink}>使用帮助</Button>}
         </div>
         <DataSourceFilter

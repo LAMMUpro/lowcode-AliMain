@@ -1,6 +1,6 @@
 {
   "name": "@lammu/lowcode-plugin-remote-handle",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "description": "低代码引擎处理增删改请求面板插件",
   "main": "lib/index.js",
   "files": [
@@ -45,6 +45,8 @@
   },
   "dependencies": {
     "@alifd/next": "^1.25.13",
+    "@alilc/lowcode-plugin-base-monaco-editor": "^1.1.0-beta.3",
+    "@alilc/lowcode-types": "^1.0.0-beta.3",
     "@babel/core": "^7.15.8",
     "@babel/parser": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
@@ -52,34 +54,27 @@
     "@babel/standalone": "^7.15.8",
     "@babel/traverse": "^7.15.4",
     "@babel/types": "^7.15.6",
-    "babel-plugin-transform-remove-strict-mode": "^0.0.2",
-    "classnames": "^2.3.1",
-    "js-beautify": "^1.14.0",
-    "react": "^16.8.1",
-    "react-dom": "^16.8.1",
-    "@alilc/lowcode-plugin-base-monaco-editor": "^1.1.0-beta.3",
-    "@alilc/lowcode-types": "^1.0.0-beta.3",
     "@formily/core": "^2.1.12",
     "@formily/next": "^2.1.12",
     "@formily/react": "^2.1.12",
     "@types/lodash": "^4.14.178",
     "@xstate/react": "^1.6.1",
     "ajv": "^6.12.4",
+    "babel-plugin-transform-remove-strict-mode": "^0.0.2",
+    "classnames": "^2.3.1",
+    "js-beautify": "^1.14.0",
     "lodash": "^4.17.20",
+    "react": "^16.8.1",
     "react-copy-to-clipboard": "^5.0.4",
     "react-dnd": "^14.0.4",
     "react-dnd-html5-backend": "^14.0.2",
+    "react-dom": "^16.8.1",
     "react-error-boundary": "^3.1.4",
     "svgo": "2.x",
     "traverse": "^0.6.6",
     "xstate": "^4.26.0"
   },
-  "homepage": "https://unpkg.com/@alilc/lowcode-plugin-datasource-pane@1.0.11/build/index.html",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/alibaba/lowcode-plugins.git",
-    "directory": "packages/plugin-datasource-pane"
-  },
+  "homepage": "https://unpkg.com/@lammu/lowcode-plugin-remote-handle@0.1.4/build/index.html",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   }

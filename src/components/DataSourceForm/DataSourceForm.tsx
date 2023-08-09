@@ -50,13 +50,13 @@ const SCHEMA = {
     },
     id: {
       type: 'string',
-      title: '数据源 ID',
+      title: '函数名',
       required: true,
     },
     isInit: {
       title: '是否自动请求',
       type: 'boolean',
-      default: true,
+      default: false,
       'x-decorator-props': {
         addonAfter: <ComponentSwitchBtn component="LowcodeExpression" />,
       },
@@ -125,7 +125,7 @@ const SCHEMA = {
     },
     lifecycles: {
       type: 'void',
-      title: '添加数据处理函数',
+      title: '数据处理函数',
       'x-component': 'FormLazyObj',
       'x-component-props': {
         defaultPropertyKeys: [],
@@ -303,7 +303,7 @@ export class DataSourceForm extends PureComponent<DataSourceFormProps, { form: F
     if (mode === DataSourceFormMode.CREATE) {
       formSchema.properties.id['x-validator'] = {
         validateDataSourceId: true,
-        message: '该数据源已存在',
+        message: '该函数已存在',
       };
     }
 
