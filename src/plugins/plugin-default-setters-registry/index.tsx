@@ -25,7 +25,29 @@ const DefaultSettersRegistryPlugin = (ctx: IPublicModelPluginContext) => {
         type: 'Widget',
         content: pluginMap.VariableBindDialog,
         name: 'variableBindDialog',
-        props: {},
+        props: {
+          extraDataMap: {
+            props: {
+              name: '请求处理事件', // 变量组展示名
+              key: '', // 属性名，例如 this.props
+              getChildren: () => [
+                {
+                  label: 'deleteActivityById',
+                  value: 'deleteActivityById()',
+                }
+                // {
+                //   label: '活动处理',
+                //   children: [
+                //     {
+                //       label: 'delteActivityById',
+                //       value: 'delteActivityById()',
+                //     }
+                //   ]
+                // }
+              ],
+            }
+          }
+        },
       });
     },
   };
