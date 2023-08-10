@@ -8,6 +8,7 @@ import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
 import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from './services/pageManage';
 import { config } from '@alilc/lowcode-engine';
 import { getPage } from './services/api';
+import { generateDataSourceMap } from './utils/data-helper';
 
 const getScenarioName = function () {
   if (location.search) {
@@ -81,6 +82,29 @@ const SamplePreview = () => {
         appHelper={{
           requestHandlersMap: {
             fetch: createFetchHandler()
+          },
+          utils: {
+            generateRemoteHandleMap: function () {
+              console.log('初始化', this, schema);
+              this.utils.remoteHandles = {
+                ...generateDataSourceMap(schema?.remoteHandle?.list||[])
+              }
+              console.log('初始化后', this)
+              // this.utils.remoteHandles['abs'] = {
+              //   load: function () {
+              //     console.log('加载请求');
+              //   },
+              //   reload: function () {
+              //     console.log('重新加载请求');
+              //   }
+              // }
+            },
+            remoteHandles: {
+              // () => {
+                /** 使用 */
+                // this.utils.remoteHandles['getA'].load();
+              // }
+            }
           }
         }}
       />

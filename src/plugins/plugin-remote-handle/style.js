@@ -1,0 +1,15 @@
+require('@alifd/next/lib/message/style');
+require('@alifd/next/lib/button/style');
+require('@alifd/next/lib/dialog/style');
+require('@alifd/next/lib/search/style');
+require('@alifd/next/lib/menu-button/style');
+require('@alifd/next/lib/balloon/style');
+require('@alifd/next/lib/tag/style');
+require('@alifd/next/lib/checkbox/style');
+require('@alifd/next/lib/icon/style');
+require('@alifd/next/lib/number-picker/style');
+require('@alifd/next/lib/switch/style');
+require('@alifd/next/lib/input/style');
+require('@alifd/next/lib/select/style');
+require('@alifd/next/lib/radio/style');
+require('@alilc/lowcode-plugin-base-monaco-editor/lib/style');
