@@ -8,7 +8,7 @@ import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
 import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from './services/pageManage';
 import { config } from '@alilc/lowcode-engine';
 import { getPage } from './services/api';
-import { generateDataSourceMap } from './utils/data-helper';
+import { generateRemoteHandleMap } from './utils/data-helper';
 
 const getScenarioName = function () {
   if (location.search) {
@@ -79,37 +79,31 @@ const SamplePreview = () => {
         className="lowcode-plugin-sample-preview-content"
         schema={schema}
         components={components}
+        onCompGetRef={onCompGetRef}
         appHelper={{
           requestHandlersMap: {
             fetch: createFetchHandler()
           },
           utils: {
             generateRemoteHandleMap: function () {
-              console.log('初始化', this, schema);
+              /** 初始化this.utils.remoteHandles */
               this.utils.remoteHandles = {
-                ...generateDataSourceMap(schema?.remoteHandle?.list||[])
+                ...generateRemoteHandleMap(schema?.remoteHandle?.list||[])
               }
-              console.log('初始化后', this)
-              // this.utils.remoteHandles['abs'] = {
-              //   load: function () {
-              //     console.log('加载请求');
-              //   },
-              //   reload: function () {
-              //     console.log('重新加载请求');
-              //   }
-              // }
             },
-            remoteHandles: {
-              // () => {
-                /** 使用 */
-                // this.utils.remoteHandles['getA'].load();
-              // }
-            }
+            /** api方法 */
+            remoteHandles: {}
           }
         }}
       />
     </div>
   );
 };
+
+function onCompGetRef(schema, ref) {
+  console.log('schema, ref');
+  console.log(schema, ref);
+  
+}
 
 ReactDOM.render(<SamplePreview />, document.getElementById('ice-container'));

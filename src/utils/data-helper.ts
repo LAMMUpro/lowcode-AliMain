@@ -22,7 +22,7 @@ const EXPRESSION_TYPE = {
 const host = {}
 
 
-export function generateDataSourceMap(ajaxList: Array<{id: string}>) {
+export function generateRemoteHandleMap(ajaxList: Array<{id: string}>) {
   const res: any = {};
   ajaxList.forEach((item) => {
     res[item.id] = {
