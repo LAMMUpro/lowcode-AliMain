@@ -145,7 +145,11 @@ export default class DataSourcePanePlugin extends PureComponent<
               "type": "JSFunction",
               "value": `function ${apiInfo.id}() {}`,
             });
-            resultCode = resultCode.slice(0, resultCode.lastIndexOf('}')) + `	${apiInfo.id}() {\n    this.dataSourceMap['${apiInfo.id}'].load({}).then(res => {})\n	}` + '\n}'
+            resultCode = resultCode.slice(0, resultCode.lastIndexOf('}')) 
+            + 
+            `	${apiInfo.id}() {\n    this.utils.remoteHandles['${apiInfo.id}'].load({}).then(res => {\n      console.log('执行函数成功');\n    }).catch(e => {\n      console.log("捕获错误");\n    })\n	}` 
+            + 
+            '\n}'
             _set(docSchema, 'componentsTree[0].originCode', resultCode);
           }
         })
