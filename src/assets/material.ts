@@ -13,17 +13,17 @@ const CustomMeterial:Meterial = {
       "version": "0.1.6",
       "library": "BizComps",
       "urls": [
-        "https://unpkg.com/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.js",
-        "https://unpkg.com/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.css"
+        "/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.js",
+        "/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.css"
       ],
       "editUrls": [
-        "https://unpkg.com/@lammu/lowcode-component@0.1.6/build/lowcode/view.js",
-        "https://unpkg.com/@lammu/lowcode-component@0.1.6/build/lowcode/view.css"
+        "/@lammu/lowcode-component@0.1.6/build/lowcode/view.js",
+        "/@lammu/lowcode-component@0.1.6/build/lowcode/view.css"
       ],
       "advancedUrls": {
         "default": [
-          "https://unpkg.com/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.js",
-          "https://unpkg.com/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.css"
+          "/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.js",
+          "/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.css"
         ]
       },
       "advancedEditUrls": {}
@@ -36,13 +36,13 @@ const CustomMeterial:Meterial = {
         "package": "@lammu/lowcode-component",
         "version": "0.1.6"
       },
-      "url": "https://unpkg.com/@lammu/lowcode-component@0.1.6/build/lowcode/meta.js",
+      "url": "/@lammu/lowcode-component@0.1.6/build/lowcode/meta.js",
       "urls": {
-        "default": "https://unpkg.com/@lammu/lowcode-component@0.1.6/build/lowcode/meta.js"
+        "default": "/@lammu/lowcode-component@0.1.6/build/lowcode/meta.js"
       },
       "advancedUrls": {
         "default": [
-          "https://unpkg.com/@lammu/lowcode-component@0.1.6/build/lowcode/meta.js"
+          "/@lammu/lowcode-component@0.1.6/build/lowcode/meta.js"
         ]
       }
     }
