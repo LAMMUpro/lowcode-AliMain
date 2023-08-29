@@ -1,5 +1,5 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
-import PageTree from './components/PageTree';
+import PageManagePane from './components/PageManagePane';
 
 
 const _PluginName_ = 'PagesManagePlugin';
@@ -23,9 +23,9 @@ const PagesManagePlugin = (ctx: IPublicModelPluginContext) => {
           title: '页面管理'
         },
         content: (
-          <PageTree>
+          <PageManagePane>
 
-          </PageTree>
+          </PageManagePane>
         )
       });
     }

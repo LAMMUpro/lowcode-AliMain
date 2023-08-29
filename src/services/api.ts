@@ -1,7 +1,8 @@
 import { defaultSchema } from "./pageManage"
 
 
-const host = 'http://lowcodeengine.lammu.cn'
+// const host = 'http://lowcodeengine.lammu.cn'
+const host = 'http://localhost:9000'
 
 export interface PackageType {
   
@@ -47,6 +48,85 @@ export interface PageNode {
   "children": Array<PageNode>
   "path": string
 }
+
+
+/**
+ * 保存应用信息
+ */
+export async function saveApplication(params: {
+  name: string
+  _describe: string
+}) {
+  const response = await fetch(`${host}/saveApplication`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  });
+  return await response.json();
+}
+
+/**
+ * 删除应用信息
+ */
+export async function deleteApplication(params: {
+  id: number
+}) {
+  const response = await fetch(`${host}/deleteApplication`, {
+    method: 'DELETE',
+    body: JSON.stringify(params)
+  });
+  return await response.json();
+}
+
+/**
+ * 获取应用信息
+ */
+export async function getApplicationList() {
+  const response = await fetch(`${host}/application`, {
+    method: 'GET',
+  });
+  return await response.json();
+}
+
+/**
+ * 修改应用信息
+ */
+export async function updateApplication(params: {
+  id?: number
+  name: string
+  _describe: string
+}) {
+  const response = await fetch(`${host}/updateApplication`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  });
+  return await response.json();
+}
+
+/**
+ * [获取版本数据]
+ */
+export async function getAppVersionList(params: {
+  applicationId: number
+}) {
+  const response = await fetch(`${host}/app-version?applicationId=${params.applicationId}`, {
+    method: 'GET',
+  });
+  return await response.json();
+}
+
+/**
+ * [获取环境数据]
+ */
+export async function getAppEnvList(params: {
+  appVersionId: number
+}) {
+  const response = await fetch(`${host}/app-env?appVersionId=${params.appVersionId}`, {
+    method: 'GET',
+  });
+  return await response.json();
+}
+
+
 
 /**
  * [获取页面信息]
@@ -134,58 +214,6 @@ export async function getBlockList():Promise<{
     })
   }
   return res;
-}
-
-/**
- * 保存应用信息
- */
-export async function saveApplication(params: {
-  name: string
-  _describe: string
-}) {
-  const response = await fetch(`${host}/saveApplication`, {
-    method: 'POST',
-    body: JSON.stringify(params)
-  });
-  return await response.json();
-}
-
-/**
- * 删除应用信息
- */
-export async function deleteApplication(params: {
-  id: number
-}) {
-  const response = await fetch(`${host}/deleteApplication`, {
-    method: 'DELETE',
-    body: JSON.stringify(params)
-  });
-  return await response.json();
-}
-
-/**
- * 获取应用信息
- */
-export async function getApplicationList() {
-  const response = await fetch(`${host}/getApplications`, {
-    method: 'GET',
-  });
-  return await response.json();
-}
-
-/**
- * 修改应用信息
- */
-export async function updateApplication(params: {
-  id?: number
-  name: string
-  _describe: string
-}) {
-  const response = await fetch(`${host}/updateApplication`, {
-    method: 'POST',
-    body: JSON.stringify(params)
-  });
-  return await response.json();
 }
 
 /**

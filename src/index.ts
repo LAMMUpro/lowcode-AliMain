@@ -1,4 +1,4 @@
-import { init, material, plugins } from '@alilc/lowcode-engine';
+import { config, event, init, material, plugins } from '@alilc/lowcode-engine';
 import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
 import EditorInitPlugin from './plugins/plugin-editor-init';
 import UndoRedoPlugin from '@alilc/lowcode-plugin-undo-redo';
@@ -23,6 +23,7 @@ import BlockPlugin from './plugins/plugin-block-manage';
 import saveAsBlock from './actions/saveAsBlock';
 import RemoteHandlePanePlugin from './plugins/plugin-remote-handle';
 import './global.scss';
+import { getApplicationList } from './services/api';
 
 async function registerPlugins() {
   /** 保存为区块 */
@@ -111,6 +112,10 @@ async function registerPlugins() {
 };
 
 (async function main() {
+  getApplicationList().then(res=> {
+    config.set('applicationList', res.data||[]);
+  });
+
   await registerPlugins();
 
   init(document.getElementById('lce-container')!, {

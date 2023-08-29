@@ -1,59 +1,10 @@
-import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Balloon, Select, Message } from '@alifd/next';
+import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Tag, Select, Message } from '@alifd/next';
 import React from 'react';
 import EditNodeInfo from './EditNodeInfo';
 import AddEditApplicationDialog from './AddEditApplication';
-import { PageNode, deleteApplication, deleteNode, deletePage, getApplicationList, getNodes, getPage } from 'src/services/api';
+import { PageNode, deleteApplication, deleteNode, deletePage, getAppEnvList, getAppVersionList, getApplicationList, getNodes, getPage } from 'src/services/api';
 import { material, project, config, event } from '@alilc/lowcode-engine';
 import { defaultSchema } from 'src/services/pageManage';
-
-// const data = [
-//   {
-//       label: 'crm',
-//       key: '1',
-//       icon: <Icon type="eye" />,
-//       children: [
-//           {
-//               label: 'contract',
-//               key: '2',
-//               icon: 'eye',
-//               children: [
-//                   {
-//                       label: 'Input',
-//                       key: '4',
-//                       children: [
-//                         {
-//                             label: 'Input',
-//                             key: '44',
-//                             children: [
-//                               {
-//                                 icon: <Icon type="eye" />,
-//                                   label: 'Input',
-//                                   key: '46',
-//                               },
-//                             ]
-//                         },
-//                       ]
-//                   },
-//                   {
-//                       label: 'Select',
-//                       key: '5',
-//                   },
-//               ],
-//           },
-//           {
-//               label: 'Display',
-//               key: '3',
-//               icon: 'eye',
-//               children: [
-//                   {
-//                       label: 'Table',
-//                       key: '6',
-//                   },
-//               ],
-//           },
-//       ],
-//   },
-// ];
 
 const { Item, Divider } = Menu;
 
@@ -72,7 +23,7 @@ function getDefaultNode() {
   }
 }
 
-class App extends React.Component {
+class PageManagePane extends React.Component {
   constructor(props:any) {
     super(props);
 
@@ -90,8 +41,12 @@ class App extends React.Component {
       isShowEditApplicationInfoDialog: false,
       appDialogType: 'add',
       applicationId: undefined,
-      applicationList: [],
+      applicationList: config.get("applicationList"),
       applicationInfo: getDefaultApplication(),
+      appVersionId: undefined,
+      appVersionList: [],
+      appEnvList: [],
+      onSelectEnvIdList: [],
       pageNodes: [],
       nodeList: [],
     };
@@ -111,9 +66,18 @@ class App extends React.Component {
     this.handleEditNodeInfo = this.handleEditNodeInfo.bind(this);
     this.handleAddEditNodeSuccess = this.handleAddEditNodeSuccess.bind(this);
     this.handleEditPage = this.handleEditPage.bind(this);
-
-    this.updateApplicationList();
+    this.updateAppVersions = this.updateAppVersions.bind(this);
+    this.handleAppVersionChange = this.handleAppVersionChange.bind(this);
+    this.updateAppEnvs = this.updateAppEnvs.bind(this);
+    this.handleEnvChange = this.handleEnvChange.bind(this);
+    // this.updateApplicationList();
     // this.updatePageNodes();
+  }
+
+  componentDidUpdate() {
+    if (this.state.applicationList.length==0) {
+      this.updateApplicationList();
+    }
   }
 
   matchedKeys: Array<string>|null;
@@ -135,21 +99,57 @@ class App extends React.Component {
       name: string
       _describe: string
     }
+    /** 当前选中的应用id */
     applicationId?: number
+    /** 应用列表 */
     applicationList: Array<{
       id: number
       name: string
       _describe: string
     }>
+    /** 当前选中的应用版本id */
+    appVersionId?: number
+    /** 应用版本 */
+    appVersionList: Array<any>
+    /** 环境 */
+    appEnvList: Array<any>
+    /** 用户选中的环境 */
+    onSelectEnvIdList: Array<number>
     pageNodes: Array<PageNode>
     nodeList: Array<PageNode>
   }
 
+  /** 更新应用列表 */
   async updateApplicationList() {
     const res = await getApplicationList();
     if (res.code == 1) {
       this.setState({
         applicationList: res.data,
+      })
+    }
+  }
+
+  /** 更新版本列表 */
+  async updateAppVersions() {
+    const res = await getAppVersionList({
+      applicationId: this.state.applicationId!
+    });
+    if (res.code == 1) {
+      this.setState({
+        appVersionList: res.data,
+      })
+    }
+  }
+
+  /** 更新环境列表 */
+  async updateAppEnvs() {
+    const res = await getAppEnvList({
+      appVersionId: this.state.appVersionId!
+    });
+    if (res.code == 1) {
+      this.setState({
+        appEnvList: res.data,
+        onSelectEnvIdList: res.data.map((item:any)=>item.id)
       })
     }
   }
@@ -169,6 +169,8 @@ class App extends React.Component {
       })
     }
   }
+
+
 
   /** 新增用户信息 */
   handleAddApplicationInfo(node: any) {
@@ -194,11 +196,37 @@ class App extends React.Component {
   }
 
   /** 切换应用 */
-  handleAppIdChange(id: number) {
+  handleAppIdChange(applicationId: number) {
     this.setState({
-      applicationId: id,
+      applicationId,
     })
-    setTimeout(()=> this.updatePageNodes());
+    setTimeout(()=> this.updateAppVersions());
+    
+  }
+
+  /** 切换版本 */
+  handleAppVersionChange(appVersionId: number) {
+    this.setState({
+      appVersionId,
+    })
+    setTimeout(()=> {
+      this.updateAppEnvs();
+      this.updatePageNodes();
+    });
+  }
+
+  /** 选中/取消选中 环境标签 */
+  handleEnvChange(index:number, isSelect:Boolean) {
+    if (isSelect) {
+      this.setState({
+        onSelectEnvIdList: [...this.state.onSelectEnvIdList, this.state.appEnvList[index].id]
+      })
+    }else {
+      const envId = this.state.appEnvList[index].id;
+      this.setState({
+        onSelectEnvIdList: this.state.onSelectEnvIdList.filter(item=>item!=envId)
+      })
+    }
   }
 
   deletePageInfo(id: number) {
@@ -389,6 +417,7 @@ class App extends React.Component {
         <div style={{display: 'flex'}}>
           <Select 
             label="当前应用:"
+            placeholder="请选择应用"
             value={this.state.applicationId}
             defaultValue={this.state.applicationId}
             style={{ flex: 1, marginBottom: '10px' }}
@@ -400,7 +429,7 @@ class App extends React.Component {
               ))
             }
           </Select>
-          <Button type="primary" size="small" style={{marginLeft: '5px'}}
+          <Button type="secondary" size="small" style={{marginLeft: '5px'}}
             onClick={this.handleAddApplicationInfo}
           >新增</Button>
           <Button type="normal" size="small" style={{marginLeft: '5px'}}
@@ -413,16 +442,68 @@ class App extends React.Component {
           >删除</Button>
         </div>
         <div style={{display: 'flex'}}>
+          <Select 
+            label="版本:"
+            placeholder="请选择版本"
+            value={this.state.appVersionId}
+            defaultValue={this.state.appVersionId}
+            style={{ flex: 1, marginBottom: '10px' }}
+            onChange={id => this.handleAppVersionChange(id)}
+          >
+            {
+              this.state.appVersionList.map(item=>(
+                <Select.Option value={item.id}>{item.version}</Select.Option>
+              ))
+            }
+          </Select>
+          <Button type="secondary" size="small" style={{marginLeft: '5px'}}
+            disabled={!this.state.applicationId}
+            onClick={this.handleAddApplicationInfo}
+          >新增</Button>
+          <Button type="normal" size="small" style={{marginLeft: '5px'}}
+            disabled={!this.state.appVersionId}
+            onClick={this.handleEditApplicationInfo}
+          >绑定环境</Button>
+          <Button type="primary" warning size="small" style={{marginLeft: '5px'}}
+            disabled={!this.state.appVersionId}
+            onClick={this.handleDeleteApplication}
+          >删除</Button>
+        </div>
+        {
+          this.state.appVersionId && (<div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px'}}>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+              <span style={{marginRight: '10px'}}>对应环境:</span>
+              <Tag.Group className="tagCenter">
+                {
+                  this.state.appEnvList.map((item, index)=>{
+                    return <Tag.Selectable
+                      key={item.id}
+                      size="small"
+                      checked={this.state.onSelectEnvIdList.includes(item.id)}
+                      onChange={(isSelect) => this.handleEnvChange(index, isSelect)}
+                    >{item.envCh}</Tag.Selectable>
+                  })
+                }
+              </Tag.Group>
+            </div>
+            <Button type="primary" size="small" style={{marginLeft: '5px'}}
+              disabled={this.state.appEnvList.length==this.state.onSelectEnvIdList.length}
+              onClick={this.handleEditApplicationInfo}
+            >保存</Button>
+          </div>)
+        }
+        <div style={{display: 'flex'}}>
           <Search
             shape="simple"
             size="medium"
             style={{ width: "100%", marginBottom: "10px" }}
+            placeholder="请输入节点名"
             hasClear
             onSearch={this.handleSearch}
             onChange={this.handleSearch}
           />
-          <Button type="primary" size="small" style={{marginLeft: '5px'}}
-            disabled={!this.state.applicationId}
+          <Button type="secondary" size="small" style={{marginLeft: '5px'}}
+            disabled={!this.state.appVersionId}
             onClick={this.handleAddNodeInfo}
           >新增</Button>
         </div>
@@ -489,4 +570,4 @@ function renderNode(node: PageNode) {
   </Tree.Node>
 }
 
-export default App;
+export default PageManagePane;

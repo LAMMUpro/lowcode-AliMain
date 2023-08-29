@@ -57,3 +57,8 @@ html {
 .hidenBottom > div > .next-dialog-footer.next-align-right {
   display: none;
 }
+
+// tag标签上下居中
+div.tagCenter .next-tag {
+  margin: auto 3px;
+}
