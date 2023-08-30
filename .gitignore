@@ -28,7 +28,9 @@ yarn.lock
 /.prisma/**
 !/.prisma/**/*.ts
 !/.prisma/**/*.d.ts
+!/.prisma/**/
 
 /@prisma/**
 !/@prisma/**/*.ts
 !/@prisma/**/*.d.ts
+!/@prisma/**/
