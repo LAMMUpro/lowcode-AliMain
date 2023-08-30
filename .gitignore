@@ -24,13 +24,13 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
+/src/types/node_modules
+/src/types/.prisma/**
+!/src/types/.prisma/**/*.ts
+!/src/types/.prisma/**/*.d.ts
+!/src/types/.prisma/**/
 
-/.prisma/**
-!/.prisma/**/*.ts
-!/.prisma/**/*.d.ts
-!/.prisma/**/
-
-/@prisma/**
-!/@prisma/**/*.ts
-!/@prisma/**/*.d.ts
-!/@prisma/**/
+/src/types/@prisma/**
+!/src/types/@prisma/**/*.ts
+!/src/types/@prisma/**/*.d.ts
+!/src/types/@prisma/**/
