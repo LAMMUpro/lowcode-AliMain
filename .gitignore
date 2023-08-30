@@ -23,3 +23,12 @@ yarn-error.log*
 
 package-lock.json
 yarn.lock
+
+
+/.prisma/**
+!/.prisma/**/*.ts
+!/.prisma/**/*.d.ts
+
+/@prisma/**
+!/@prisma/**/*.ts
+!/@prisma/**/*.d.ts
