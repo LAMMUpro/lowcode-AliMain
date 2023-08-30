@@ -2,14 +2,6 @@ import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import PageManagePane from './components/PageManagePane';
 import { AppEnvDtoCreate } from 'src/types/dto/AppEnv';
 
-const app: AppEnvDtoCreate = {
-  applicationId: 0,
-  env: '',
-  envCh: '',
-  appVersionId: 0,
-  isDeleted: false
-};
-
 const _PluginName_ = 'PagesManagePlugin';
 const PagesManagePlugin = (ctx: IPublicModelPluginContext) => {
   return {

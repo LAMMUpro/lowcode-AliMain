@@ -60,7 +60,7 @@ export function buildUrl(dataAPI: any, params: any) {
     ...headers,
   };
   const url = buildUrl(dataAPI, params);
-  return request(url, 'GET', null, processedHeaders, otherProps);
+  return _request(url, 'GET', null, processedHeaders, otherProps);
 }
 
 /**
@@ -83,7 +83,7 @@ export function post(dataAPI: any, params = {}, headers: any = {}, otherProps = 
   ? JSON.stringify(params)
   : serializeParams(params);
 
-  return request(
+  return _request(
     dataAPI,
     'POST',
     body,
@@ -103,7 +103,7 @@ export function post(dataAPI: any, params = {}, headers: any = {}, otherProps = 
  * @param {*} [otherProps={}]
  * @returns
  */
-export function request(dataAPI: any, method = 'GET', data: any, headers = {}, otherProps: any = {}) {
+export function _request(dataAPI: any, method = 'GET', data: any, headers = {}, otherProps: any = {}) {
   let processedHeaders = headers || {};
   let payload = data;
   if (method === 'PUT' || method === 'DELETE') {

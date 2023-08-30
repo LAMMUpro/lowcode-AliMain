@@ -5,13 +5,24 @@ import AddEditApplicationDialog from './AddEditApplication';
 import { PageNode, deleteApplication, deleteNode, deletePage, getAppEnvList, getAppVersionList, getApplicationList, getNodes, getPage } from 'src/services/api';
 import { material, project, config, event } from '@alilc/lowcode-engine';
 import { defaultSchema } from 'src/services/pageManage';
+import { deleteApplicationById } from 'src/api/Application';
+import { deleteAppVersionById } from 'src/api/AppVersion';
+import AddVersionDialog from './AddVersionDialog';
+import { AppVersionDtoCreate } from 'src/types/dto/AppVersion';
 
 const { Item, Divider } = Menu;
 
 function getDefaultApplication() {
   return {
     name: '',
-    _describe: ''
+    describe: ''
+  }
+}
+
+function getDefaultAppVersion(applicationId: number): AppVersionDtoCreate {
+  return {
+    applicationId,
+    version: ''
   }
 }
 
@@ -39,10 +50,12 @@ class PageManagePane extends React.Component {
       nodeInfo: getDefaultNode(),
 
       isShowEditApplicationInfoDialog: false,
+      isShowAddAppVersionDialog: false,
       appDialogType: 'add',
       applicationId: undefined,
       applicationList: config.get("applicationList"),
       applicationInfo: getDefaultApplication(),
+      appVersionInfo: getDefaultAppVersion(0),
       appVersionId: undefined,
       appVersionList: [],
       appEnvList: [],
@@ -70,14 +83,17 @@ class PageManagePane extends React.Component {
     this.handleAppVersionChange = this.handleAppVersionChange.bind(this);
     this.updateAppEnvs = this.updateAppEnvs.bind(this);
     this.handleEnvChange = this.handleEnvChange.bind(this);
+    this.handleDeleteVersion = this.handleDeleteVersion.bind(this);
+    this.handleAddVersion = this.handleAddVersion.bind(this);
     // this.updateApplicationList();
     // this.updatePageNodes();
   }
 
   componentDidUpdate() {
-    if (this.state.applicationList.length==0) {
-      this.updateApplicationList();
-    }
+    /** 打开弹窗会重复触发!!! */
+    // if (this.state.applicationList.length==0) {
+    //   this.updateApplicationList();
+    // }
   }
 
   matchedKeys: Array<string>|null;
@@ -93,12 +109,14 @@ class PageManagePane extends React.Component {
     nodeInfo: Omit<PageNode, 'id'|'depth'|'children'|'path'>
 
     isShowEditApplicationInfoDialog: boolean
+    isShowAddAppVersionDialog: boolean
     appDialogType: 'add'|'edit'
     applicationInfo: {
       id?: number
       name: string
-      _describe: string
+      describe: string
     }
+    appVersionInfo: AppVersionDtoCreate
     /** 当前选中的应用id */
     applicationId?: number
     /** 应用列表 */
@@ -170,9 +188,16 @@ class PageManagePane extends React.Component {
     }
   }
 
+  /** 新增版本信息 */
+  handleAddVersion(node: any) {
+    this.setState({
+      isShowAddAppVersionDialog: true,
+      appVersionInfo: getDefaultAppVersion(this.state.applicationId!),
+    })
+  }
 
 
-  /** 新增用户信息 */
+  /** 新增应用信息 */
   handleAddApplicationInfo(node: any) {
     this.setState({
       appDialogType: 'add',
@@ -201,7 +226,6 @@ class PageManagePane extends React.Component {
       applicationId,
     })
     setTimeout(()=> this.updateAppVersions());
-    
   }
 
   /** 切换版本 */
@@ -381,7 +405,7 @@ class PageManagePane extends React.Component {
     Dialog.confirm({
       content: '确定要删除该应用吗？对应节点/页面信息也将被删除!',
       onOk: async () => {
-        const res = await deleteApplication({id: this.state.applicationId!});
+        const res = await deleteApplicationById({id: this.state.applicationId!});
         if (res.code == 1) {
           Message.show({
             type: "success",
@@ -391,6 +415,25 @@ class PageManagePane extends React.Component {
             applicationId: undefined
           });
           this.updateApplicationList();
+        }
+      },
+    })
+  }
+
+  handleDeleteVersion() {
+    Dialog.confirm({
+      content: '确定要删除该版本吗？对应节点/页面信息也将被删除!',
+      onOk: async () => {
+        const res = await deleteAppVersionById({id: this.state.appVersionId!});
+        if (res.code == 1) {
+          Message.show({
+            type: "success",
+            content: "版本删除成功"
+          });
+          this.setState({
+            appVersionId: undefined
+          });
+          this.updateAppVersions();
         }
       },
     })
@@ -458,7 +501,7 @@ class PageManagePane extends React.Component {
           </Select>
           <Button type="secondary" size="small" style={{marginLeft: '5px'}}
             disabled={!this.state.applicationId}
-            onClick={this.handleAddApplicationInfo}
+            onClick={this.handleAddVersion}
           >新增</Button>
           <Button type="normal" size="small" style={{marginLeft: '5px'}}
             disabled={!this.state.appVersionId}
@@ -466,7 +509,7 @@ class PageManagePane extends React.Component {
           >绑定环境</Button>
           <Button type="primary" warning size="small" style={{marginLeft: '5px'}}
             disabled={!this.state.appVersionId}
-            onClick={this.handleDeleteApplication}
+            onClick={this.handleDeleteVersion}
           >删除</Button>
         </div>
         {
@@ -551,6 +594,13 @@ class PageManagePane extends React.Component {
           onClose={()=>this.setState({isShowEditApplicationInfoDialog: false})}
           success={this.handleAddEditAppSuccess}
         ></AddEditApplicationDialog>
+
+        <AddVersionDialog 
+          visible={this.state.isShowAddAppVersionDialog}
+          originInfo={this.state.appVersionInfo}
+          onClose={()=>this.setState({isShowAddAppVersionDialog: false})}
+          success={this.handleAddEditAppSuccess}
+        ></AddVersionDialog>
       </Loading>
     );
   }

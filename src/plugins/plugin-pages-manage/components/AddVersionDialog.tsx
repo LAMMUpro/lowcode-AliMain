@@ -1,58 +1,36 @@
 import { Form, Input, Dialog, Icon, Message, Button } from '@alifd/next';
 import React, { useEffect } from 'react';
+import { createAppVersion } from 'src/api/AppVersion';
 import { createApplication, updateApplicationById } from 'src/api/Application';
 import { saveApplication, updateApplication } from 'src/services/api';
+import { AppVersionDtoCreate } from 'src/types/dto/AppVersion';
 import { ApplicationDtoCreate } from 'src/types/dto/Application';
 
 interface PropsType {
   visible: boolean
-  type: 'add'|'edit'
-  originInfo: {
-    id?: number
-    name: string
-    describe: string
-  }
+  originInfo: AppVersionDtoCreate
   onClose: () => void
   success: () => void
 }
 
-class AddEditApplicationDialog extends React.Component<PropsType> {
+class AddVersionDialog extends React.Component<PropsType> {
   constructor(props: PropsType) {
     super(props);
   }
 
-  // componentDidUpdate() {
-  //   if (this.props.visible) {
-  //     if (this.props.type == 'add') {
-  //     }
-  //   }
-  // }  
-
-  async handleSubmit(values: ApplicationDtoCreate) {
-    if (this.props.type == 'add') {
-      const res = await createApplication(values);
-      // const res = await saveApplication(values);
-      if (res.code == 1) {
-        Message.show({
-          type: "success",
-          content: "新增应用成功"
-        });
-        this.props.onClose();
-        this.props.success();
-      }
-    } else {
-      const res = await updateApplicationById({
-        id: this.props.originInfo.id!,
-        ...values,
+  async handleSubmit(values: AppVersionDtoCreate) {
+    const res = await createAppVersion({
+      applicationId: this.props.originInfo.applicationId,
+      version: values.version
+    });
+    // const res = await saveApplication(values);
+    if (res.code == 1) {
+      Message.show({
+        type: "success",
+        content: "新增版本成功"
       });
-      if (res.code == 1) {
-        Message.show({
-          type: "success",
-          content: "修改应用信息成功"
-        });
-        this.props.onClose();
-        this.props.success();
-      }
+      this.props.onClose();
+      this.props.success();
     }
   };
 
@@ -61,7 +39,7 @@ class AddEditApplicationDialog extends React.Component<PropsType> {
         <Dialog
           wrapperClassName="hidenBottom"
           v2
-          title={this.props.type=='add'?"新增应用":"编辑应用信息"}
+          title='新增版本'
           width='400px'
           visible={this.props.visible}
           onClose={this.props.onClose}
@@ -72,21 +50,13 @@ class AddEditApplicationDialog extends React.Component<PropsType> {
               {...{labelCol: { fixedSpan: 6 }, wrapperCol: { span: 18 }}}
             >
               <Form.Item
-                label="应用名"
+                label="版本号"
                 required
-                requiredMessage="应用名不能为空"
+                requiredMessage="版本号不能为空"
               >
                 <Input 
-                  name="name" 
-                  defaultValue={this.props.originInfo.name}
-                />
-              </Form.Item>
-              <Form.Item
-                label="应用描述"
-              >
-                <Input 
-                  name="describe" 
-                  defaultValue={this.props.originInfo.describe}
+                  name="version" 
+                  defaultValue={this.props.originInfo.version}
                 />
               </Form.Item>
               <Form.Item wrapperCol={{ offset: 7 }}>
@@ -108,4 +78,4 @@ class AddEditApplicationDialog extends React.Component<PropsType> {
   }
 }
 
-export default AddEditApplicationDialog;
+export default AddVersionDialog;
