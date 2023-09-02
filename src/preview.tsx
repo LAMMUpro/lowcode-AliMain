@@ -7,8 +7,8 @@ import { injectComponents } from '@alilc/lowcode-plugin-inject';
 import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
 import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from './services/pageManage';
 import { config } from '@alilc/lowcode-engine';
-import { getPage } from './services/api';
 import { generateRemoteHandleMap } from './utils/data-helper';
+import { findPageSchemaByNodeId } from './api/PageSchema';
 
 const getScenarioName = function () {
   if (location.search) {
@@ -29,9 +29,9 @@ const SamplePreview = () => {
 
   async function init() {
     const nodeId = getNodeId();
-    const res = await getPage({id: nodeId});
-    const packages = res.data.packages;
-    const projectSchema = res.data.project_schema;
+    const res = await findPageSchemaByNodeId({nodeId});
+    const packages = res.data.package;
+    const projectSchema = res.data.schema;
     const scenarioName = getScenarioName();
     // const packages = await getPackagesFromLocalStorage(scenarioName);
     // const projectSchema = await getProjectSchemaFromLocalStorage(scenarioName);
