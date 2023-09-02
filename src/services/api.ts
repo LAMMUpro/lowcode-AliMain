@@ -1,3 +1,4 @@
+import { PageNodeDto } from "src/types/dto/PageNode"
 import { defaultSchema } from "./pageManage"
 
 
@@ -39,14 +40,9 @@ export interface BlockInfoType {
   }
 }
 
-export interface PageNode {
-  "id": number,
-  "name": string,
-  "parent_id": number|null,
-  "_describe": string,
-  "depth": number,
-  "children": Array<PageNode>
-  "path": string
+export interface PageNode extends PageNodeDto {
+  children: Array<PageNode>
+  path: string
 }
 
 

@@ -1,18 +1,22 @@
 import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Tag, Select, Message } from '@alifd/next';
 import React from 'react';
-import EditNodeInfo from './EditNodeInfo';
-import AddEditApplicationDialog from './AddEditApplication';
-import { PageNode, deleteApplication, deleteNode, deletePage, getAppEnvList, getAppVersionList, getApplicationList, getNodes, getPage } from 'src/services/api';
+import EditNodeInfoDialog from './EditNodeInfoDialog';
+import AddEditApplicationDialog from './AddEditApplicationDialog';
 import { material, project, config, event } from '@alilc/lowcode-engine';
 import { defaultSchema } from 'src/services/pageManage';
-import { deleteApplicationById } from 'src/api/Application';
-import { deleteAppVersionById } from 'src/api/AppVersion';
+import { deleteApplicationById, findAllApplication } from 'src/api/Application';
+import { createAppVersion, deleteAppVersionById, findAllAppVersionByAppId } from 'src/api/AppVersion';
 import AddVersionDialog from './AddVersionDialog';
 import EditVersionEnvDialog from './EditVersionEnvDialog';
 import { AppVersionDto, AppVersionDtoCreate } from 'src/types/dto/AppVersion';
-import { findAllAppEnv } from 'src/api/AppEnv';
+import { findAllAppEnv, updateAppEnv } from 'src/api/AppEnv';
 import { AppEnvDto, AppEnvDtoUpdate } from 'src/types/dto/AppEnv';
 import { SpaceAppEnvDto } from 'src/types/dtoExt/AppEnv';
+import { createPageNode, deletePageNodeById, findManyPageNode } from 'src/api/PageNode';
+import { PageNodeDto, PageNodeDtoCreate } from 'src/types/dto/PageNode';
+import { deletePageSchemaById, findPageSchemaByNodeId } from 'src/api/PageSchema';
+import { ApplicationDto } from 'src/types/dto/Application';
+import { PageNode } from 'src/types/dtoExt/PageNode';
 
 const { Item, Divider } = Menu;
 
@@ -23,18 +27,20 @@ function getDefaultApplication() {
   }
 }
 
+function getDefaultNode(applicationId: number = 0, version: string = ''): PageNodeDtoCreate {
+  return {
+    name: '',
+    parentId: undefined,
+    describe: '',
+    applicationId: applicationId,
+    version: version
+  }
+}
+
 function getDefaultAppVersion(applicationId: number): AppVersionDtoCreate {
   return {
     applicationId,
     version: ''
-  }
-}
-
-function getDefaultNode() {
-  return {
-    name: '',
-    parent_id: null,
-    _describe: ''
   }
 }
 
@@ -99,6 +105,7 @@ class PageManagePane extends React.Component {
     this.handleAddVersion = this.handleAddVersion.bind(this);
     this.handleBindVersionEnv = this.handleBindVersionEnv.bind(this);
     this.updateAppAllEnv = this.updateAppAllEnv.bind(this);
+    this.handleSaveBindEnvs = this.handleSaveBindEnvs.bind(this);
     // this.updateApplicationList();
     // this.updatePageNodes();
   }
@@ -131,7 +138,7 @@ class PageManagePane extends React.Component {
     isShowEditNodeInfoDialog: boolean
     nodeDialogType: 'add'|'edit'
     nodeId?: number
-    nodeInfo: Omit<PageNode, 'id'|'depth'|'children'|'path'>
+    nodeInfo: PageNodeDtoCreate
 
     isShowEditApplicationInfoDialog: boolean
     isShowAddAppVersionDialog: boolean
@@ -147,11 +154,7 @@ class PageManagePane extends React.Component {
     /** 当前选中的应用id */
     applicationId: number
     /** 应用列表 */
-    applicationList: Array<{
-      id: number
-      name: string
-      _describe: string
-    }>
+    applicationList: Array<ApplicationDto>
     /** 当前选中的应用版本id */
     appVersionId: number
     /** 当前应用版本name */
@@ -170,7 +173,7 @@ class PageManagePane extends React.Component {
 
   /** 更新应用列表 */
   async updateApplicationList() {
-    const res = await getApplicationList();
+    const res = await findAllApplication();
     if (res.code == 1) {
       this.setState({
         applicationList: res.data,
@@ -192,7 +195,7 @@ class PageManagePane extends React.Component {
 
   /** 更新版本列表 */
   async updateAppVersions() {
-    const res = await getAppVersionList({
+    const res = await findAllAppVersionByAppId({
       applicationId: this.state.applicationId!
     });
     if (res.code == 1) {
@@ -204,7 +207,7 @@ class PageManagePane extends React.Component {
 
   /** 更新环境列表 */
   async updateAppEnvs() {
-    const res = await getAppEnvList({
+    const res = await findAllAppEnv({
       appVersionId: this.state.appVersionId!
     });
     if (res.code == 1) {
@@ -221,7 +224,10 @@ class PageManagePane extends React.Component {
       type: "warning",
       content: "请先选择应用"
     });
-    const res = await getNodes({app_id: this.state.applicationId});
+    const res = await findManyPageNode({
+      applicationId: this.state.applicationId,
+      version: this.state.appVersion
+    });
     if (res.code == 1) {
       this.setState({
         pageNodes: res.data,
@@ -238,6 +244,21 @@ class PageManagePane extends React.Component {
       isShowAddAppVersionDialog: true,
       appVersionInfo: getDefaultAppVersion(this.state.applicationId!),
     })
+  }
+
+  /** 绑定版本环境 */
+  async handleSaveBindEnvs() {
+    const res = await updateAppEnv({
+      envIdList: this.state.onSelectEnvIdList,
+      appVersionId: this.state.appVersionId,
+      version: this.state.appVersion,
+    });
+    if (res.code == 1) {
+      Message.show({
+        type: "success",
+        content: "绑定环境成功"
+      });
+    }
   }
 
   /** 绑定版本环境 */
@@ -298,8 +319,8 @@ class PageManagePane extends React.Component {
       appVersion: this.state.appVersionList.find(item=>item.id == appVersionId)?.version || '',
     })
     localStorage.setItem("active:appVersionId", '' + appVersionId);
-    localStorage.setItem("active:appVersion", this.state.appVersion);
     setTimeout(()=> {
+      localStorage.setItem("active:appVersion", this.state.appVersion);
       this.updateAppEnvs();
       this.updatePageNodes();
     });
@@ -323,7 +344,7 @@ class PageManagePane extends React.Component {
     Dialog.confirm({
       content: '确定要删除该节点页面数据吗？',
       onOk: async () => {
-        const res = await deletePage({id});
+        const res = await deletePageSchemaById({id});
         if (res.code == 1) {
           Message.show({
             type: "success",
@@ -338,7 +359,7 @@ class PageManagePane extends React.Component {
     Dialog.confirm({
       content: '确定要删除该节点吗？对应页面数据及其子节点都会被删除!',
       onOk: async () => {
-        const res = await deleteNode({id});
+        const res = await deletePageNodeById({id});
         if (res.code == 1) {
           Message.show({
             type: "success",
@@ -351,9 +372,11 @@ class PageManagePane extends React.Component {
   }
 
   onRightClick = ({event: e, node}: any) => {
-    console.log(e)
     e.preventDefault();
-    console.log(node);
+    if (this.state.nodeList.find(item=>item.id==node.props.eventKey)?.parentId==0) return Message.show({
+      type: "notice",
+      content: "根节点不可操作"
+    });
     const target = e.target;
     const { top, left } = target.getBoundingClientRect();
 
@@ -376,29 +399,30 @@ class PageManagePane extends React.Component {
     });
   }
 
-
   /** 新增节点信息 */
   handleAddNodeInfo(node: any) {
     this.setState({
       nodeDialogType: 'add',
       isShowEditNodeInfoDialog: true,
-      nodeInfo: getDefaultNode()
+      nodeInfo: getDefaultNode(this.state.applicationId, this.state.appVersion)
     })
   }
 
   /** 编辑页面 */
   async handleEditPage(node: any) {
-    const res = await getPage({id: node.eventKey});
+    const res = await findPageSchemaByNodeId({nodeId: node.eventKey});
 
     const _node_ = this.state.nodeList.find(item=>item.id == node.eventKey);
     
+    config.set('schemaId', res.data.id);
     config.set('nodeId', node.eventKey);
     config.set('nodePath', _node_?.path);
-    config.set('nodeDescribe', _node_?._describe);
+    config.set('nodeDescribe', _node_?.describe);
 
     event.emit('update:nodePath');
 
-    const schema = res.data.project_schema?.componentsTree?.[0];
+    console.log("res.data", res.data)
+    const schema = res.data.schema?.componentsTree?.[0];
 
     // project.openDocument(JSON.parse(JSON.stringify(defaultSchema)));
 
@@ -597,7 +621,7 @@ class PageManagePane extends React.Component {
             </div>
             <Button type="primary" size="small" style={{marginLeft: '5px'}}
               disabled={this.state.appEnvList.length==this.state.onSelectEnvIdList.length}
-              onClick={this.handleEditApplicationInfo}
+              onClick={this.handleSaveBindEnvs}
             >保存</Button>
           </div>)
         }
@@ -643,15 +667,14 @@ class PageManagePane extends React.Component {
           }
         </Tree>
 
-        <EditNodeInfo 
+        <EditNodeInfoDialog 
           visible={this.state.isShowEditNodeInfoDialog}
           type={this.state.nodeDialogType}
-          applicationId={this.state.applicationId!}
           originInfo={this.state.nodeInfo}
           pageNodes={this.state.pageNodes}
           onClose={()=>this.setState({isShowEditNodeInfoDialog: false})}
           success={this.handleAddEditNodeSuccess}
-        ></EditNodeInfo>
+        ></EditNodeInfoDialog>
 
         <AddEditApplicationDialog 
           visible={this.state.isShowEditApplicationInfoDialog}
@@ -684,7 +707,12 @@ function renderNode(node: PageNode) {
   return <Tree.Node key={node.id} label={node.name}>
     {
       node.children.map(item=> (
-        <Tree.Node key={item.id} label={item.name}>
+        <Tree.Node key={item.id} label={
+          <span>
+            <span>{item.name}</span> 
+            { item.hasSchema && <Icon type="detail"/> }
+          </span>
+        }>
           {
             item.children.map(item2 => renderNode(item2))
           }

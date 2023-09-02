@@ -1,12 +1,13 @@
 import { Form, Input, Dialog, Icon, CascaderSelect, Button, Message } from '@alifd/next';
 import React from 'react';
+import { createPageNode, updatePageNodeById } from 'src/api/PageNode';
 import { PageNode, saveNode, updateNode } from 'src/services/api';
+import { PageNodeDtoCreate } from 'src/types/dto/PageNode';
 
 interface PropsType {
   visible: boolean
   type: 'add'|'edit'
-  applicationId: number
-  originInfo: Omit<PageNode, 'id'|'depth'|'children'> & { id?: number }
+  originInfo: PageNodeDtoCreate & { id?: number }
   onClose: () => void
   success: () => void
   pageNodes: Array<PageNode>
@@ -17,12 +18,13 @@ class EditNodeInfoDialog extends React.Component<PropsType> {
     super(props);
   }
 
-  async handleSubmit(values: Omit<PropsType['originInfo'], 'id'>) {
-    console.log(values);
+  async handleSubmit(values: Omit<PropsType['originInfo'], 'id'>, isNotPass: boolean) {
+    if (isNotPass) return;
     if (this.props.type == 'add') {
-      const res = await saveNode({
-        app_id: this.props.applicationId,
+      const res = await createPageNode({
+        ...this.props.originInfo,
         ...values,
+        parentId: Number(values.parentId||0)
       });
       if (res.code == 1) {
         Message.show({
@@ -33,7 +35,7 @@ class EditNodeInfoDialog extends React.Component<PropsType> {
         this.props.success();
       }
     } else {
-      const res = await updateNode({
+      const res = await updatePageNodeById({
         id: this.props.originInfo.id!,
         ...values,
       });
@@ -75,23 +77,25 @@ class EditNodeInfoDialog extends React.Component<PropsType> {
             </Form.Item>
             <Form.Item
               label="父节点"
+              required
+              requiredMessage="请选择父节点"
             >
               <CascaderSelect
-                name="parent_id"
+                name="parentId"
                 style={{width: '100%'}}
                 showSearch
                 changeOnSelect
                 canOnlyCheckLeaf={false}
                 dataSource={this.props.pageNodes}
-                defaultValue={this.props.originInfo.parent_id as unknown as string}
+                defaultValue={this.props.originInfo.parentId as unknown as string}
               />
             </Form.Item>
             <Form.Item
               label="节点描述"
             >
               <Input 
-                name="_describe" 
-                defaultValue={this.props.originInfo._describe}
+                name="describe" 
+                defaultValue={this.props.originInfo.describe}
               />
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 7 }}>
@@ -101,7 +105,7 @@ class EditNodeInfoDialog extends React.Component<PropsType> {
                 onClick={this.handleSubmit.bind(this)}
                 style={{ marginRight: 8 }}
               >
-                确定修改
+                确定
               </Form.Submit>
               <Form.Reset>清空</Form.Reset>
               <Button onClick={this.props.onClose} style={{marginLeft: '8px'}}>取消</Button>

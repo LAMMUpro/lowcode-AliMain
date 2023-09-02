@@ -3,6 +3,7 @@ import { filterPackages } from '@alilc/lowcode-plugin-inject'
 import { Message, Dialog } from '@alifd/next';
 import { IPublicEnumTransformStage } from '@alilc/lowcode-types';
 import { getPageInfo, savePageInfo, PackageType, ProjectSchemaType, updatePage } from './api';
+import { updatePageSchemaById } from 'src/api/PageSchema';
 
 export const defaultSchema = {
   "componentName": "Page",
@@ -79,11 +80,11 @@ export const defaultSchema = {
 }
 
 export const updatePageInfo = async () => {
-  const nodeId = config.get('nodeId');
-  await updatePage({
-    id: +nodeId,
-    project_schema: project.exportSchema(IPublicEnumTransformStage.Save),
-    packages: await filterPackages(material?.getAssets()?.packages),
+  const schemaId = config.get('schemaId');
+  await updatePageSchemaById({
+    id: +schemaId,
+    schema: JSON.stringify(project.exportSchema(IPublicEnumTransformStage.Save)),
+    package: JSON.stringify(await filterPackages(material?.getAssets()?.packages)),
   })
   // await setProjectSchemaToLocalStorage(scenarioName);
   // await setPackagesToLocalStorage(scenarioName);

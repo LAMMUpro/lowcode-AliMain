@@ -76,7 +76,8 @@ class EditVersionEnvDialog extends React.Component<PropsType> {
     }
   }
   
-  async handleSubmit() {
+  async handleSubmit(values: any, isNotPass: boolean) {
+    if (isNotPass) return;
     const res = await updateAppEnv(this.state.info);
     if (res.code == 1) {
       Message.show({

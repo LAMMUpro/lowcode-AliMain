@@ -28,7 +28,8 @@ class AddEditApplicationDialog extends React.Component<PropsType> {
   //   }
   // }  
 
-  async handleSubmit(values: ApplicationDtoCreate) {
+  async handleSubmit(values: ApplicationDtoCreate, isNotPass: boolean) {
+    if (isNotPass) return;
     if (this.props.type == 'add') {
       const res = await createApplication(values);
       // const res = await saveApplication(values);

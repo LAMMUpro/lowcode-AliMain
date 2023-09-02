@@ -23,7 +23,7 @@ import BlockPlugin from './plugins/plugin-block-manage';
 import saveAsBlock from './actions/saveAsBlock';
 import RemoteHandlePanePlugin from './plugins/plugin-remote-handle';
 import './global.scss';
-import { getApplicationList } from './services/api';
+import { findAllApplication } from './api/Application';
 
 async function registerPlugins() {
   /** 保存为区块 */
@@ -112,7 +112,7 @@ async function registerPlugins() {
 };
 
 (async function main() {
-  getApplicationList().then(res=> {
+  findAllApplication().then(res=> {
     config.set('applicationList', res.data||[]);
   });
 

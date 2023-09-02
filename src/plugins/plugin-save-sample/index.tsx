@@ -1,7 +1,6 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import { Button } from '@alifd/next';
 import {
-  saveSchema,
   resetSchema,
   updatePageInfo
 } from '../../services/pageManage';

@@ -18,12 +18,12 @@ class AddVersionDialog extends React.Component<PropsType> {
     super(props);
   }
 
-  async handleSubmit(values: AppVersionDtoCreate) {
+  async handleSubmit(values: AppVersionDtoCreate, isNotPass: boolean) {
+    if (isNotPass) return;
     const res = await createAppVersion({
       applicationId: this.props.originInfo.applicationId,
       version: values.version
     });
-    // const res = await saveApplication(values);
     if (res.code == 1) {
       Message.show({
         type: "success",
