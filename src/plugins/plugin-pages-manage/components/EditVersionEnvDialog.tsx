@@ -16,43 +16,72 @@ interface PropsType {
   onClose: () => void
   success: () => void
 }
+interface StateType {
+  info: SpaceAppEnvDto.updateAppEnv
+}
 
 class EditVersionEnvDialog extends React.Component<PropsType> {
   constructor(props: PropsType) {
     super(props);
+
     this.handleEnvChange = this.handleEnvChange.bind(this);
   }
 
+  state: StateType = {
+    info: {
+      envIdList: [],
+      appVersionId: 0,
+      version: ''
+    }
+  };
+
   componentDidMount() {
-    React.useEffect(()=>{
-      console.log('111', this.props.originInfo);
-    })
+    console.log('componentDidMount')
+  }
+
+  componentDidUpdate(preProps: PropsType, preState: StateType) {
+    if (!preProps.visible&&this.props.visible) {
+      this.setState({
+        info: JSON.parse(JSON.stringify(preProps.originInfo))
+      })
+      setTimeout(() => {
+        console.log(this.state)
+      }, 0);
+    }
+  }
+
+  componentWillUnmount() {
+    console.log('componentWillUnmount')
   }
 
   /** 选中/取消选中 环境标签 */
   handleEnvChange(index:number, isSelect:Boolean) {
-    console.log("选中")
     const envId = this.props.appAllEnvList[index].id;
     if (isSelect) {
-      this.props.originInfo.envIdList = [...this.props.originInfo.envIdList, envId];
+      const info = {
+        ...this.state.info,
+        envIdList: [...this.state.info.envIdList, envId]
+      }
+      this.setState({
+        info
+      })
     }else {
-      this.props.originInfo.envIdList = this.props.originInfo.envIdList.filter(item=>item!=envId)
+      const info = {
+        ...this.state.info,
+        envIdList: this.state.info.envIdList.filter(item=>item!=envId)
+      }
+      this.setState({
+        info
+      })
     }
   }
   
-  async handleSubmit(values: AppVersionDtoCreate) {
-    console.log(this.props.originInfo)
-    return;
-    const res = await updateAppEnv({
-      envIdList: [],
-      appVersionId: this.props.originInfo.appVersionId,
-      version: this.props.originInfo.version,
-    });
-    // const res = await saveApplication(values);
+  async handleSubmit() {
+    const res = await updateAppEnv(this.state.info);
     if (res.code == 1) {
       Message.show({
         type: "success",
-        content: "新增版本成功"
+        content: "绑定环境成功"
       });
       this.props.onClose();
       this.props.success();
@@ -79,7 +108,7 @@ class EditVersionEnvDialog extends React.Component<PropsType> {
               >
                 <div 
                   style={{display: 'flex', alignItems: 'center', height: '100%', fontSize: '16px'}}
-                >{this.props.originInfo.version}</div>
+                >{this.state.info.version}</div>
               </Form.Item>
               <Form.Item
                 label="环境"
@@ -90,7 +119,7 @@ class EditVersionEnvDialog extends React.Component<PropsType> {
                       return <Tag.Selectable
                         key={item.id}
                         size="small"
-                        checked={this.props.originInfo.envIdList.includes(item.id)}
+                        checked={this.state.info.envIdList.includes(item.id)}
                         onChange={(isSelect) => this.handleEnvChange(index, isSelect)}
                       >{item.envCh}</Tag.Selectable>
                     })

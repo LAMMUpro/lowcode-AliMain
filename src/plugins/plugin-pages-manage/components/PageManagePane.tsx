@@ -235,7 +235,6 @@ class PageManagePane extends React.Component {
   /** 绑定版本环境 */
   handleBindVersionEnv() {
     this.setState({
-      isShowBindAppVersionEnvDialog: true,
       appEnvInfo: {
         envIdList: this.state.appEnvList.map(item=>item.id),
         appVersionId: this.state.appVersionId,
@@ -243,8 +242,10 @@ class PageManagePane extends React.Component {
       }
     })
     setTimeout(() => {
-      console.log(this.state.appEnvInfo)
-    }, 1);
+      this.setState({
+        isShowBindAppVersionEnvDialog: true
+      });
+    }, 0);
   }
 
   /** 新增应用信息 */
