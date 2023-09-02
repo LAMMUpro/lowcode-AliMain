@@ -102,7 +102,6 @@ const Action: IPublicTypeComponentAction = {
     action(node) {
       showAddBlockDialog(node.schema);
       // await saveBlockInfo()
-      console.log(node.schema);
     }
   },
   important: true,

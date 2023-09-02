@@ -31,7 +31,7 @@ class EditVersionEnvDialog extends React.Component<PropsType> {
   };
 
   componentDidMount() {
-    console.log('componentDidMount')
+
   }
 
   componentDidUpdate(preProps: PropsType, preState: StateType) {
@@ -39,14 +39,11 @@ class EditVersionEnvDialog extends React.Component<PropsType> {
       this.setState({
         info: JSON.parse(JSON.stringify(preProps.originInfo))
       })
-      setTimeout(() => {
-        console.log(this.state)
-      }, 0);
     }
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount')
+
   }
 
   /** 选中/取消选中 环境标签 */

@@ -22,9 +22,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
       /**
        * 首次进入页面先不加载
        */
-
-      // 加载 schema
-      project.openDocument(defaultSchema);
+      // project.openDocument(defaultSchema);
     },
   };
 }

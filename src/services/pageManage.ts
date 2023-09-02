@@ -80,6 +80,7 @@ export const defaultSchema = {
 
 export const updatePageInfo = async () => {
   const schemaId = config.get('schemaId');
+  if (!schemaId) return Message.warning("没有可保存的页面!");
   await updatePageSchemaById({
     id: +schemaId,
     schema: JSON.stringify(project.exportSchema(IPublicEnumTransformStage.Save)),
@@ -91,6 +92,9 @@ export const updatePageInfo = async () => {
 };
 
 export const resetSchema = async (scenarioName: string = 'unknown') => {
+  const schemaId = config.get('schemaId');
+  if (!schemaId) return Message.warning("没有选中页面!");
+
   try {
     await new Promise<void>((resolve, reject) => {
       Dialog.confirm({
@@ -118,7 +122,7 @@ export const resetSchema = async (scenarioName: string = 'unknown') => {
   project.simulatorHost?.rerender();
 
   await updatePageSchemaById({
-    id: +config.get('schemaId'),
+    id: +schemaId,
     schema: JSON.stringify(project.exportSchema(IPublicEnumTransformStage.Save)),
     package: JSON.stringify(await filterPackages(material?.getAssets()?.packages)),
   })

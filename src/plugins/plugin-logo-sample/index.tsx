@@ -29,7 +29,7 @@ const Logo: React.FC<IProps> = (props): React.ReactElement => {
       {/* <div className="scenario-name">当前路径:{scenarioDisplayName}</div> */}
       <div style={{flex: 1, overflow: 'hidden'}}>
         <span style={{display: 'block', fontSize: '14px', fontWeight: 'bold', textWrap: 'nowrap'}}>
-          当前页面:
+          当前编辑页面:
           <a style={{color: '#3e71f7', cursor: "pointer"}}>{nodePath}</a>
         </span>
         <span>{nodeDescribe}</span>

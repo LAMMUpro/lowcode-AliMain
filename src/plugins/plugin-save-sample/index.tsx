@@ -4,6 +4,8 @@ import {
   resetSchema,
   updatePageInfo
 } from '../../services/pageManage';
+import { config } from '@alilc/lowcode-engine';
+import { useEffect } from 'react';
 
 // 保存功能示例
 const SaveSamplePlugin = (ctx: IPublicModelPluginContext) => {

@@ -110,17 +110,25 @@ class PageManagePane extends React.Component {
   }
 
   async componentDidMount() {
-    if (!this.state.applicationList?.length) return;
-    if (!this.state.applicationList.find(app=>app.id===this.state.applicationId)) return;
-    await this.updateAppVersions();
-    await this.updateAppAllEnv();
-    if (!this.state.appVersionList?.length) return;
-    if (!this.state.appVersionList.find(version=>version.id===this.state.appVersionId)) return;
-    await this.updateAppEnvs();
-    await this.updatePageNodes();
-    if (!this.state.nodeList?.length) return;
-    if (!this.state.nodeList.find(node=>node.id==this.state.nodeId)) return;
-    await this.updateEditPage();
+    this.setState({
+      loading: true
+    })
+    setTimeout(async () => {
+      if (!this.state.applicationList?.length) return;
+      if (!this.state.applicationList.find(app=>app.id===this.state.applicationId)) return;
+      await this.updateAppVersions();
+      await this.updateAppAllEnv();
+      if (!this.state.appVersionList?.length) return;
+      if (!this.state.appVersionList.find(version=>version.id===this.state.appVersionId)) return;
+      await this.updateAppEnvs();
+      await this.updatePageNodes();
+      if (!this.state.nodeList?.length) return;
+      if (!this.state.nodeList.find(node=>node.id==this.state.nodeId)) return;
+      await this.updateEditPage();
+      this.setState({
+        loading: false
+      })
+    });
   }
 
   componentDidUpdate() {
@@ -388,7 +396,7 @@ class PageManagePane extends React.Component {
       offset: [e.clientX - left, e.clientY - top],
       className: "context-menu",
       popupClassName: "context-menu",
-      onItemClick: console.log,
+      // onItemClick: console.log,
       selectedKeys: this.state.selectedKeys,
       selectMode: "multiple",
       onSelect: this.handleSelect,
@@ -431,8 +439,11 @@ class PageManagePane extends React.Component {
     // project.openDocument(JSON.parse(JSON.stringify(defaultSchema)));
 
     if (schema) {
-      // project.openDocument(schema);
-      project.getCurrentDocument()?.importSchema(schema);
+      if (project.getCurrentDocument()) {
+        project.getCurrentDocument()?.importSchema(schema);
+      } else {
+        project.openDocument(schema);
+      }
     } else {
       // project.openDocument(JSON.parse(JSON.stringify(defaultSchema)));
       project.getCurrentDocument()?.importSchema(JSON.parse(JSON.stringify(defaultSchema)));

@@ -1,4 +1,4 @@
-import { config, event, init, material, plugins } from '@alilc/lowcode-engine';
+import { config, event, init, material, plugins, project } from '@alilc/lowcode-engine';
 import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
 import EditorInitPlugin from './plugins/plugin-editor-init';
 import UndoRedoPlugin from '@alilc/lowcode-plugin-undo-redo';
@@ -71,7 +71,8 @@ async function registerPlugins() {
 
   await plugins.register(SimulatorResizerPlugin);
 
-  await plugins.register(LoadIncrementalAssetsWidgetPlugin);
+  // 异步加载资源
+  // await plugins.register(LoadIncrementalAssetsWidgetPlugin);
 
 
   // 插件参数声明 & 传递，参考：https://lowcode-engine.cn/site/docs/api/plugins#设置插件参数版本示例
@@ -102,7 +103,7 @@ async function registerPlugins() {
   await plugins.register(CodeEditorPlugin);
 
   // 注册出码插件
-  await plugins.register(CodeGenPlugin);
+  // await plugins.register(CodeGenPlugin);
 
   await plugins.register(SaveSamplePlugin);
 
@@ -128,4 +129,5 @@ async function registerPlugins() {
       fetch: createFetchHandler()
     }
   });
+
 })();

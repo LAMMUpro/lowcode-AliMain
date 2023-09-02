@@ -1,5 +1,5 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
-import { Button } from '@alifd/next';
+import { Button, Message } from '@alifd/next';
 import {
   updatePageInfo
 } from '../../services/pageManage';
@@ -10,7 +10,8 @@ const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
     async init() {
       const { skeleton, config } = ctx;
       const doPreview = () => {
-        const scenarioName = config.get('scenarioName');
+        const schemaId = config.get('schemaId');
+        if (!schemaId) return Message.warning("没有选中页面!");
 
         updatePageInfo();
         setTimeout(() => {
