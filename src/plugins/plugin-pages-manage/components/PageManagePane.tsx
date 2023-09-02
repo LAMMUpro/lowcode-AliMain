@@ -57,7 +57,7 @@ class PageManagePane extends React.Component {
       isShowAddAppVersionDialog: false,
       isShowBindAppVersionEnvDialog: false,
       appDialogType: 'add',
-      applicationId: undefined,
+      applicationId: +(localStorage.getItem("active:applicationId")||0),
       applicationList: config.get("applicationList"),
       applicationInfo: getDefaultApplication(),
       appVersionInfo: getDefaultAppVersion(0),
@@ -66,8 +66,8 @@ class PageManagePane extends React.Component {
         appVersionId: 0,
         version: ''
       },
-      appVersionId: undefined,
-      appVersion: '',
+      appVersionId: +(localStorage.getItem("active:appVersionId")||0),
+      appVersion: localStorage.getItem("active:appVersion")||'',
       appVersionList: [],
       appEnvList: [],
       appAllEnvList: [],
@@ -103,8 +103,15 @@ class PageManagePane extends React.Component {
     // this.updatePageNodes();
   }
 
-  componentDidMount() {
-      
+  async componentDidMount() {
+    if (!this.state.applicationList?.length) return;
+    if (!this.state.applicationList.find(app=>app.id===this.state.applicationId)) return;
+    await this.updateAppVersions();
+    await this.updateAppAllEnv();
+    if (!this.state.appVersionList?.length) return;
+    if (!this.state.appVersionList.find(version=>version.id===this.state.appVersionId)) return;
+    await this.updateAppEnvs();
+    await this.updatePageNodes();
   }
 
   componentDidUpdate() {
@@ -138,7 +145,7 @@ class PageManagePane extends React.Component {
     appVersionInfo: AppVersionDtoCreate
     appEnvInfo: SpaceAppEnvDto.updateAppEnv,
     /** 当前选中的应用id */
-    applicationId?: number
+    applicationId: number
     /** 应用列表 */
     applicationList: Array<{
       id: number
@@ -146,7 +153,7 @@ class PageManagePane extends React.Component {
       _describe: string
     }>
     /** 当前选中的应用版本id */
-    appVersionId?: number
+    appVersionId: number
     /** 当前应用版本name */
     appVersion: string
     /** 应用版本 */
@@ -206,6 +213,7 @@ class PageManagePane extends React.Component {
         onSelectEnvIdList: res.data.map((item:any)=>item.id)
       })
     }
+    localStorage.setItem("active:appEnvList", JSON.stringify(res.data));
   }
 
   async updatePageNodes() {
@@ -276,6 +284,7 @@ class PageManagePane extends React.Component {
     this.setState({
       applicationId,
     })
+    localStorage.setItem("active:applicationId", '' + applicationId);
     setTimeout(()=> {
       this.updateAppVersions();
       this.updateAppAllEnv();
@@ -288,6 +297,8 @@ class PageManagePane extends React.Component {
       appVersionId,
       appVersion: this.state.appVersionList.find(item=>item.id == appVersionId)?.version || '',
     })
+    localStorage.setItem("active:appVersionId", '' + appVersionId);
+    localStorage.setItem("active:appVersion", this.state.appVersion);
     setTimeout(()=> {
       this.updateAppEnvs();
       this.updatePageNodes();
