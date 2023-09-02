@@ -56,7 +56,7 @@ class PageManagePane extends React.Component {
       loading: false,
       isShowEditNodeInfoDialog: false,
       nodeDialogType: 'add',
-      nodeId: undefined,
+      nodeId: +(localStorage.getItem("active:nodeId")||0),
       nodeInfo: getDefaultNode(),
 
       isShowEditApplicationInfoDialog: false,
@@ -106,8 +106,7 @@ class PageManagePane extends React.Component {
     this.handleBindVersionEnv = this.handleBindVersionEnv.bind(this);
     this.updateAppAllEnv = this.updateAppAllEnv.bind(this);
     this.handleSaveBindEnvs = this.handleSaveBindEnvs.bind(this);
-    // this.updateApplicationList();
-    // this.updatePageNodes();
+    this.updateEditPage = this.updateEditPage.bind(this);
   }
 
   async componentDidMount() {
@@ -119,6 +118,9 @@ class PageManagePane extends React.Component {
     if (!this.state.appVersionList.find(version=>version.id===this.state.appVersionId)) return;
     await this.updateAppEnvs();
     await this.updatePageNodes();
+    if (!this.state.nodeList?.length) return;
+    if (!this.state.nodeList.find(node=>node.id==this.state.nodeId)) return;
+    await this.updateEditPage();
   }
 
   componentDidUpdate() {
@@ -137,7 +139,7 @@ class PageManagePane extends React.Component {
     loading: boolean
     isShowEditNodeInfoDialog: boolean
     nodeDialogType: 'add'|'edit'
-    nodeId?: number
+    nodeId: number
     nodeInfo: PageNodeDtoCreate
 
     isShowEditApplicationInfoDialog: boolean
@@ -390,7 +392,7 @@ class PageManagePane extends React.Component {
       selectMode: "multiple",
       onSelect: this.handleSelect,
       children: [
-        <Item key="1" onClick={()=>this.handleEditPage(node.props)}>编辑当前页面</Item>,
+        <Item key="1" onClick={()=>this.handleEditPage(node.props.eventKey)}>编辑当前页面</Item>,
         <Item key="2" onClick={()=>this.handleEditNodeInfo(node.props)}>编辑节点信息</Item>,
         <Divider key="divider-1" />,
         <Item key="4" onClick={()=>this.deletePageInfo(node.props.eventKey)}>删除页面</Item>,
@@ -408,20 +410,21 @@ class PageManagePane extends React.Component {
     })
   }
 
-  /** 编辑页面 */
-  async handleEditPage(node: any) {
-    const res = await findPageSchemaByNodeId({nodeId: node.eventKey});
+  /** 更新编辑的页面 */
+  async updateEditPage() {
+    const nodeId = this.state.nodeId;
+    const res = await findPageSchemaByNodeId({nodeId: nodeId});
 
-    const _node_ = this.state.nodeList.find(item=>item.id == node.eventKey);
+    const _node_ = this.state.nodeList.find(item=>item.id == nodeId);
     
     config.set('schemaId', res.data.id);
-    config.set('nodeId', node.eventKey);
+    config.set('nodeId', nodeId);
     config.set('nodePath', _node_?.path);
     config.set('nodeDescribe', _node_?.describe);
-
+    localStorage.setItem('active:nodeId', '' + nodeId);
+    
     event.emit('update:nodePath');
 
-    console.log("res.data", res.data)
     const schema = res.data.schema?.componentsTree?.[0];
 
     // project.openDocument(JSON.parse(JSON.stringify(defaultSchema)));
@@ -429,12 +432,21 @@ class PageManagePane extends React.Component {
     if (schema) {
       // project.openDocument(schema);
       project.getCurrentDocument()?.importSchema(schema);
-
     } else {
       // project.openDocument(JSON.parse(JSON.stringify(defaultSchema)));
       project.getCurrentDocument()?.importSchema(JSON.parse(JSON.stringify(defaultSchema)));
     }
     project.simulatorHost?.rerender();
+  }
+
+  /** 编辑页面 */
+  async handleEditPage(nodeId: number) {
+    this.setState({
+      nodeId
+    })
+    setTimeout(()=>{
+      this.updateEditPage();
+    })
   }
 
   /** 编辑节点信息 */
