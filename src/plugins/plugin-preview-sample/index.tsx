@@ -12,7 +12,6 @@ const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
       const doPreview = () => {
         const scenarioName = config.get('scenarioName');
 
-        // saveSchema(scenarioName);
         updatePageInfo();
         setTimeout(() => {
           const search = `?nodeId=${config.get('nodeId')}`; //location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;

@@ -1,8 +1,8 @@
 import { Form, Input, Dialog, Icon, CascaderSelect, Button, Message } from '@alifd/next';
 import React from 'react';
 import { createPageNode, updatePageNodeById } from 'src/api/PageNode';
-import { PageNode, saveNode, updateNode } from 'src/services/api';
 import { PageNodeDtoCreate } from 'src/types/dto/PageNode';
+import { PageNode } from 'src/types/dtoExt/PageNode';
 
 interface PropsType {
   visible: boolean

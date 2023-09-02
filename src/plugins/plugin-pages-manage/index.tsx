@@ -1,6 +1,5 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import PageManagePane from './components/PageManagePane';
-import { AppEnvDtoCreate } from 'src/types/dto/AppEnv';
 
 const _PluginName_ = 'PagesManagePlugin';
 const PagesManagePlugin = (ctx: IPublicModelPluginContext) => {

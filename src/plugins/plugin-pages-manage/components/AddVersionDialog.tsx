@@ -1,10 +1,7 @@
 import { Form, Input, Dialog, Icon, Message, Button } from '@alifd/next';
 import React, { useEffect } from 'react';
 import { createAppVersion } from 'src/api/AppVersion';
-import { createApplication, updateApplicationById } from 'src/api/Application';
-import { saveApplication, updateApplication } from 'src/services/api';
 import { AppVersionDtoCreate } from 'src/types/dto/AppVersion';
-import { ApplicationDtoCreate } from 'src/types/dto/Application';
 
 interface PropsType {
   visible: boolean

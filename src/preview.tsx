@@ -5,7 +5,6 @@ import { buildComponents, assetBundle, AssetLevel, AssetLoader } from '@alilc/lo
 import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
 import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
-import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from './services/pageManage';
 import { config } from '@alilc/lowcode-engine';
 import { generateRemoteHandleMap } from './utils/data-helper';
 import { findPageSchemaByNodeId } from './api/PageSchema';
@@ -33,8 +32,6 @@ const SamplePreview = () => {
     const packages = res.data.package;
     const projectSchema = res.data.schema;
     const scenarioName = getScenarioName();
-    // const packages = await getPackagesFromLocalStorage(scenarioName);
-    // const projectSchema = await getProjectSchemaFromLocalStorage(scenarioName);
     const { componentsMap: componentsMapArray, componentsTree } = projectSchema;
     const componentsMap: any = {};
     componentsMapArray.forEach((component: any) => {

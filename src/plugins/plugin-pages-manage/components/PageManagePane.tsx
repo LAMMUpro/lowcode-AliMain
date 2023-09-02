@@ -221,6 +221,7 @@ class PageManagePane extends React.Component {
     localStorage.setItem("active:appEnvList", JSON.stringify(res.data));
   }
 
+  /** 更新节点树 */
   async updatePageNodes() {
     if (!this.state.applicationId) return Message.show({
       type: "warning",

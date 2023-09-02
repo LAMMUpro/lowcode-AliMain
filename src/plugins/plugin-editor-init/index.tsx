@@ -1,6 +1,6 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import { injectAssets } from '@alilc/lowcode-plugin-inject';
-import { defaultSchema, getPageSchema } from '../../services/pageManage';
+import { defaultSchema } from '../../services/pageManage';
 import assets from 'src/assets/assets';
 
 const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
@@ -22,7 +22,6 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
       /**
        * 首次进入页面先不加载
        */
-      // const schema = await getPageSchema(scenarioName);
 
       // 加载 schema
       project.openDocument(defaultSchema);

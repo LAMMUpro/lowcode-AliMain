@@ -1,12 +1,7 @@
 import { Form, Input, Dialog, Icon, Message, Button, Tag } from '@alifd/next';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { updateAppEnv } from 'src/api/AppEnv';
-import { createAppVersion } from 'src/api/AppVersion';
-import { createApplication, updateApplicationById } from 'src/api/Application';
-import { saveApplication, updateApplication } from 'src/services/api';
 import { AppEnvDto } from 'src/types/dto/AppEnv';
-import { AppVersionDtoCreate } from 'src/types/dto/AppVersion';
-import { ApplicationDtoCreate } from 'src/types/dto/Application';
 import { SpaceAppEnvDto } from 'src/types/dtoExt/AppEnv';
 
 interface PropsType {

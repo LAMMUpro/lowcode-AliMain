@@ -2,7 +2,6 @@ import { material, project, config } from '@alilc/lowcode-engine';
 import { filterPackages } from '@alilc/lowcode-plugin-inject'
 import { Message, Dialog } from '@alifd/next';
 import { IPublicEnumTransformStage } from '@alilc/lowcode-types';
-import { getPageInfo, savePageInfo, PackageType, ProjectSchemaType, updatePage } from './api';
 import { updatePageSchemaById } from 'src/api/PageSchema';
 
 export const defaultSchema = {
@@ -91,17 +90,6 @@ export const updatePageInfo = async () => {
   Message.success('成功保存到远端');
 };
 
-export const saveSchema = async (scenarioName: string = 'unknown') => {
-  await savePageInfo({
-    path: '/index',
-    projectSchema: project.exportSchema(IPublicEnumTransformStage.Save),
-    packages: await filterPackages(material?.getAssets()?.packages),
-  })
-  // await setProjectSchemaToLocalStorage(scenarioName);
-  // await setPackagesToLocalStorage(scenarioName);
-  Message.success('成功保存到远端');
-};
-
 export const resetSchema = async (scenarioName: string = 'unknown') => {
   try {
     await new Promise<void>((resolve, reject) => {
@@ -129,7 +117,11 @@ export const resetSchema = async (scenarioName: string = 'unknown') => {
   project.getCurrentDocument()?.importSchema(schema as any);
   project.simulatorHost?.rerender();
 
-  await saveSchema(scenarioName);
+  await updatePageSchemaById({
+    id: +config.get('schemaId'),
+    schema: JSON.stringify(project.exportSchema(IPublicEnumTransformStage.Save)),
+    package: JSON.stringify(await filterPackages(material?.getAssets()?.packages)),
+  })
   Message.success('成功重置页面');
 }
 
@@ -157,19 +149,3 @@ export const resetSchema = async (scenarioName: string = 'unknown') => {
 //     JSON.stringify(packages),
 //   );
 // }
-
-export const getProjectSchemaFromLocalStorage = async (scenarioName: string) => {
-  const res = await getPageInfo({path: '/index'});
-  return res.data.projectSchema || {};
-}
-
-export const getPackagesFromLocalStorage = async (scenarioName: string) => {
-  const res = await getPageInfo({path: '/index'});
-  return res.data.packages || [];
-}
-
-/** 获取Schema */
-export const getPageSchema = async (scenarioName: string = 'unknown') => {
-  const res = await getPageInfo({path: '/index'});
-  return res.data.projectSchema?.componentsTree?.[0] || defaultSchema;
-};
