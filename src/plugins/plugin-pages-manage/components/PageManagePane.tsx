@@ -17,6 +17,7 @@ import { PageNodeDto, PageNodeDtoCreate } from 'src/types/dto/PageNode';
 import { deletePageSchemaById, findPageSchemaByNodeId } from 'src/api/PageSchema';
 import { ApplicationDto } from 'src/types/dto/Application';
 import { PageNode } from 'src/types/dtoExt/PageNode';
+import { SpaceAppVersionDto } from 'src/types/dtoExt/AppVersion';
 
 const { Item, Divider } = Menu;
 
@@ -37,8 +38,9 @@ function getDefaultNode(applicationId: number = 0, version: string = ''): PageNo
   }
 }
 
-function getDefaultAppVersion(applicationId: number): AppVersionDtoCreate {
+function getDefaultAppVersion(applicationId: number = 0, extendVersionId: number = 0): SpaceAppVersionDto.create {
   return {
+    extendVersionId,
     applicationId,
     version: ''
   }
@@ -66,7 +68,7 @@ class PageManagePane extends React.Component {
       applicationId: +(localStorage.getItem("active:applicationId")||0),
       applicationList: config.get("applicationList"),
       applicationInfo: getDefaultApplication(),
-      appVersionInfo: getDefaultAppVersion(0),
+      appVersionInfo: getDefaultAppVersion(),
       appEnvInfo: {
         envIdList: [],
         appVersionId: 0,
@@ -162,7 +164,7 @@ class PageManagePane extends React.Component {
       name: string
       describe: string
     }
-    appVersionInfo: AppVersionDtoCreate
+    appVersionInfo: SpaceAppVersionDto.create
     appEnvInfo: SpaceAppEnvDto.updateAppEnv,
     /** 当前选中的应用id */
     applicationId: number
@@ -256,7 +258,7 @@ class PageManagePane extends React.Component {
   handleAddVersion(node: any) {
     this.setState({
       isShowAddAppVersionDialog: true,
-      appVersionInfo: getDefaultAppVersion(this.state.applicationId!),
+      appVersionInfo: getDefaultAppVersion(this.state.applicationId, this.state.appVersionId),
     })
   }
 
@@ -316,8 +318,14 @@ class PageManagePane extends React.Component {
 
   /** 切换应用 */
   handleAppIdChange(applicationId: number) {
+    this.state.appVersionId
     this.setState({
       applicationId,
+      appVersionId: '',
+      appVersionList: [],
+      appEnvList: [],
+      nodeList: [],
+      pageNodes: []
     })
     localStorage.setItem("active:applicationId", '' + applicationId);
     setTimeout(()=> {
@@ -354,11 +362,11 @@ class PageManagePane extends React.Component {
     }
   }
 
-  deletePageInfo(id: number) {
+  deletePageInfo(nodeId: number) {
     Dialog.confirm({
       content: '确定要删除该节点页面数据吗？',
       onOk: async () => {
-        const res = await deletePageSchemaById({id});
+        const res = await deletePageSchemaById({nodeId});
         if (res.code == 1) {
           Message.show({
             type: "success",
@@ -437,20 +445,14 @@ class PageManagePane extends React.Component {
     
     event.emit('update:nodePath');
 
-    const schema = res.data.schema?.componentsTree?.[0];
+    const schema = res.data.schema?.componentsTree?.[0] || JSON.parse(JSON.stringify(defaultSchema));
 
-    // project.openDocument(JSON.parse(JSON.stringify(defaultSchema)));
-
-    if (schema) {
-      if (project.getCurrentDocument()) {
-        project.getCurrentDocument()?.importSchema(schema);
-      } else {
-        project.openDocument(schema);
-      }
+    if (project.getCurrentDocument()) {
+      project.getCurrentDocument()?.importSchema(schema);
     } else {
-      // project.openDocument(JSON.parse(JSON.stringify(defaultSchema)));
-      project.getCurrentDocument()?.importSchema(JSON.parse(JSON.stringify(defaultSchema)));
+      project.openDocument(schema);
     }
+    
     project.simulatorHost?.rerender();
   }
 
@@ -612,7 +614,10 @@ class PageManagePane extends React.Component {
           >
             {
               this.state.appVersionList.map(item=>(
-                <Select.Option value={item.id}>{item.version}</Select.Option>
+                <Select.Option value={item.id}>
+                  <span>{item.version}</span>
+                  <span>{this.state.appAllEnvList.filter(env=>env.appVersionId==item.id).map(item=>item.envCh).join(',')}</span>
+                </Select.Option>
               ))
             }
           </Select>
@@ -714,6 +719,7 @@ class PageManagePane extends React.Component {
         <AddVersionDialog 
           visible={this.state.isShowAddAppVersionDialog}
           originInfo={this.state.appVersionInfo}
+          appVersionList={this.state.appVersionList}
           onClose={()=>this.setState({isShowAddAppVersionDialog: false})}
           success={this.handleAddEditAppSuccess}
         ></AddVersionDialog>

@@ -1,10 +1,11 @@
 import { AppVersionDtoCreate, AppVersionDtoFindAll } from "src/types/dto/AppVersion";
+import { SpaceAppVersionDto } from "src/types/dtoExt/AppVersion";
 import { request } from "src/utils";
 
 /**
  * 添加一个应用版本
  */
-export async function createAppVersion(params: AppVersionDtoCreate) {
+export async function createAppVersion(params: SpaceAppVersionDto.create) {
   return request('POST', '/app-version', params);
 }
 

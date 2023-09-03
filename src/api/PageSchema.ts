@@ -12,8 +12,8 @@ export async function createPageSchema(params: PageSchemaDtoCreate) {
 /**
  * 删除某个页面schema
  */
-export async function deletePageSchemaById(params: { id: number }) {
-  return request('DELETE', `/page-schema/${params.id}`, {});
+export async function deletePageSchemaById(params: { nodeId: number }) {
+  return request('DELETE', `/page-schema/${params.nodeId}`, {});
 }
 
 /**

@@ -1,11 +1,14 @@
-import { Form, Input, Dialog, Icon, Message, Button } from '@alifd/next';
+import { Form, Input, Dialog, Select, Message, Button } from '@alifd/next';
 import React, { useEffect } from 'react';
 import { createAppVersion } from 'src/api/AppVersion';
-import { AppVersionDtoCreate } from 'src/types/dto/AppVersion';
+import { AppVersionDto, AppVersionDtoCreate } from 'src/types/dto/AppVersion';
+import { SpaceAppVersionDto } from 'src/types/dtoExt/AppVersion';
 
 interface PropsType {
   visible: boolean
-  originInfo: AppVersionDtoCreate
+  originInfo: SpaceAppVersionDto.create
+  /** 应用版本 */
+  appVersionList: Array<AppVersionDto>
   onClose: () => void
   success: () => void
 }
@@ -13,22 +16,44 @@ interface PropsType {
 class AddVersionDialog extends React.Component<PropsType> {
   constructor(props: PropsType) {
     super(props);
+    this.state = {
+      loading: false
+    }
   }
 
-  async handleSubmit(values: AppVersionDtoCreate, isNotPass: boolean) {
+  state: {
+    loading: boolean
+  }
+
+  async handleSubmit(values: SpaceAppVersionDto.create, isNotPass: boolean) {
     if (isNotPass) return;
-    const res = await createAppVersion({
-      applicationId: this.props.originInfo.applicationId,
-      version: values.version
-    });
-    if (res.code == 1) {
-      Message.show({
-        type: "success",
-        content: "新增版本成功"
+    /** 版本号重复校验 */
+    if ( this.props.appVersionList.find(item=>item.version == values.version)) return Message.warning("版本号不能重复");
+    /** 版本号格式校验 */
+    if ( !/^\d{1,2}\.\d{1,2}\.\d{1,2}$/.test(values.version||'') ) return Message.warning("版本号格式不对");
+    
+    this.setState({
+      loading: true
+    })
+    
+    setTimeout(async () => {
+      const res = await createAppVersion({
+        applicationId: this.props.originInfo.applicationId,
+        extendVersionId: values.extendVersionId,
+        version: values.version
       });
-      this.props.onClose();
-      this.props.success();
-    }
+      if (res.code == 1) {
+        Message.show({
+          type: "success",
+          content: "新增版本成功"
+        });
+        this.setState({
+          loading: false
+        })
+        this.props.onClose();
+        this.props.success();
+      }
+    });
   };
 
   render(): React.ReactNode {
@@ -47,6 +72,24 @@ class AddVersionDialog extends React.Component<PropsType> {
               {...{labelCol: { fixedSpan: 6 }, wrapperCol: { span: 18 }}}
             >
               <Form.Item
+                label="基于分支"
+                required
+                requiredMessage="版本号不能为空"
+              >
+                <Select 
+                  name="extendVersionId" 
+                  placeholder="请选择分支"
+                  defaultValue={this.props.originInfo.extendVersionId}
+                  style={{ width: '100%' }}
+                >
+                  {
+                    this.props.appVersionList.map(item=>(
+                      <Select.Option value={item.id}>{item.version}</Select.Option>
+                    ))
+                  }
+                </Select>
+              </Form.Item>
+              <Form.Item
                 label="版本号"
                 required
                 requiredMessage="版本号不能为空"
@@ -62,6 +105,7 @@ class AddVersionDialog extends React.Component<PropsType> {
                   validate
                   onClick={this.handleSubmit.bind(this)}
                   style={{ marginRight: 8 }}
+                  loading={this.state.loading}
                 >
                   确定
                 </Form.Submit>
