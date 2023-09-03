@@ -1,8 +1,8 @@
 interface requestParams {}
 interface requestData {}
 
-// const host = 'http://localhost:9000'
-const host = 'https://lowcodenest.lammu.cn'
+const host = 'http://localhost:9000'
+// const host = 'https://lowcodenest.lammu.cn'
 
 export async function request(
   method: requestMethods = "GET",
