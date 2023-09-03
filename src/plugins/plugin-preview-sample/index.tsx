@@ -9,15 +9,13 @@ const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
   return {
     async init() {
       const { skeleton, config } = ctx;
-      const doPreview = () => {
+      const doPreview = async () => {
         const schemaId = config.get('schemaId');
         if (!schemaId) return Message.warning("没有选中页面!");
 
-        updatePageInfo();
-        setTimeout(() => {
-          const search = `?nodeId=${config.get('nodeId')}`; //location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
-          window.open(`./preview.html${search}`);
-        }, 500);
+        await updatePageInfo();
+        const search = `?nodeId=${config.get('nodeId')}`; //location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
+        window.open(`./preview.html${search}`);
       };
       skeleton.add({
         name: 'previewSample',

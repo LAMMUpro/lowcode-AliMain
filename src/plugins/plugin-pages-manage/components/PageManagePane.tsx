@@ -99,6 +99,7 @@ class PageManagePane extends React.Component {
     this.updatePageNodes = this.updatePageNodes.bind(this);
     this.handleAddNodeInfo = this.handleAddNodeInfo.bind(this);
     this.handleEditNodeInfo = this.handleEditNodeInfo.bind(this);
+    this.handlePreview = this.handlePreview.bind(this);
     this.handleAddEditNodeSuccess = this.handleAddEditNodeSuccess.bind(this);
     this.handleEditPage = this.handleEditPage.bind(this);
     this.updateAppVersions = this.updateAppVersions.bind(this);
@@ -412,7 +413,8 @@ class PageManagePane extends React.Component {
 
   onRightClick = ({event: e, node}: any) => {
     e.preventDefault();
-    if (this.state.nodeList.find(item=>item.id==node.props.eventKey)?.parentId==0) return Message.show({
+    const pageNode = this.state.nodeList.find(item=>item.id==node.props.eventKey);
+    if (pageNode?.parentId==0) return Message.show({
       type: "notice",
       content: "根节点不可操作"
     });
@@ -431,6 +433,10 @@ class PageManagePane extends React.Component {
       children: [
         <Item key="1" onClick={()=>this.handleEditPage(node.props.eventKey)}>编辑当前页面</Item>,
         <Item key="2" onClick={()=>this.handleEditNodeInfo(node.props)}>编辑节点信息</Item>,
+        <Divider key="divider-1" />,
+        <Item key="5" onClick={()=>this.handlePreview(node.props.eventKey)}
+          disabled={!pageNode?.hasSchema}
+        >预览</Item>,
         <Divider key="divider-1" />,
         <Item key="4" onClick={()=>this.deletePageInfo(node.props.eventKey)}>删除页面</Item>,
         <Item key="3" onClick={()=>this.deleteNode(node.props.eventKey)}>删除节点</Item>
@@ -490,6 +496,12 @@ class PageManagePane extends React.Component {
       isShowEditNodeInfoDialog: true,
       nodeInfo: this.state.nodeList.find(item=>item.id == node.eventKey)
     })
+  }
+
+  /** 预览节点 */
+  handlePreview(nodeId: number) {
+    const search = `?nodeId=${nodeId}`;
+    window.open(`./preview.html${search}`);
   }
 
   /** 新增/编辑 节点成功 回调 */
