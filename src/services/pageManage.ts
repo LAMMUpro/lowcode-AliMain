@@ -1,4 +1,4 @@
-import { material, project, config } from '@alilc/lowcode-engine';
+import { material, project, config, event } from '@alilc/lowcode-engine';
 import { filterPackages } from '@alilc/lowcode-plugin-inject'
 import { Message, Dialog } from '@alifd/next';
 import { IPublicEnumTransformStage } from '@alilc/lowcode-types';
@@ -88,6 +88,7 @@ export const updatePageInfo = async () => {
   })
   // await setProjectSchemaToLocalStorage(scenarioName);
   // await setPackagesToLocalStorage(scenarioName);
+  event.emit("update:pageNodes");
   Message.success('成功保存到远端');
 };
 

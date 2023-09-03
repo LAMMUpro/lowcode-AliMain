@@ -93,6 +93,8 @@ class PageManagePane extends React.Component {
     this.handleAddApplicationInfo = this.handleAddApplicationInfo.bind(this);
     this.handleEditApplicationInfo = this.handleEditApplicationInfo.bind(this);
     this.handleAddEditAppSuccess = this.handleAddEditAppSuccess.bind(this);
+    this.handleAddVersionSuccess = this.handleAddVersionSuccess.bind(this);
+    this.handleEditVersionEnvSuccess = this.handleEditVersionEnvSuccess.bind(this);
     this.handleAppIdChange = this.handleAppIdChange.bind(this);
     this.updatePageNodes = this.updatePageNodes.bind(this);
     this.handleAddNodeInfo = this.handleAddNodeInfo.bind(this);
@@ -109,6 +111,8 @@ class PageManagePane extends React.Component {
     this.updateAppAllEnv = this.updateAppAllEnv.bind(this);
     this.handleSaveBindEnvs = this.handleSaveBindEnvs.bind(this);
     this.updateEditPage = this.updateEditPage.bind(this);
+    
+    event.on('common:update:pageNodes', this.updatePageNodes)
   }
 
   async componentDidMount() {
@@ -274,6 +278,7 @@ class PageManagePane extends React.Component {
         type: "success",
         content: "绑定环境成功"
       });
+      this.updateAppEnvs();
     }
   }
 
@@ -314,6 +319,17 @@ class PageManagePane extends React.Component {
   /** 新增/编辑应用信息 成功回调 */
   handleAddEditAppSuccess() {
     this.updateApplicationList();
+  }
+
+  /** 添加版本 */
+  handleAddVersionSuccess() {
+    this.updateAppVersions();
+  }
+
+  /** 编辑环境 */
+  handleEditVersionEnvSuccess() {
+    this.updateAppAllEnv();
+    this.updateAppEnvs();
   }
 
   /** 切换应用 */
@@ -372,6 +388,7 @@ class PageManagePane extends React.Component {
             type: "success",
             content: "清空页面数据成功"
           });
+          this.updatePageNodes();
         }
       },
     })
@@ -678,26 +695,34 @@ class PageManagePane extends React.Component {
           ) : <></>
         }
         {
+          (!this.state.appVersionId) ? (
+            <div style={{textAlign: 'center', marginTop: '10px'}}>请先选择版本!</div>
+          ) : <></>
+        }
+        {
           (this.state.applicationId && !this.state.pageNodes.length) ? (
             <div style={{textAlign: 'center', marginTop: '10px'}}>该应该暂无节点, 请先新增节点!</div>
           ) : <></>
         }
-        <Tree
-          draggable
-          editable
-          showLine
-          isNodeBlock
-          defaultExpandAll 
-          expandedKeys={expandedKeys}
-          autoExpandParent={autoExpandParent}
-          filterTreeNode={filterTreeNode}
-          onExpand={this.handleExpand}
-          onRightClick={this.onRightClick}
-        >
-          {
-            this.state.pageNodes.map(item=> renderNode(item))
-          }
-        </Tree>
+        {
+          (this.state.applicationId && this.state.appVersionId && this.state.pageNodes.length) && <Tree
+            draggable
+            editable
+            showLine
+            isNodeBlock
+            defaultExpandAll 
+            expandedKeys={expandedKeys}
+            autoExpandParent={autoExpandParent}
+            filterTreeNode={filterTreeNode}
+            onExpand={this.handleExpand}
+            onRightClick={this.onRightClick}
+          >
+            {
+              this.state.pageNodes.map(item=> renderNode(item))
+            }
+          </Tree>
+        }
+        
 
         <EditNodeInfoDialog 
           visible={this.state.isShowEditNodeInfoDialog}
@@ -721,7 +746,7 @@ class PageManagePane extends React.Component {
           originInfo={this.state.appVersionInfo}
           appVersionList={this.state.appVersionList}
           onClose={()=>this.setState({isShowAddAppVersionDialog: false})}
-          success={this.handleAddEditAppSuccess}
+          success={this.handleAddVersionSuccess}
         ></AddVersionDialog>
 
         <EditVersionEnvDialog
@@ -729,7 +754,7 @@ class PageManagePane extends React.Component {
           originInfo={this.state.appEnvInfo}
           appAllEnvList={this.state.appAllEnvList}
           onClose={()=>this.setState({isShowBindAppVersionEnvDialog: false})}
-          success={this.handleAddEditAppSuccess}
+          success={this.handleEditVersionEnvSuccess}
         ></EditVersionEnvDialog>
       </Loading>
     );
