@@ -5,7 +5,7 @@ import AddEditApplicationDialog from './AddEditApplicationDialog';
 import { material, project, config, event } from '@alilc/lowcode-engine';
 import { defaultSchema } from 'src/services/pageManage';
 import { deleteApplicationById, findAllApplication } from 'src/api/Application';
-import { createAppVersion, deleteAppVersionById, findAllAppVersionByAppId } from 'src/api/AppVersion';
+import { createAppVersion, deleteAppVersionById, findAllAppVersionByAppId, verifyAppVersion } from 'src/api/AppVersion';
 import AddVersionDialog from './AddVersionDialog';
 import AddEnvDialog from './AddEnvDialog';
 import EditVersionEnvDialog from './EditVersionEnvDialog';
@@ -105,6 +105,7 @@ class PageManagePane extends React.Component {
     this.handleEditApplicationInfo = this.handleEditApplicationInfo.bind(this);
     this.handleAddEditAppSuccess = this.handleAddEditAppSuccess.bind(this);
     this.handleAddVersionSuccess = this.handleAddVersionSuccess.bind(this);
+    this.handleVerify = this.handleVerify.bind(this);
     this.handleAddEnvSuccess = this.handleAddEnvSuccess.bind(this);
     this.handleEditVersionEnvSuccess = this.handleEditVersionEnvSuccess.bind(this);
     this.handleAppIdChange = this.handleAppIdChange.bind(this);
@@ -279,6 +280,23 @@ class PageManagePane extends React.Component {
     this.setState({
       isShowAddAppVersionDialog: true,
       appVersionInfo: getDefaultAppVersion(this.state.applicationId, this.state.appVersionId),
+    })
+  }
+
+  /** 提交审核 */
+  handleVerify() {
+    Dialog.confirm({
+      content: `确定要将该版本[${this.state.appVersion}]提交审核吗？审核完成后可以绑定正式环境!`,
+      onOk: async () => {
+        const res = await verifyAppVersion({id: this.state.appVersionId});
+        if (res.code == 1) {
+          Message.show({
+            type: "success",
+            content: "提交成功"
+          });
+          this.updateAppVersions();
+        }
+      },
     })
   }
 
@@ -690,7 +708,7 @@ class PageManagePane extends React.Component {
               || this.state.appVersionList.find(item=>item.id==this.state.appVersionId)?.isPass
               || this.state.appVersionList.find(item=>item.id==this.state.appVersionId)?.isAuditing
             }
-            onClick={this.handleAddVersion}
+            onClick={this.handleVerify}
           >提审</Button>
           <Button type="normal" size="small" style={{marginLeft: '2px'}}
             disabled={!this.state.appVersionId}

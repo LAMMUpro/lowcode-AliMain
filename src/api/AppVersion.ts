@@ -22,3 +22,10 @@ export async function deleteAppVersionById(params: { id: number }) {
 export async function findAllAppVersionByAppId(params: { applicationId: number}) {
   return request('GET', `/app-version`, params);
 }
+
+/** 
+ * 提交审核
+ */
+export async function verifyAppVersion(params: { id: number }) {
+  return request('PUT', `/app-version/${params.id}?action=verify`, {});
+}
