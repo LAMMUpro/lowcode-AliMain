@@ -686,7 +686,10 @@ class PageManagePane extends React.Component {
             onClick={this.handleAddVersion}
           >新增</Button>
           <Button type="secondary" size="small" style={{marginLeft: '2px'}}
-            disabled={!this.state.applicationId}
+            disabled={!this.state.applicationId 
+              || this.state.appVersionList.find(item=>item.id==this.state.appVersionId)?.isPass
+              || this.state.appVersionList.find(item=>item.id==this.state.appVersionId)?.isAuditing
+            }
             onClick={this.handleAddVersion}
           >提审</Button>
           <Button type="normal" size="small" style={{marginLeft: '2px'}}
