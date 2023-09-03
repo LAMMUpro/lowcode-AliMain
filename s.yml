@@ -4,28 +4,30 @@ access: "alibaba-access" # 本机密钥别名
 services:
   cn-shenzhen-lowcode-web:
     component: devsapp/fc
-    actions:
-      pre-deploy:
-        - run: yarn build
-          path: ./
-        - run: copy nginx.conf build
-          path: ./
+    # actions:
+    #   pre-deploy:
+    #     - run: yarn build
+    #       path: ./
+    #     - run: copy nginx.conf build
+    #       path: ./
     props:
       region: cn-shenzhen
       service:
-        logConfig:
-          enableRequestMetrics: true
-          enableInstanceMetrics: true
-          logBeginRule: DefaultRegex
-          project: aliyun-fc-cn-shenzhen-07e4b83f-a40e-55ff-87c1-1ce1c857fb14
-          logstore: function-log
+        name: editor
+        # logConfig:
+        #   enableRequestMetrics: true
+        #   enableInstanceMetrics: true
+        #   logBeginRule: DefaultRegex
+        #   project: aliyun-fc-cn-shenzhen-07e4b83f-a40e-55ff-87c1-1ce1c857fb14
+        #   logstore: function-log
         role: acs:ram::1110941952716916:role/AliyunFcDefaultRole
         description: 低代码编辑器
         internetAccess: true
         ossMountConfig:
           mountPoints: []
-        name: editor
       function:
+        name: editor
+        codeUri: ./build
         handler: index.handler
         timeout: 60
         diskSize: 512
@@ -45,9 +47,7 @@ services:
         environmentVariables:
           LD_LIBRARY_PATH: >-
             /code:/code/lib:/usr/local/lib:/opt/lib:/opt/php8.1/lib:/opt/php8.0/lib:/opt/php7.2/lib
-        name: editor
         asyncConfiguration: {}
-        codeUri: ./build
       triggers:
         - name: defaultTrigger
           description: ''
