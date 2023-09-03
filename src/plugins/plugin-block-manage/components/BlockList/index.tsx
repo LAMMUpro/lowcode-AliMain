@@ -4,9 +4,10 @@ import { PluginProps } from '@alilc/lowcode-types';
 import './index.scss';
 import ComponentManager from './store';
 import { getTextReader, SortedGroups, Text } from './transform';
-import { getBlockList } from 'src/services/api';
+// import { getBlockList } from 'src/services/api';
+import { BlockDto } from 'src/types/dto/Block';
 
-const { material, common, project, event } = window.AliLowCodeEngine || {};
+const { material, common, project, event } = (window as any).AliLowCodeEngine || {};
 
 const store = new ComponentManager();
 
@@ -18,31 +19,34 @@ interface ComponentPaneState {
   groups: SortedGroups[];
   filter: SortedGroups[];
   keyword: string;
-  blocks: any[];
-  loading: boolean
+  blocks: Array<BlockDto>;
 }
 
-export default class ComponentPane extends React.Component<ComponentPaneProps, ComponentPaneState> {
+export default class BlockList extends React.Component<ComponentPaneProps, ComponentPaneState> {
   static displayName = 'LowcodeComponentPane';
 
   static defaultProps = {
     lang: 'zh_CN',
   };
 
-  state: ComponentPaneState = {
-    groups: [],
-    filter: [],
-    keyword: '',
-    blocks: [],
-    loading: false,
-  };
+  state: ComponentPaneState;
 
   store = store;
 
   t: (input: Text) => string;
 
-  constructor(props) {
+  constructor(props: {
+    blocks: Array<BlockDto>
+    config: any
+  }) {
     super(props);
+
+    this.state = {
+      groups: [],
+      filter: [],
+      keyword: '',
+      blocks: this.props.blocks,
+    }
     this.t = getTextReader(props.lang);
   }
 
@@ -67,18 +71,14 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
    * 初始化组件列表
    */
   async initComponentList() {
-    this.setState({
-      loading: true
-    })
+    // const res = await getBlockList();
 
-    const res = await getBlockList();
+    // this.setState({
+    //   loading: false,
+    //   blocks: res.data || []
+    // })
 
-    this.setState({
-      loading: false,
-      blocks: res.data || []
-    })
-
-    this.store.setSnippets(res.data);
+    this.store.setSnippets(this.state.blocks);
 
     Message.success("加载区块数据成功！");
   }
@@ -132,34 +132,31 @@ export default class ComponentPane extends React.Component<ComponentPaneProps, C
   };
 
   renderContent() {
-    const { blocks } = this.state;
     
     return (
-      <Loading visible={this.state.loading} tip="区块数据加载中...">
-        <div ref={this.registerAdditive} className='block-list'>
-          {
-            blocks.map(block=> {
-              return (
-                <div className="contrainer">
-                  <div
-                    className={'snippet block-item'}
-                    data-id={block.blockName} 
-                    title={this.t(block.blockNameCh)}
-                  >
-                    <img 
-                      className="screenshot" 
-                      src={block.screenshot || 'http://lowcode.flyowl.com.cn/media/files/4/a/4a845cefa96ff8e09c5028b1fb55f187.jpeg'}
-                    />
-                    <span className="block-name">
-                      {this.t(block.blockNameCh)}
-                    </span>
-                  </div>
+      <div ref={this.registerAdditive} className='block-list'>
+        {
+          this.state.blocks.map(block=> {
+            return (
+              <div className="contrainer">
+                <div
+                  className={'snippet block-item'}
+                  data-id={block.id} 
+                  title={this.t(block.nameCh)}
+                >
+                  <img 
+                    className="screenshot" 
+                    src={block.screenshot || 'http://lowcode.flyowl.com.cn/media/files/4/a/4a845cefa96ff8e09c5028b1fb55f187.jpeg'}
+                  />
+                  <span className="block-name">
+                    {this.t(block.nameCh)}
+                  </span>
                 </div>
-              )
-            })
-          }
-        </div>
-      </Loading>
+              </div>
+            )
+          })
+        }
+      </div>
     );
   }
 

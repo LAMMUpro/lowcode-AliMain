@@ -6,7 +6,7 @@ export default class ComponentManager {
   setSnippets = (snippets: SnippetMeta[]) => {
     for (const snippet of snippets) {
       if (snippet.id) {
-        this.snippets.set(snippet.id, snippet.schema);
+        this.snippets.set(''+snippet.id, snippet.schema);
       }
     }
   };

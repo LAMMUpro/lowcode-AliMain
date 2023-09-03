@@ -16,7 +16,7 @@ export async function request(
     }
   }
 ) {
-  const res = await fetch(method!=="GET"?`${host}${url}`:`${host}${url}?${json2query(data)}`, {
+  const res = await fetch(method!=="GET"?`${host}${url}`:`${host}${url}${Object.keys(data).length?'?':''}${json2query(data)}`, {
     ...options,
     method,
     [method === "GET" ? "" : "body"]: JSON.stringify(data),

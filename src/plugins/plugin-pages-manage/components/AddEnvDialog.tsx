@@ -40,12 +40,12 @@ class AddVersionDialog extends React.Component<PropsType> {
           type: "success",
           content: "新增环境成功"
         });
-        this.setState({
-          loading: false
-        })
         this.props.onClose();
         this.props.success();
       }
+      this.setState({
+        loading: false
+      })
     });
   };
 

@@ -1,13 +1,20 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
-import BlockList from './BlockList';
 import { Button, Icon } from '@alifd/next';
+import { BlockManagePane } from './BlockManagePane';
+
+let blockManagePaneRef:InstanceType<typeof BlockManagePane>|null;
+/** 添加主题 */
+function handleAddBlockStyle() {
+  blockManagePaneRef?.handleAddBlockStyle?.();
+}
+/** 添加主题 */
+function handleAddBlockCategory() {
+  blockManagePaneRef?.handleAddBlockCategory?.();
+}
 
 const _PluginName_ = 'BlockPlugin';
 const BlockPlugin = (ctx: IPublicModelPluginContext) => {
-  let blockListRef:InstanceType<typeof BlockList>|null;
-  function refreshBlocks() {
-    blockListRef?.initComponentList?.();
-  }
+  
   return {
     name: _PluginName_,
     width: 300,
@@ -27,17 +34,17 @@ const BlockPlugin = (ctx: IPublicModelPluginContext) => {
           title: (
             <div>
               <span style={{marginRight: '20px'}}>区块库</span>
-              <Button type="primary" size="small" iconSize={14} onClick={refreshBlocks}>
-                <Icon type="refresh"></Icon>
-                <span style={{paddingLeft: '8px'}}>刷新区块</span>
-              </Button>
+              <Button type="secondary" size="small" style={{marginLeft: '5px'}}
+                onClick={handleAddBlockStyle}
+              >添加主题</Button>
+              <Button type="secondary" size="small" style={{marginLeft: '5px'}}
+                onClick={handleAddBlockCategory}
+              >添加分类</Button>
             </div>
           )
         },
         content: (
-          <div>
-            <BlockList ref={ref => blockListRef= ref}></BlockList>
-          </div>
+          <BlockManagePane ref={ref => blockManagePaneRef= ref}></BlockManagePane>
         )
       });
     }

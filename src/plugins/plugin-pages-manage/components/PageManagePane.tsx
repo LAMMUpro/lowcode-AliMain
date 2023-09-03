@@ -19,6 +19,8 @@ import { deletePageSchemaById, findPageSchemaByNodeId } from 'src/api/PageSchema
 import { ApplicationDto } from 'src/types/dto/Application';
 import { PageNode } from 'src/types/dtoExt/PageNode';
 import { SpaceAppVersionDto } from 'src/types/dtoExt/AppVersion';
+import SaveAsBlockDialog from 'src/actions/SaveAsBlockDialog';
+import { BlockDtoCreate } from 'src/types/dto/Block';
 
 const { Item, Divider } = Menu;
 
@@ -55,6 +57,18 @@ function getDefaultAppEnv(applicationId: number = 0): AppEnvDtoCreate {
   }
 }
 
+function getDefaultBlock(schema:string = ''): BlockDtoCreate {
+  return {
+    styleId: 0,
+    name: '',
+    nameCh: '',
+    schema: schema,
+    screenshot: '',
+    categoryId: 0,
+    categoryName: ''
+  }
+}
+
 class PageManagePane extends React.Component {
   constructor(props:any) {
     super(props);
@@ -74,12 +88,14 @@ class PageManagePane extends React.Component {
       isShowAddAppVersionDialog: false,
       isShowAddAppEnvDialog: false,
       isShowBindAppVersionEnvDialog: false,
+      isShowSaveAsBlockDialog: false,
       appDialogType: 'add',
       applicationId: +(localStorage.getItem("active:applicationId")||0),
       applicationList: config.get("applicationList"),
       applicationInfo: getDefaultApplication(),
       appVersionInfo: getDefaultAppVersion(),
       appAddEnvInfo: getDefaultAppEnv(),
+      blockInfo: getDefaultBlock(),
       appEnvInfo: {
         envIdList: [],
         appVersionId: 0,
@@ -107,6 +123,7 @@ class PageManagePane extends React.Component {
     this.handleAddVersionSuccess = this.handleAddVersionSuccess.bind(this);
     this.handleVerify = this.handleVerify.bind(this);
     this.handleAddEnvSuccess = this.handleAddEnvSuccess.bind(this);
+    this.handleSaveAsBlockSuccess = this.handleSaveAsBlockSuccess.bind(this);
     this.handleEditVersionEnvSuccess = this.handleEditVersionEnvSuccess.bind(this);
     this.handleAppIdChange = this.handleAppIdChange.bind(this);
     this.updatePageNodes = this.updatePageNodes.bind(this);
@@ -126,8 +143,11 @@ class PageManagePane extends React.Component {
     this.updateAppAllEnv = this.updateAppAllEnv.bind(this);
     this.handleSaveBindEnvs = this.handleSaveBindEnvs.bind(this);
     this.updateEditPage = this.updateEditPage.bind(this);
+    this.handleSaveAsBlock = this.handleSaveAsBlock.bind(this);
     
-    event.on('common:update:pageNodes', this.updatePageNodes)
+    event.on('common:update:pageNodes', this.updatePageNodes);
+    event.on('common:saveAsBlock', this.handleSaveAsBlock);
+
   }
 
   async componentDidMount() {
@@ -178,6 +198,7 @@ class PageManagePane extends React.Component {
     isShowAddAppVersionDialog: boolean
     isShowAddAppEnvDialog: boolean
     isShowBindAppVersionEnvDialog: boolean
+    isShowSaveAsBlockDialog: boolean
     appDialogType: 'add'|'edit'
     applicationInfo: {
       id?: number
@@ -187,6 +208,7 @@ class PageManagePane extends React.Component {
     appVersionInfo: SpaceAppVersionDto.create
     appAddEnvInfo: AppEnvDtoCreate
     appEnvInfo: SpaceAppEnvDto.updateAppEnv,
+    blockInfo: BlockDtoCreate
     /** 当前选中的应用id */
     applicationId: number
     /** 应用列表 */
@@ -372,6 +394,13 @@ class PageManagePane extends React.Component {
   handleAddEnvSuccess() {
     this.updateAppAllEnv();
     this.updateAppEnvs();
+  }
+
+  /** 添加区块 */
+  handleSaveAsBlockSuccess(styleId: number) {
+    event.emit('update:blocks', {
+      styleId
+    })
   }
 
   /** 编辑环境 */
@@ -634,6 +663,14 @@ class PageManagePane extends React.Component {
     })
   }
 
+  /** 保存为区块 */
+  handleSaveAsBlock(schema: string) {
+    this.setState({
+      isShowSaveAsBlockDialog: true,
+      blockInfo: getDefaultBlock(schema),
+    })
+  }
+
   render() {
     const { expandedKeys, autoExpandParent } = this.state;
     const filterTreeNode = (node:any) => {
@@ -839,6 +876,15 @@ class PageManagePane extends React.Component {
           onClose={()=>this.setState({isShowAddAppEnvDialog: false})}
           success={this.handleAddEnvSuccess}
         ></AddEnvDialog>
+
+        {/* 保存为区块 */}
+        <SaveAsBlockDialog 
+          visible={this.state.isShowSaveAsBlockDialog}
+          originInfo={this.state.blockInfo}
+          onClose={()=>this.setState({isShowSaveAsBlockDialog: false})}
+          success={this.handleSaveAsBlockSuccess}
+        ></SaveAsBlockDialog>
+        
       </Loading>
     );
   }

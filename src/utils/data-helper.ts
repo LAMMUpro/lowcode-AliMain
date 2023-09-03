@@ -1,7 +1,7 @@
 import { isI18nData, isJSExpression } from '@alilc/lowcode-utils';
 import { isJSFunction } from '@alilc/lowcode-utils';
 import { isEmpty } from 'lodash';
-import { jsonp, request, get, post } from './request';
+import { jsonp, _request, get, post } from './request';
 
 const DS_STATUS = {
   INIT: 'init',
@@ -339,7 +339,7 @@ function doRequest(type: DataSourceType, options: any) {
       case 'POST':
         return post(uri, params, headers, otherProps);
       default:
-        return request(uri, method, params, headers, otherProps);
+        return _request(uri, method, params, headers, otherProps);
     }
   }
 
