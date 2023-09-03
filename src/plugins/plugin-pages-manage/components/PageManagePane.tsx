@@ -737,7 +737,12 @@ class PageManagePane extends React.Component {
 }
 
 function renderNode(node: PageNode) {
-  return <Tree.Node key={node.id} label={node.name}>
+  return <Tree.Node key={node.id} label={
+    <span>
+      <span>{node.name}</span> 
+      { node.hasSchema && <Icon type="detail"/> }
+    </span>
+  }>
     {
       node.children.map(item=> (
         <Tree.Node key={item.id} label={
