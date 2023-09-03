@@ -21,6 +21,7 @@ import { PageNode } from 'src/types/dtoExt/PageNode';
 import { SpaceAppVersionDto } from 'src/types/dtoExt/AppVersion';
 import SaveAsBlockDialog from 'src/actions/SaveAsBlockDialog';
 import { BlockDtoCreate } from 'src/types/dto/Block';
+import { parseLocalInt } from 'src/utils';
 
 const { Item, Divider } = Menu;
 
@@ -81,7 +82,7 @@ class PageManagePane extends React.Component {
       loading: false,
       isShowEditNodeInfoDialog: false,
       nodeDialogType: 'add',
-      nodeId: +(localStorage.getItem("active:nodeId")||0),
+      nodeId: parseLocalInt(localStorage.getItem("active:nodeId")),
       nodeInfo: getDefaultNode(),
 
       isShowEditApplicationInfoDialog: false,
@@ -90,7 +91,7 @@ class PageManagePane extends React.Component {
       isShowBindAppVersionEnvDialog: false,
       isShowSaveAsBlockDialog: false,
       appDialogType: 'add',
-      applicationId: +(localStorage.getItem("active:applicationId")||0),
+      applicationId: parseLocalInt(localStorage.getItem("active:applicationId")),
       applicationList: config.get("applicationList"),
       applicationInfo: getDefaultApplication(),
       appVersionInfo: getDefaultAppVersion(),
@@ -101,7 +102,7 @@ class PageManagePane extends React.Component {
         appVersionId: 0,
         version: ''
       },
-      appVersionId: +(localStorage.getItem("active:appVersionId")||0),
+      appVersionId: parseLocalInt(localStorage.getItem("active:appVersionId")),
       appVersion: localStorage.getItem("active:appVersion")||'',
       appVersionList: [],
       appEnvList: [],
@@ -806,13 +807,13 @@ class PageManagePane extends React.Component {
           ) : <></>
         }
         {
-          (!this.state.appVersionId) ? (
+          (this.state.appVersionId && !this.state.appVersionId) ? (
             <div style={{textAlign: 'center', marginTop: '10px'}}>请先选择版本!</div>
           ) : <></>
         }
         {
-          (this.state.applicationId && !this.state.pageNodes.length) ? (
-            <div style={{textAlign: 'center', marginTop: '10px'}}>该应该暂无节点, 请先新增节点!</div>
+          (this.state.applicationId && this.state.appVersionId && !this.state.pageNodes.length) ? (
+            <div style={{textAlign: 'center', marginTop: '10px'}}>该应用暂无节点, 请先新增节点!</div>
           ) : <></>
         }
         {

@@ -1,8 +1,8 @@
 interface requestParams {}
 interface requestData {}
 
-const host = 'http://localhost:9000'
-//const host = 'https://lowcodenest.lammu.cn'
+// const host = 'http://localhost:9000'
+const host = 'https://lowcodenest.lammu.cn'
 
 export async function request(
   method: requestMethods = "GET",
@@ -46,4 +46,9 @@ function cleanArray(actual: string[]) {
     }
   }
   return newArray
+}
+
+export function parseLocalInt(value: string|null):number {
+  if (value) return +value;
+  return '' as unknown as number;
 }

@@ -10,6 +10,7 @@ import { BlockDto } from "src/types/dto/Block";
 import { findAllBlock } from "src/api/Block";
 import Category from "./components/Category";
 import { event } from "@alilc/lowcode-engine";
+import { parseLocalInt } from "src/utils";
 
 let blockListRef:InstanceType<typeof BlockList>|null;
 function refreshBlocks() {
@@ -41,7 +42,7 @@ export class BlockManagePane extends React.Component {
       blockStyleInfo: getDefaultBlockStyle(),
       blockCategoryInfo: getDefaultBlockCategory(),
       blockStyleList: [],
-      blockStyleId: +(localStorage.getItem("active:blockStyleId")||0),
+      blockStyleId: parseLocalInt(localStorage.getItem("active:blockStyleId")),
       blockCategoryList: [],
       blockCategoryMap: {},
       blockMap: {}
@@ -178,6 +179,9 @@ export class BlockManagePane extends React.Component {
       >
         <div>
           <div>
+            {
+              this.state.blockStyleList.length === 0 && <p style={{textAlign: 'center'}}>暂无主题, 请先添加主题!</p>
+            }
             <Tab 
               activeKey={''+this.state.blockStyleId}
               onChange={this.handleTabChange}
@@ -186,30 +190,30 @@ export class BlockManagePane extends React.Component {
                 this.state.blockStyleList.map((blockStyle, index) => (
                   <Tab.Item title={blockStyle.name} key={blockStyle.id}>
                     {
+                      !this.state.blockMap[blockStyle.id]?.length ? 
+                      <p style={{textAlign: 'center'}}>
+                        暂无可用区块, 可以到面板上上传你组合的区块
+                      </p> :
                       this.state.blockMap[blockStyle.id]?.map(item=>(<div>
-                        {/* <span>
-                          {item.categoryName}
-                        </span> */}
                         <Category key={item.categoryId} name={item.categoryName}>
                           <BlockList 
                             // ref={ref => blockListRef= ref}
                             blocks={item.list}
                           ></BlockList>
                         </Category>
-                        {/* {
-                          item.list.map(item=>(
-                            <div>
-                              {item.nameCh}
-                            </div>
-                          ))
-                        } */}
                       </div>))
                       // this.state.blockCategoryMap[blockStyle.id]?.map(category=>category.name).join(',')
+                    }
+                    {
+
                     }
                   </Tab.Item>
                 ))
               }
             </Tab>
+            {
+              !this.state.blockStyleId && <p style={{textAlign: 'center'}}>请选择一个主题进行查看</p>
+            }
           </div>
         </div>
         {/* 添加主题 */}
