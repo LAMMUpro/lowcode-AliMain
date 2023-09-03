@@ -7,10 +7,11 @@ import { defaultSchema } from 'src/services/pageManage';
 import { deleteApplicationById, findAllApplication } from 'src/api/Application';
 import { createAppVersion, deleteAppVersionById, findAllAppVersionByAppId } from 'src/api/AppVersion';
 import AddVersionDialog from './AddVersionDialog';
+import AddEnvDialog from './AddEnvDialog';
 import EditVersionEnvDialog from './EditVersionEnvDialog';
 import { AppVersionDto, AppVersionDtoCreate } from 'src/types/dto/AppVersion';
 import { findAllAppEnv, updateAppEnv } from 'src/api/AppEnv';
-import { AppEnvDto, AppEnvDtoUpdate } from 'src/types/dto/AppEnv';
+import { AppEnvDto, AppEnvDtoCreate, AppEnvDtoUpdate } from 'src/types/dto/AppEnv';
 import { SpaceAppEnvDto } from 'src/types/dtoExt/AppEnv';
 import { createPageNode, deletePageNodeById, findManyPageNode } from 'src/api/PageNode';
 import { PageNodeDto, PageNodeDtoCreate } from 'src/types/dto/PageNode';
@@ -46,6 +47,14 @@ function getDefaultAppVersion(applicationId: number = 0, extendVersionId: number
   }
 }
 
+function getDefaultAppEnv(applicationId: number = 0): AppEnvDtoCreate {
+  return {
+    applicationId: applicationId,
+    env: '',
+    envCh: ''
+  }
+}
+
 class PageManagePane extends React.Component {
   constructor(props:any) {
     super(props);
@@ -63,12 +72,14 @@ class PageManagePane extends React.Component {
 
       isShowEditApplicationInfoDialog: false,
       isShowAddAppVersionDialog: false,
+      isShowAddAppEnvDialog: false,
       isShowBindAppVersionEnvDialog: false,
       appDialogType: 'add',
       applicationId: +(localStorage.getItem("active:applicationId")||0),
       applicationList: config.get("applicationList"),
       applicationInfo: getDefaultApplication(),
       appVersionInfo: getDefaultAppVersion(),
+      appAddEnvInfo: getDefaultAppEnv(),
       appEnvInfo: {
         envIdList: [],
         appVersionId: 0,
@@ -94,6 +105,7 @@ class PageManagePane extends React.Component {
     this.handleEditApplicationInfo = this.handleEditApplicationInfo.bind(this);
     this.handleAddEditAppSuccess = this.handleAddEditAppSuccess.bind(this);
     this.handleAddVersionSuccess = this.handleAddVersionSuccess.bind(this);
+    this.handleAddEnvSuccess = this.handleAddEnvSuccess.bind(this);
     this.handleEditVersionEnvSuccess = this.handleEditVersionEnvSuccess.bind(this);
     this.handleAppIdChange = this.handleAppIdChange.bind(this);
     this.updatePageNodes = this.updatePageNodes.bind(this);
@@ -108,6 +120,7 @@ class PageManagePane extends React.Component {
     this.handleEnvChange = this.handleEnvChange.bind(this);
     this.handleDeleteVersion = this.handleDeleteVersion.bind(this);
     this.handleAddVersion = this.handleAddVersion.bind(this);
+    this.handleAddEnv = this.handleAddEnv.bind(this);
     this.handleBindVersionEnv = this.handleBindVersionEnv.bind(this);
     this.updateAppAllEnv = this.updateAppAllEnv.bind(this);
     this.handleSaveBindEnvs = this.handleSaveBindEnvs.bind(this);
@@ -162,6 +175,7 @@ class PageManagePane extends React.Component {
 
     isShowEditApplicationInfoDialog: boolean
     isShowAddAppVersionDialog: boolean
+    isShowAddAppEnvDialog: boolean
     isShowBindAppVersionEnvDialog: boolean
     appDialogType: 'add'|'edit'
     applicationInfo: {
@@ -170,6 +184,7 @@ class PageManagePane extends React.Component {
       describe: string
     }
     appVersionInfo: SpaceAppVersionDto.create
+    appAddEnvInfo: AppEnvDtoCreate
     appEnvInfo: SpaceAppEnvDto.updateAppEnv,
     /** 当前选中的应用id */
     applicationId: number
@@ -267,6 +282,14 @@ class PageManagePane extends React.Component {
     })
   }
 
+  /** 新增环境 */
+  handleAddEnv() {
+    this.setState({
+      appAddEnvInfo: getDefaultAppEnv(this.state.applicationId),
+      isShowAddAppEnvDialog: true
+    })
+  }
+
   /** 绑定版本环境 */
   async handleSaveBindEnvs() {
     const res = await updateAppEnv({
@@ -325,6 +348,12 @@ class PageManagePane extends React.Component {
   /** 添加版本 */
   handleAddVersionSuccess() {
     this.updateAppVersions();
+  }
+
+  /** 添加环境 */
+  handleAddEnvSuccess() {
+    this.updateAppAllEnv();
+    this.updateAppEnvs();
   }
 
   /** 编辑环境 */
@@ -634,8 +663,9 @@ class PageManagePane extends React.Component {
         </div>
         <div style={{display: 'flex'}}>
           <Select 
-            label="版本:"
+            label=""
             placeholder="请选择版本"
+            autoWidth={false}
             value={this.state.appVersionId}
             defaultValue={this.state.appVersionId}
             style={{ flex: 1, marginBottom: '10px' }}
@@ -646,19 +676,24 @@ class PageManagePane extends React.Component {
                 <Select.Option value={item.id}>
                   <span>{item.version}</span>
                   <span>{this.state.appAllEnvList.filter(env=>env.appVersionId==item.id).map(item=>item.envCh).join(',')}</span>
+                  <span>{(item.isPass&&'✅')||(item.auditContent&&'❌')||(item.isAuditing&&'⌛️')}</span>
                 </Select.Option>
               ))
             }
           </Select>
-          <Button type="secondary" size="small" style={{marginLeft: '5px'}}
+          <Button type="secondary" size="small" style={{marginLeft: '2px'}}
             disabled={!this.state.applicationId}
             onClick={this.handleAddVersion}
           >新增</Button>
-          <Button type="normal" size="small" style={{marginLeft: '5px'}}
+          <Button type="secondary" size="small" style={{marginLeft: '2px'}}
+            disabled={!this.state.applicationId}
+            onClick={this.handleAddVersion}
+          >提审</Button>
+          <Button type="normal" size="small" style={{marginLeft: '2px'}}
             disabled={!this.state.appVersionId}
             onClick={this.handleBindVersionEnv}
           >绑定环境</Button>
-          <Button type="primary" warning size="small" style={{marginLeft: '5px'}}
+          <Button type="primary" warning size="small" style={{marginLeft: '2px'}}
             disabled={!this.state.appVersionId}
             onClick={this.handleDeleteVersion}
           >删除</Button>
@@ -680,10 +715,16 @@ class PageManagePane extends React.Component {
                 }
               </Tag.Group>
             </div>
-            <Button type="primary" size="small" style={{marginLeft: '5px'}}
-              disabled={this.state.appEnvList.length==this.state.onSelectEnvIdList.length}
-              onClick={this.handleSaveBindEnvs}
-            >保存</Button>
+            <div style={{flexShrink: 0}}>
+              <Button type="secondary" size="small" style={{marginLeft: '5px'}}
+                disabled={!this.state.applicationId}
+                onClick={this.handleAddEnv}
+              >新增</Button>
+              <Button type="primary" size="small" style={{marginLeft: '5px'}}
+                disabled={this.state.appEnvList.length==this.state.onSelectEnvIdList.length}
+                onClick={this.handleSaveBindEnvs}
+              >保存</Button>
+            </div>
           </div>)
         }
         <div style={{display: 'flex'}}>
@@ -765,9 +806,18 @@ class PageManagePane extends React.Component {
           visible={this.state.isShowBindAppVersionEnvDialog}
           originInfo={this.state.appEnvInfo}
           appAllEnvList={this.state.appAllEnvList}
+          versionIsPass={this.state.appVersionList.find(item=>item.id==this.state.appVersionId)?.isPass||false}
           onClose={()=>this.setState({isShowBindAppVersionEnvDialog: false})}
           success={this.handleEditVersionEnvSuccess}
         ></EditVersionEnvDialog>
+
+        {/* 新增环境 */}
+        <AddEnvDialog 
+          visible={this.state.isShowAddAppEnvDialog}
+          originInfo={this.state.appAddEnvInfo}
+          onClose={()=>this.setState({isShowAddAppEnvDialog: false})}
+          success={this.handleAddEnvSuccess}
+        ></AddEnvDialog>
       </Loading>
     );
   }

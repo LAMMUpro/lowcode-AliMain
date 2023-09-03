@@ -8,6 +8,7 @@ interface PropsType {
   visible: boolean
   originInfo: SpaceAppEnvDto.updateAppEnv
   appAllEnvList: Array<AppEnvDto>
+  versionIsPass: Boolean
   onClose: () => void
   success: () => void
 }
@@ -97,21 +98,22 @@ class EditVersionEnvDialog extends React.Component<PropsType> {
               {...{labelCol: { fixedSpan: 6 }, wrapperCol: { span: 18 }}}
             >
               <Form.Item
-                label="版本号"
+                label="版本号:"
               >
                 <div 
                   style={{display: 'flex', alignItems: 'center', height: '100%', fontSize: '16px'}}
                 >{this.state.info.version}</div>
               </Form.Item>
               <Form.Item
-                label="环境"
+                label="环境:"
               >
-                <Tag.Group className="tagCenter" style={{height: '100%', display: 'flex'}}>
+                <Tag.Group className="tagCenter" style={{height: '100%', display: 'flex', flexWrap: 'wrap'}}>
                   {
                     this.props.appAllEnvList.map((item, index)=>{
                       return <Tag.Selectable
                         key={item.id}
                         size="small"
+                        disabled={item.env==='master'&&!this.props.versionIsPass}
                         checked={this.state.info.envIdList.includes(item.id)}
                         onChange={(isSelect) => this.handleEnvChange(index, isSelect)}
                       >{item.envCh}</Tag.Selectable>
