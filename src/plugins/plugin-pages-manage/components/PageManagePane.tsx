@@ -705,7 +705,7 @@ class PageManagePane extends React.Component {
           ) : <></>
         }
         {
-          (this.state.applicationId && this.state.appVersionId && this.state.pageNodes.length) && <Tree
+          (this.state.applicationId && this.state.appVersionId) && <Tree
             draggable
             editable
             showLine
