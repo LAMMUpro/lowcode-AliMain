@@ -113,21 +113,24 @@ class PageManagePane extends React.Component {
     this.setState({
       loading: true
     })
-    setTimeout(async () => {
-      if (!this.state.applicationList?.length) return;
-      if (!this.state.applicationList.find(app=>app.id===this.state.applicationId)) return;
-      await this.updateAppVersions();
-      await this.updateAppAllEnv();
-      if (!this.state.appVersionList?.length) return;
-      if (!this.state.appVersionList.find(version=>version.id===this.state.appVersionId)) return;
-      await this.updateAppEnvs();
-      await this.updatePageNodes();
-      if (!this.state.nodeList?.length) return;
-      if (!this.state.nodeList.find(node=>node.id==this.state.nodeId)) return;
-      await this.updateEditPage();
+    const callback = () => {
       this.setState({
         loading: false
       })
+    }
+    setTimeout(async () => {
+      if (!this.state.applicationList?.length) return callback();
+      if (!this.state.applicationList.find(app=>app.id===this.state.applicationId)) return callback();
+      await this.updateAppVersions();
+      await this.updateAppAllEnv();
+      if (!this.state.appVersionList?.length) return callback();
+      if (!this.state.appVersionList.find(version=>version.id===this.state.appVersionId)) return callback();
+      await this.updateAppEnvs();
+      await this.updatePageNodes();
+      if (!this.state.nodeList?.length) return callback();
+      if (!this.state.nodeList.find(node=>node.id==this.state.nodeId)) return callback();
+      await this.updateEditPage();
+      callback();
     });
   }
 
