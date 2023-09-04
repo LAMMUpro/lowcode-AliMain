@@ -1,5 +1,5 @@
 import React from 'react';
-import { Message, Loading } from '@alifd/next';
+import { Message, Balloon } from '@alifd/next';
 import { PluginProps } from '@alilc/lowcode-types';
 import './index.scss';
 import ComponentManager from './store';
@@ -139,19 +139,34 @@ export default class BlockList extends React.Component<ComponentPaneProps, Compo
           this.state.blocks.map(block=> {
             return (
               <div className="contrainer">
-                <div
-                  className={'snippet block-item'}
-                  data-id={block.id} 
-                  title={this.t(block.nameCh)}
+                <Balloon 
+                  v2 
+                  triggerType="hover" 
+                  closable={false}
+                  cache={true}
+                  popupClassName="contrainer-padding-none"
+                  trigger={
+                    <div
+                      className={'snippet block-item'}
+                      data-id={block.id} 
+                      title={this.t(block.nameCh)}
+                    >
+                      <span className="block-name ellipsis_1">
+                        {this.t(block.name)}
+                      </span>
+                      <span className="block-nameCh ellipsis_1">
+                        {this.t(block.nameCh)}
+                      </span>
+                    </div>
+                  }
                 >
-                  <img 
-                    className="screenshot" 
-                    src={block.screenshot || 'http://lowcode.flyowl.com.cn/media/files/4/a/4a845cefa96ff8e09c5028b1fb55f187.jpeg'}
-                  />
-                  <span className="block-name">
-                    {this.t(block.nameCh)}
-                  </span>
-                </div>
+                  {
+                    block.screenshot ? <img 
+                      className="screenshot" 
+                      src={block.screenshot}
+                    /> : <p style={{textAlign: 'center'}}>暂无预览图</p>
+                  }
+                </Balloon>
               </div>
             )
           })

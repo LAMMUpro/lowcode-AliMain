@@ -41,35 +41,55 @@
   .block-list {
     display: flex;
     flex-wrap: wrap;
-    // padding-top: 30px;
+    padding: 2px 4px;
     > .contrainer{
-      padding: 4px;
+      padding: 3px 2px;
       // background-color: lightblue;
       flex-basis: calc(100% / 3);
-      aspect-ratio: 1/1;
+      flex-shrink: 0;
+      // aspect-ratio: 1/1;
       cursor: pointer;
       > .block-item {
-        height: 100%;
+        border-radius: 4px;
+        padding: 1px 2px;
+        border: 1px solid #cabdbd;
 
         box-shadow: 2px 2px 2px 1px rgb(139 139 139 / 20%);
   
         display: flex;
         flex-direction: column;
         align-items: center;
-  
-        > .screenshot {
-          width: 90%;
-          object-fit: scale-down;
-          flex: 1;
+        
+        &:hover {
+          background-color: #fff9f2;
+          transform: translate(-1px, -2px);
         }
 
         > .block-name {
           flex-shrink: 0;
+          font-size: 13px;
+          color: #9a6e2c;
+          word-break: break-all;
           padding-bottom: 3px;
+        }
+
+        > .block-nameCh {
+          flex-shrink: 0;
+          font-size: 13px;
+          color: #4e4e4e;
+          word-break: break-all;
+          margin-bottom: 3px;
         }
       }
     }
     
   }
-  
+}
+div.contrainer-padding-none {
+  padding: 4px 2px;
+  .screenshot {
+    width: 180px;
+    object-fit: scale-down;
+    flex: 1;
+  }
 }
