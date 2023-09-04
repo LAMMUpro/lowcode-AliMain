@@ -9,7 +9,7 @@ import { BlockCategoryDto, BlockCategoryDtoCreate } from "src/types/dto/BlockCat
 import { BlockDto } from "src/types/dto/Block";
 import { findAllBlock } from "src/api/Block";
 import Category from "./components/Category";
-import { event } from "@alilc/lowcode-engine";
+import { config, event } from "@alilc/lowcode-engine";
 import { parseLocalInt } from "src/utils";
 
 let blockListRef:InstanceType<typeof BlockList>|null;
@@ -58,6 +58,8 @@ export class BlockManagePane extends React.Component {
     event.on('common:update:blocks', (data)=>{
       this.updateStyleBlockList(true, data);
     })
+
+    config.set("blockStyleId", this.state.blockStyleId);
   }
 
   state: {
@@ -122,6 +124,7 @@ export class BlockManagePane extends React.Component {
       blockStyleId: +key
     })
     localStorage.setItem("active:blockStyleId", key);
+    config.set("blockStyleId", key);
     setTimeout(() => {
       this.updateStyleBlockList();
     });

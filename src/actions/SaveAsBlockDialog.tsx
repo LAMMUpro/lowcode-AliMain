@@ -117,6 +117,7 @@ class AddVersionDialog extends React.Component<PropsType> {
                 name="styleId" 
                 placeholder="请选择主题"
                 style={{ width: '100%' }}
+                defaultValue={this.props.originInfo.styleId}
                 onChange={this.updateCategoryList}
               >
                 {
@@ -143,7 +144,7 @@ class AddVersionDialog extends React.Component<PropsType> {
               </Select>
             </Form.Item>
             <Form.Item
-              label="分类优先级"
+              label="优先级"
               required
             >
               <NumberPicker name="priority" defaultValue={10} placeholder="请输入分类优先级" style={{width: '100%'}}/>
