@@ -91,6 +91,7 @@ class PageManagePane extends React.Component {
       isShowAddAppEnvDialog: false,
       isShowBindAppVersionEnvDialog: false,
       isShowSaveAsBlockDialog: false,
+      blockDom: undefined,
       appDialogType: 'add',
       applicationId: parseLocalInt(localStorage.getItem("active:applicationId")),
       applicationList: config.get("applicationList"),
@@ -201,6 +202,7 @@ class PageManagePane extends React.Component {
     isShowAddAppEnvDialog: boolean
     isShowBindAppVersionEnvDialog: boolean
     isShowSaveAsBlockDialog: boolean
+    blockDom?: HTMLElement
     appDialogType: 'add'|'edit'
     applicationInfo: {
       id?: number
@@ -666,10 +668,11 @@ class PageManagePane extends React.Component {
   }
 
   /** 保存为区块 */
-  handleSaveAsBlock(schema: string) {
+  handleSaveAsBlock(schema: string, blockDom: HTMLElement) {
     this.setState({
       isShowSaveAsBlockDialog: true,
       blockInfo: getDefaultBlock(schema),
+      blockDom,
     })
   }
 
@@ -883,6 +886,7 @@ class PageManagePane extends React.Component {
         <SaveAsBlockDialog 
           visible={this.state.isShowSaveAsBlockDialog}
           originInfo={this.state.blockInfo}
+          blockDom={this.state.blockDom}
           onClose={()=>this.setState({isShowSaveAsBlockDialog: false})}
           success={this.handleSaveAsBlockSuccess}
         ></SaveAsBlockDialog>

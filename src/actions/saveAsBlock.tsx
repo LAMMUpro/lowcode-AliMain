@@ -11,9 +11,9 @@ import { BlockCategoryDto } from "src/types/dto/BlockCategory";
 /**
  * 保存区块弹窗，收集BlockInfoType其它信息
  */
-const showAddBlockDialog = (schema: any) => {
+const showAddBlockDialog = (schema: any, dom: HTMLElement) => {
 
-  event.emit("saveAsBlock", JSON.stringify(schema));
+  event.emit("saveAsBlock", JSON.stringify(schema), dom);
   return;
 
   // const categoryList = JSON.parse(config.get("blockCategoryList")||'[]');
@@ -107,7 +107,8 @@ const Action: IPublicTypeComponentAction = {
     icon: <Icon type="upload" size={14}/>,
     title: '保存为区块',
     action(node) {
-      showAddBlockDialog(node.schema);
+      // console.log(node.getDOMNode());
+      showAddBlockDialog(node.schema, node.getDOMNode());
       // await saveBlockInfo()
     }
   },
