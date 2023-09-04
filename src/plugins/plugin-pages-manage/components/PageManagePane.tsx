@@ -60,7 +60,6 @@ function getDefaultAppEnv(applicationId: number = 0): AppEnvDtoCreate {
 
 function getDefaultBlock(schema:string = ''): BlockDtoCreate {
   const blockStyleId = parseLocalInt(config.get("blockStyleId"));
-  console.log('blockStyleId', blockStyleId)
   return {
     styleId: blockStyleId,
     name: '',
