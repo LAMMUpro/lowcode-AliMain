@@ -5,17 +5,21 @@
   "repository": "git@gitee.com:LAMMUpro/low-code-lammu.git",
   "license": "MIT",
   "main": "index.js",
-  "scripts": {
-    "dev": "build-scripts start --disable-reload --port 8888",
-    "build": "build-scripts build",
-    "prepublishOnly": "npm run build",
-    "pub": "node ./scripts/watchdog.js && npm pub",
-    "init": "node ./scripts/init.js"
-  },
   "files": [
     "build"
   ],
-  "config": {},
+  "scripts": {
+    "dev": "build-scripts start --disable-reload --port 8888",
+    
+    "pub": "node ./scripts/watchdog.js && npm pub",
+    "init": "node ./scripts/init.js",
+
+    "prepublishOnly": "npm run build",
+    "build": "build-scripts build",
+    "deploy:test": "s deploy -t s.test.yaml",
+    "deploy:dev": "s deploy -t s.dev.yaml",
+    "deploy:master": "s deploy -t s.master.yaml"
+  },
   "dependencies": {
     "@alilc/lowcode-datasource-fetch-handler": "^1.0.1",
     "@alilc/lowcode-plugin-code-editor": "^1.0.3",
