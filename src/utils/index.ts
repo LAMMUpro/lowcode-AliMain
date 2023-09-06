@@ -1,8 +1,24 @@
 interface requestParams {}
 interface requestData {}
 
-const host = 'http://localhost:9000'
-// const host = 'https://lowcodenest.lammu.cn'
+let _env: 'test'|'dev'|'master'|'localhost' = 'localhost';
+
+if (location.hostname.includes('test.lammu.cn')) {
+  _env = 'test';
+} else if (location.hostname.includes('dev.lammu.cn')) {
+  _env = 'dev';
+} else if (location.hostname.includes('lammu.cn')) {
+  _env = 'master';
+}
+
+export const env = _env;
+
+export const host = {
+  'localhost': 'http://localhost:9000',
+  'test': 'https://lowcodenest.test.lammu.cn',
+  'dev': 'https://lowcodenest.dev.lammu.cn',
+  'master': 'https://lowcodenest.lammu.cn',
+}[env];
 
 export async function request(
   method: requestMethods = "GET",
