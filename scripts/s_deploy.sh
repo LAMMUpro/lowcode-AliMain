@@ -8,3 +8,5 @@ rm -rf ../build
 yarn build
 # 将nginx移动到build下
 cp ../nginx.conf ../build/nginx.conf
+# 将.env移动到build
+cp ../.env ../build/.env
