@@ -7,8 +7,10 @@ config:
 
 ## 全局命令
 # actions:
+#   # 执行shell命令，如果直接把命令写在这里，在window下会使用CMD执行，会有兼容性问题！
+#   # 使用.\路径兼容mac和windows, (mac可用./ .\, 不可省略, win可用.\, 可省略)
 #   pre-deploy: # 部署前执行以下命令
-#     - run: cp.sh  # 执行shell命令，如果直接把命令写在这里，在window下会使用CMD执行，会有兼容性问题！
+#     - run: cp.sh
 #       path: ./ # 路径
 
 services:
@@ -17,8 +19,10 @@ services:
     # 局部命令，不同的模块执行不同的命令
     actions:
       pre-deploy: # 部署前执行以下命令
-        - run: s_deploy.sh  # 执行shell命令，如果直接把命令写在这里，在window下会使用CMD执行，会有兼容性问题！
-          path: ./scripts # 路径
+        # 执行shell命令，如果直接把命令写在这里，在window下会使用CMD执行，会有兼容性问题！
+        # 使用.\路径兼容mac和windows, (mac可用./ .\, 不可省略, win可用.\, 可省略)
+        - run: .\s_deploy.sh
+          path: .\scripts # 路径
     # 主要配置！！！
     props:
       region: ${config.region} # 地区名
