@@ -5,6 +5,7 @@ import Header from './layouts/Header';
 import Aside from './layouts/Aside';
 import Footer from './layouts/Footer';
 import lowcode from './pages/lowcode';
+import 'antd/dist/antd.css'
 
 function App() {
   return (
