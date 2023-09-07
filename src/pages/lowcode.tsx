@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { buildComponents, assetBundle, AssetLevel, AssetLoader } from '@alilc/lowcode-utils';
 import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
-
-import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from './api/pageManage';
-import { getPage } from './api/api';
+import { findPageSchemaByNodeId } from '@/api/PageSchema';
 
 const getNodeId = function () {
   if (location.search) {
@@ -19,9 +17,9 @@ const SamplePreview = () => {
   console.log(nodeId);
   // debugger
   async function init() {
-    const res = await getPage({id: nodeId});
-    const packages = res.data.packages;
-    const projectSchema = res.data.project_schema;
+    const res = await findPageSchemaByNodeId({nodeId});
+    const packages = res.data.package;
+    const projectSchema = res.data.schema;
     // const scenarioName = '/index';
     // const packages = await getPackagesFromLocalStorage(scenarioName);
     // const projectSchema = await getProjectSchemaFromLocalStorage(scenarioName);
