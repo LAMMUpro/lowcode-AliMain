@@ -14,7 +14,7 @@ const getNodeId = function () {
 const SamplePreview = () => {
   const [data, setData] = useState({});
   const nodeId = getNodeId();
-  console.log(nodeId);
+  
   // debugger
   async function init() {
     const res = await findPageSchemaByNodeId({nodeId});

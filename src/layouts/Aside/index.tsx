@@ -1,9 +1,10 @@
 import { AppstoreOutlined, ContainerOutlined, DesktopOutlined, MailOutlined, MenuFoldOutlined, MenuUnfoldOutlined, PieChartOutlined } from "@ant-design/icons";
 import { Button, Menu } from "antd";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, NavLink } from "react-router-dom";
 
 import type { MenuProps } from 'antd';
+import { findManyPageNode } from "@/api/PageNode";
 type MenuItem = Required<MenuProps>['items'][number];
 
 function getItem(
@@ -42,12 +43,55 @@ const items: MenuItem[] = [
   ]),
 ];
 
+
+
 const Aside: React.FC = function () {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
   function handleMenuItemClick(e:MenuItem) {
-    console.log(e)
+    e?.key && window.open(location.origin+location.pathname+`?nodeId=${e?.key}`, '_self');
   }
+
+  async function updatePageNodes() {
+    const res = await findManyPageNode({
+      applicationId: 1,
+      version: "1.0.0"
+    });
+    
+    res.data.forEach((node:any)=> {
+      processNode(node);
+    })
+
+    console.log(res.data)
+
+    setMenuItems(res.data);
+
+    function processNode(node:any) {
+      node.key = node.id;
+      node.icon = <ContainerOutlined />;
+      node.label = node.describe;
+      // node.type = 'group';
+      if (node.children?.length) {
+        node.children.forEach((node:any) => processNode(node));
+      } else {
+        delete node.children
+      }
+      delete node.version;
+    }
+  }
+
+  useEffect(()=>{
+    updatePageNodes();
+  }, [])
+
+
+  // updatePageNodes();
+  // useEffect(()=>{
+  //   updatePageNodes();
+  // }, [])
+
   return (
-    <div style={{width: '200px', display: 'flex', flexDirection: 'column'}}>
+    <div style={{width: '200px', flexShrink: 0, display: 'flex', flexDirection: 'column'}}>
       <div style={{backgroundColor: '#001529', padding: '4px 0', paddingRight: '10px'}}>
         <img src="/logo.png" style={{width: '100%'}}/>
       </div>
@@ -57,7 +101,7 @@ const Aside: React.FC = function () {
         style={{flex: 1}}
         defaultSelectedKeys={['1']}
         defaultOpenKeys={['sub1']}
-        items={items}
+        items={menuItems}
         onClick={handleMenuItemClick}
       />
     </div>
