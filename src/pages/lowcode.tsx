@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { buildComponents, assetBundle, AssetLevel, AssetLoader } from '@alilc/lowcode-utils';
 import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
 import { findPageSchemaByNodeId } from '@/api/PageSchema';
+import { useLocation } from 'react-router-dom';
+import { Spin } from 'antd';
 
 const getNodeId = function () {
   if (location.search) {
@@ -13,16 +15,22 @@ const getNodeId = function () {
 
 const SamplePreview = () => {
   const [data, setData] = useState({});
-  const nodeId = getNodeId();
+  const [loading, setLoading] = useState(true);
+
+  const location = useLocation();
+
+  let nodeId = getNodeId();
+
+  useEffect(()=>{
+    nodeId = getNodeId();
+    init();
+  }, [location.search]);
   
-  // debugger
   async function init() {
+    setLoading(true);
     const res = await findPageSchemaByNodeId({nodeId});
     const packages = res.data.package;
     const projectSchema = res.data.schema;
-    // const scenarioName = '/index';
-    // const packages = await getPackagesFromLocalStorage(scenarioName);
-    // const projectSchema = await getProjectSchemaFromLocalStorage(scenarioName);
     const { componentsMap: componentsMapArray, componentsTree } = projectSchema;
     const componentsMap: any = {};
     componentsMapArray.forEach((component: any) => {
@@ -43,7 +51,6 @@ const SamplePreview = () => {
 
     const vendors = [assetBundle(libraryAsset, AssetLevel.Library)];
 
-    // TODO asset may cause pollution
     const assetLoader = new AssetLoader();
     await assetLoader.load(libraryAsset);
     //@ts-ignore
@@ -52,22 +59,19 @@ const SamplePreview = () => {
       schema,
       components,
     });
+    setLoading(false);
   }
+
   //@ts-ignore
   const { schema, components } = data;
 
-  if (!schema || !components) {
-    init();
-    return <div>正在加载</div>;
-  }
-
   return (
-    <div>
+    <Spin wrapperClassName='lowcode-renderer-outter-div' tip="Loading" size="large" spinning={loading}>
       <ReactRenderer
         schema={schema}
         components={components}
       />
-    </div>
+    </Spin>
   );
 };
 
