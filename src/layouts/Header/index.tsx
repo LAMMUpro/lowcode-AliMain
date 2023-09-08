@@ -1,6 +1,5 @@
-import { NotificationFilled, NotificationOutlined, NotificationTwoTone } from "@ant-design/icons";
+import { NotificationOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Input, Tag } from "antd";
-import { BrowserRouter, NavLink } from "react-router-dom";
 
 const Header: React.FC = function () {
   return (
