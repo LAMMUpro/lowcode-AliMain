@@ -1,5 +1,5 @@
 import { AppstoreOutlined, ContainerOutlined, DesktopOutlined, MailOutlined, MenuFoldOutlined, MenuUnfoldOutlined, PieChartOutlined } from "@ant-design/icons";
-import { Button, Menu } from "antd";
+import { Button, Menu, Empty } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, NavLink } from "react-router-dom";
 
@@ -91,19 +91,23 @@ const Aside: React.FC = function () {
   // }, [])
 
   return (
-    <div style={{width: '200px', flexShrink: 0, display: 'flex', flexDirection: 'column'}}>
-      <div style={{backgroundColor: '#001529', padding: '4px 0', paddingRight: '10px'}}>
+    <div style={{backgroundColor: '#001529', width: '200px', flexShrink: 0, display: 'flex', flexDirection: 'column'}}>
+      <div style={{padding: '4px 0', paddingRight: '10px'}}>
         <img src="/logo.png" style={{width: '100%'}}/>
       </div>
-      <Menu
-        mode="inline"
-        theme="dark"
-        style={{flex: 1}}
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
-        items={menuItems}
-        onClick={handleMenuItemClick}
-      />
+      
+      {
+        menuItems?.length ? 
+        <Menu
+          mode="inline"
+          theme="dark"
+          style={{flex: 1}}
+          defaultSelectedKeys={['1']}
+          defaultOpenKeys={['sub1']}
+          items={menuItems}
+          onClick={handleMenuItemClick}
+        /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无数据" style={{color: 'white'}}/>
+      }
     </div>
     
     // <div
