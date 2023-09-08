@@ -1,4 +1,4 @@
-import { AppstoreOutlined, ContainerOutlined, DesktopOutlined, MailOutlined, MenuFoldOutlined, MenuUnfoldOutlined, PieChartOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, ContainerOutlined, DesktopOutlined, LeftOutlined, MailOutlined, MenuFoldOutlined, MenuUnfoldOutlined, PieChartOutlined, RightOutlined } from "@ant-design/icons";
 import { Menu, Empty } from "antd";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -9,6 +9,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const Aside: React.FC = function () {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [collapsed, setCollapsed] = useState(false);
 
   const history = useHistory();
 
@@ -44,12 +45,24 @@ const Aside: React.FC = function () {
     }
   }
 
+  function handleToggleCollapsed() {
+    setCollapsed(!collapsed);
+  }
+
   useEffect(()=>{
     updatePageNodes();
   }, [])
 
   return (
-    <div style={{backgroundColor: '#001529', width: '200px', flexShrink: 0, display: 'flex', flexDirection: 'column'}}>
+    <div 
+      style={{
+        position: 'relative', 
+        backgroundColor: '#001529', 
+        width: collapsed ? '80px' : '200px', 
+        flexShrink: 0, 
+        display: 'flex', 
+        flexDirection: 'column'
+      }}>
       <div style={{padding: '4px 0', paddingRight: '10px'}}>
         <img src="/logo.png" style={{width: '100%'}}/>
       </div>
@@ -62,10 +75,30 @@ const Aside: React.FC = function () {
           style={{flex: 1}}
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
+          inlineCollapsed={collapsed}
           items={menuItems}
           onClick={handleMenuItemClick}
         /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无数据" style={{color: 'white'}}/>
       }
+      <div 
+        style={{
+          position: 'absolute', 
+          top: '50%',
+          right: 0,
+          backgroundColor: 'white',
+          transform: 'translate(100%, -50%)',
+          height: '100px',
+          width: '9px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        onClick={handleToggleCollapsed}
+      >
+       {
+        collapsed ? <RightOutlined /> : <LeftOutlined />
+       }
+      </div>
     </div>
   )
 }
