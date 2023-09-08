@@ -5,9 +5,10 @@ import Header from './layouts/Header';
 import Aside from './layouts/Aside';
 import Footer from './layouts/Footer';
 import lowcode from './pages/lowcode';
+import { Breadcrumb } from 'antd';
 import 'antd/dist/antd.css'
 import '@/style/index.scss'
-import { Breadcrumb } from 'antd';
+import '@/style/fix-antd.scss'
 
 function App() {
   return (
@@ -29,12 +30,12 @@ function App() {
             <Breadcrumb>
               <Breadcrumb.Item>Home</Breadcrumb.Item>
               <Breadcrumb.Item>
-                <a href="">Application Center</a>
+                <a href="">客户</a>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                <a href="">Application List</a>
+                <a href="">客户列表</a>
               </Breadcrumb.Item>
-              <Breadcrumb.Item>An Application</Breadcrumb.Item>
+              <Breadcrumb.Item>客户详情</Breadcrumb.Item>
             </Breadcrumb>
             <div
               style={{
