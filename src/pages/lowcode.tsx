@@ -66,7 +66,12 @@ const SamplePreview = () => {
   const { schema, components } = data;
 
   return (
-    <Spin wrapperClassName='lowcode-renderer-outter-div' tip="Loading" size="large" spinning={loading}>
+    <Spin 
+      wrapperClassName='lowcode-renderer-outter-div' 
+      tip="加载中..." 
+      size="large" 
+      spinning={loading}
+    >
       <ReactRenderer
         schema={schema}
         components={components}
