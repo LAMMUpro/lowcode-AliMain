@@ -6,45 +6,45 @@ import Aside from './layouts/Aside';
 import Footer from './layouts/Footer';
 import lowcode from './pages/lowcode';
 import 'antd/dist/antd.css'
+import '@/style/index.scss'
 
 function App() {
   return (
-    <div style={{display: 'flex', height: '100vh'}}>
-      <Aside></Aside>
-      <div style={{flex: '1', display: 'flex', flexDirection: 'column'}}>
-        <Header></Header>
-        <section
-          style={{
-            flex: '1',
-            padding: '8px 10px',
-            backgroundColor: '#e2e2e2',
-            overflow: 'scroll',
-            display: 'flex',
-            flexDirection: 'column'
-          }}
-        >
-          <div
+    <BrowserRouter>
+      <div style={{display: 'flex', height: '100vh'}}>
+        <Aside></Aside>
+        <div style={{flex: '1', display: 'flex', flexDirection: 'column'}}>
+          <Header></Header>
+          <section
             style={{
-              // height: '100%',
-              flex: 1,
-              backgroundColor: 'white',
-              // overflow: 'scroll'
+              flex: '1',
+              padding: '8px 10px',
+              backgroundColor: '#e2e2e2',
+              overflow: 'scroll',
+              display: 'flex',
+              flexDirection: 'column'
             }}
           >
-            <BrowserRouter>
-              <Switch>
-                <Route path='/lowcode' component={lowcode}></Route>
-                <Route path='/404' component={page404}></Route>
-                <Route path='/' component={home}></Route>
-                <Redirect from="/index" to="/"/>
-                <Route component={ page404 } />
-              </Switch>
-            </BrowserRouter>
-            {/* <Footer></Footer> */}
-          </div>
-        </section>
+            <div
+              style={{
+                flex: 1,
+                backgroundColor: 'white',
+              }}
+            >
+              
+                <Switch>
+                  <Route path='/lowcode' component={lowcode}></Route>
+                  <Route path='/404' component={page404}></Route>
+                  <Route path='/' component={home}></Route>
+                  <Redirect from="/index" to="/"/>
+                  <Route component={ page404 } />
+                </Switch>
+              {/* <Footer></Footer> */}
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
+    </BrowserRouter>
   )
 }
 

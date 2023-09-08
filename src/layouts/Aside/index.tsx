@@ -1,55 +1,19 @@
 import { AppstoreOutlined, ContainerOutlined, DesktopOutlined, MailOutlined, MenuFoldOutlined, MenuUnfoldOutlined, PieChartOutlined } from "@ant-design/icons";
-import { Button, Menu, Empty } from "antd";
-import { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, NavLink } from "react-router-dom";
+import { Menu, Empty } from "antd";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import type { MenuProps } from 'antd';
 import { findManyPageNode } from "@/api/PageNode";
 type MenuItem = Required<MenuProps>['items'][number];
 
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[],
-  type?: 'group',
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    type,
-  } as unknown as MenuItem;
-}
-
-const items: MenuItem[] = [
-  getItem('Option 1', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('Option 3', '3', <ContainerOutlined />),
-
-  getItem('Navigation One', 'sub1', <MailOutlined />, [
-    getItem('Option 5', '5'),
-    getItem('Option 6', '6'),
-    getItem('Option 7', '7'),
-    getItem('Option 8', '8'),
-  ]),
-
-  getItem('Navigation Two', 'sub2', <AppstoreOutlined />, [
-    getItem('Option 9', '9'),
-    getItem('Option 10', '10'),
-
-    getItem('Submenu', 'sub3', null, [getItem('Option 11', '11'), getItem('Option 12', '12')]),
-  ]),
-];
-
-
-
 const Aside: React.FC = function () {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
+  const history = useHistory();
+
   function handleMenuItemClick(e:MenuItem) {
-    e?.key && window.open(location.origin+location.pathname+`?nodeId=${e?.key}`, '_self');
+    history.push('/lowcode' + `?nodeId=${e?.key}`);
   }
 
   async function updatePageNodes() {
@@ -84,12 +48,6 @@ const Aside: React.FC = function () {
     updatePageNodes();
   }, [])
 
-
-  // updatePageNodes();
-  // useEffect(()=>{
-  //   updatePageNodes();
-  // }, [])
-
   return (
     <div style={{backgroundColor: '#001529', width: '200px', flexShrink: 0, display: 'flex', flexDirection: 'column'}}>
       <div style={{padding: '4px 0', paddingRight: '10px'}}>
@@ -109,16 +67,6 @@ const Aside: React.FC = function () {
         /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无数据" style={{color: 'white'}}/>
       }
     </div>
-    
-    // <div
-    //   style={{width: '160px', backgroundColor: 'lightblue'}}
-    // >
-    //   {/* 侧边栏
-    //   <div></div>
-    //   <BrowserRouter>
-    //     <NavLink to="/lowcode?nodeId=1">跳转首页</NavLink>
-    //   </BrowserRouter> */}
-    // </div>
   )
 }
 
