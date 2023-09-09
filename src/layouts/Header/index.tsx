@@ -12,14 +12,17 @@ const Header: React.FC = function () {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0 10px',
+        marginLeft: '2px',
+        backgroundColor: 'white',
+        borderBottomLeftRadius: '4px'
       }}
     >
       <div>
-        <span>最近打开: </span>
-        <Tag closable color="#3b5999">首页</Tag>
-        <Tag closable color="#3b5999">活动列表</Tag>
-        <Tag closable color="#3b5999">客户详情</Tag>
-        <Tag closable color="#3b5999">用户中心</Tag>
+        <span style={{color: 'rgba(0,0,0,.55)'}}>最近打开: </span>
+        <Tag closable color="processing">首页</Tag>
+        <Tag closable color="processing">活动列表</Tag>
+        <Tag closable color="processing">客户详情</Tag>
+        <Tag closable color="processing">用户中心</Tag>
       </div>
       <div style={{display: 'flex', alignItems: 'center'}}>
         <Input.Search placeholder="请输入关键词" size="small" style={{ width: 150, marginRight: '14px' }} />

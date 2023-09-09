@@ -57,21 +57,20 @@ const Aside: React.FC = function () {
     <div 
       style={{
         position: 'relative', 
-        backgroundColor: '#001529', 
+        backgroundColor: 'white', 
         width: collapsed ? '80px' : '200px', 
         flexShrink: 0, 
         display: 'flex', 
         flexDirection: 'column'
       }}>
-      <div style={{padding: '4px 0', paddingRight: '10px'}}>
-        <img src="/logo.png" style={{width: '100%'}}/>
+      <div style={{paddingTop: '4px', paddingBottom: '6px', paddingLeft: '20px', overflow: 'hidden', borderBottom: '1px solid #d6d6d6'}}>
+        <img src="/logo.png" style={{height: '38px'}}/>
       </div>
       
       {
         menuItems?.length ? 
         <Menu
           mode="inline"
-          theme="dark"
           style={{flex: 1}}
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
@@ -84,7 +83,8 @@ const Aside: React.FC = function () {
         style={{
           position: 'absolute', 
           top: '50%',
-          right: 0,
+          right: '1px',
+          borderRadius: '0 50px 50px 0',
           backgroundColor: 'white',
           transform: 'translate(100%, -50%)',
           height: '100px',
