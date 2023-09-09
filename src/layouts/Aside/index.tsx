@@ -27,13 +27,13 @@ const Aside: React.FC = function () {
       processNode(node);
     })
 
-    console.log(res.data)
+    console.log(res.data);
 
-    setMenuItems(res.data);
+    setMenuItems(res.data?.[0]?.children || []);
 
     function processNode(node:any) {
       node.key = node.id;
-      node.icon = <ContainerOutlined />;
+      node.icon = <AppstoreOutlined />;
       node.label = node.describe;
       // node.type = 'group';
       if (node.children?.length) {

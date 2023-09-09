@@ -14,7 +14,9 @@ const Header: React.FC = function () {
         padding: '0 10px',
         marginLeft: '2px',
         backgroundColor: 'white',
-        borderBottomLeftRadius: '4px'
+        borderBottomLeftRadius: '4px',
+        zIndex: 10,
+        boxShadow: '0 2px 8px #f0f1f2',
       }}
     >
       <div>
