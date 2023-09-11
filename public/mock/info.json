@@ -1,3 +1,25 @@
 {
-  "info": "Hello AliLowCode!!"
+  "info": "Hello AliLowCode!!",
+  "users": [
+    {
+      "id": "16456378293434",
+      "nickname": "lammu",
+      "realname": "陈永超",
+      "sex": 1,
+      "phone": "18178048209",
+      "type": "staff",
+      "roles": ["1732374345", "1732374345"],
+      "isEnable": 1
+    },
+    {
+      "id": "16456378293444",
+      "nickname": "lucy",
+      "realname": "路子",
+      "sex": 0,
+      "phone": "17777520454",
+      "type": "wbyh",
+      "roles": ["1732374345"],
+      "isEnable": 0
+    }
+  ]
 }
