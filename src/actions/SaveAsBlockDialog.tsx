@@ -143,7 +143,7 @@ class AddVersionDialog extends React.Component<PropsType> {
                   onChange={this.updateCategoryList}
                 >
                   {
-                    this.state.styleList.map(item=>(
+                    this.state.styleList?.map(item=>(
                       <Select.Option value={item.id}>{item.name}</Select.Option>
                     ))
                   }
