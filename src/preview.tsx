@@ -84,7 +84,7 @@ const SamplePreview = () => {
           utils: {
             generateRemoteHandleMap: function () {
               /** 初始化this.utils.remoteHandles */
-              this.utils.remoteHandles = {
+              this.remoteHandles = {
                 ...generateRemoteHandleMap(schema?.remoteHandle?.list||[])
               }
             },
@@ -98,8 +98,8 @@ const SamplePreview = () => {
 };
 
 function onCompGetRef(schema, ref) {
-  console.log('schema, ref');
-  console.log(schema, ref);
+  // console.log('schema, ref');
+  // console.log(schema, ref);
   
 }
 
