@@ -24,13 +24,16 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
+# 忽略软链接文件夹
+/src/types/dto
 /src/types/node_modules
-/src/types/.prisma/**
-!/src/types/.prisma/**/*.ts
-!/src/types/.prisma/**/*.d.ts
-!/src/types/.prisma/**/
+# /src/types/node_modules
+# /src/types/.prisma/**
+# !/src/types/.prisma/**/*.ts
+# !/src/types/.prisma/**/*.d.ts
+# !/src/types/.prisma/**/
 
-/src/types/@prisma/**
-!/src/types/@prisma/**/*.ts
-!/src/types/@prisma/**/*.d.ts
-!/src/types/@prisma/**/
+# /src/types/@prisma/**
+# !/src/types/@prisma/**/*.ts
+# !/src/types/@prisma/**/*.d.ts
+# !/src/types/@prisma/**/
