@@ -124,7 +124,7 @@ export default class DataSourcePanePlugin extends PureComponent<
     if (project) {
       const docSchema = project.exportSchema(common.designerCabin.TransformStage.Save);
       if (!docSchema?.componentsTree?.[0]) return;
-      console.log(JSON.parse(JSON.stringify(docSchema.componentsTree[0].methods)))
+      // console.log(JSON.parse(JSON.stringify(docSchema.componentsTree[0].methods)))
       const methods = docSchema.componentsTree[0].methods || {};
       const methodKeys = Object.keys(methods);
 
@@ -138,7 +138,7 @@ export default class DataSourcePanePlugin extends PureComponent<
       // }
       if (!_isEmpty(docSchema)) {
         apiList.forEach(apiInfo => {
-          console.log(methodKeys, apiInfo.id, !methodKeys.includes(apiInfo.id))
+          // console.log(methodKeys, apiInfo.id, !methodKeys.includes(apiInfo.id))
           if (!methodKeys.includes(apiInfo.id)) {
             /** 设置methods*/
             _set(docSchema, `componentsTree[0].methods.${apiInfo.id}`, {
