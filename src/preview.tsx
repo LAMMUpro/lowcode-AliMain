@@ -8,6 +8,7 @@ import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
 import { config } from '@alilc/lowcode-engine';
 import { generateRemoteHandleMap } from './utils/data-helper';
 import { findPageSchemaByNodeId } from './api/PageSchema';
+import { message } from 'antd';
 
 const getScenarioName = function () {
   if (location.search) {
@@ -23,7 +24,7 @@ const getNodeId = function () {
   return 1;
 }
 
-const SamplePreview = () => {
+const SamplePreview: React.FC = () => {
   const [data, setData] = useState({});
 
   async function init() {
@@ -89,7 +90,10 @@ const SamplePreview = () => {
               }
             },
             /** api方法 */
-            remoteHandles: {}
+            remoteHandles: {},
+            message: function (msg: string) {
+              message.info(msg);
+            }
           }
         }}
       />
