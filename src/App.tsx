@@ -47,6 +47,7 @@ function App() {
               style={{
                 flex: 1,
                 backgroundColor: 'white',
+                padding: '12px'
               }}
             >
               <Switch>
