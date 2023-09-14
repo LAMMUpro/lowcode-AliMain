@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom';
-import App from '@/App.tsx';
+import App from '@/App';
 
 /** microApp */
 import microApp from "@micro-zoe/micro-app";
