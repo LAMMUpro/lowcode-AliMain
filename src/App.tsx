@@ -11,6 +11,7 @@ import '@/style/index.scss'
 import '@/style/fix-antd.scss'
 import { NotificationOutlined } from '@ant-design/icons';
 import React from 'react';
+import styles from './App.module.scss';
 
 const App: React.FC = () => {
   return (
@@ -23,7 +24,8 @@ const App: React.FC = () => {
             style={{
               flex: '1',
               padding: '0 10px 8px',
-              overflow: 'scroll',
+              overflowY: 'scroll',
+              overflowX: 'hidden',
               display: 'flex',
               flexDirection: 'column'
             }}
@@ -39,9 +41,9 @@ const App: React.FC = () => {
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>客户详情</Breadcrumb.Item>
               </Breadcrumb>
-              <div style={{color: 'rgba(0, 0, 0, 0.55)', paddingLeft: '20px', cursor: 'pointer', flexWrap: 'nowrap', overflow: 'hidden'}}>
+              <div className={styles.nowrap} style={{color: 'rgba(0, 0, 0, 0.55)', paddingLeft: '20px', cursor: 'pointer', flexWrap: 'nowrap', overflow: 'hidden'}}>
                 <NotificationOutlined />
-                <span style={{textWrap: 'nowrap'}}>: 你有一条待处理订单</span>
+                <span>: 你有一条待处理订单</span>
               </div>
             </div>
             <div
