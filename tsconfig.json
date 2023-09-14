@@ -5,7 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "strict": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
@@ -16,7 +16,6 @@
     },
     "skipLibCheck": true,
     "types": ["node"],
-    "allowImportingTsExtensions": true,
     "noEmit": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/*.tsx", "src/**/*.vue", "vite.config.ts"],
