@@ -4,7 +4,7 @@
 
 # 删除编译后产物
 rm -rf ../build
-# 代码打包(需要下载ncc到全局)
+# 代码打包
 yarn build
 # 将nginx移动到build下
 cp ../nginx.conf ../build/nginx.conf
