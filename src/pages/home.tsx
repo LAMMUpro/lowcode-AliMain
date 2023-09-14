@@ -1,6 +1,6 @@
+import React from 'react';
 
-function page404() {
-
+const pageHome: React.FC = () => {
   return (
     <div>
       首页
@@ -14,4 +14,4 @@ function page404() {
   )
 }
 
-export default page404
+export default pageHome;

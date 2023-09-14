@@ -10,8 +10,9 @@ import 'antd/dist/antd.css'
 import '@/style/index.scss'
 import '@/style/fix-antd.scss'
 import { NotificationOutlined } from '@ant-design/icons';
+import React from 'react';
 
-function App() {
+const App: React.FC = () => {
   return (
     <BrowserRouter>
       <div style={{display: 'flex', height: '100vh'}}>

@@ -1,13 +1,12 @@
 import { AppstoreOutlined, ContainerOutlined, DesktopOutlined, LeftOutlined, MailOutlined, MenuFoldOutlined, MenuUnfoldOutlined, PieChartOutlined, RightOutlined } from "@ant-design/icons";
 import { Menu, Empty } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-
 import type { MenuProps } from 'antd';
 import { findManyPageNode } from "@/api/PageNode";
 type MenuItem = Required<MenuProps>['items'][number];
 
-const Aside: React.FC = function () {
+const Aside: React.FC = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -64,7 +63,7 @@ const Aside: React.FC = function () {
         flexDirection: 'column'
       }}>
       <div style={{paddingTop: '4px', paddingBottom: '6px', paddingLeft: '20px', overflow: 'hidden', borderBottom: '1px solid #d6d6d6'}}>
-        <img src="/logo.png" style={{height: '38px'}}/>
+        <img src="/logo.png" style={{height: '38px'}} alt=""/>
       </div>
       
       {
