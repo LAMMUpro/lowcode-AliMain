@@ -1,0 +1,10 @@
+extend: s.yaml
+
+services:
+  cn-shenzhen-lowcode-web: # 服务/模块名, 不参与部署
+    props:
+      function: # 函数配置
+        name: env_test
+        # 数组为空会删除父级变量!!!
+        # environmentVariables:
+          ## author: ${env.author}

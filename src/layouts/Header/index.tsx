@@ -1,5 +1,6 @@
 import { NotificationOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Input, Tag } from "antd";
+import React from 'react';
 
 const Header: React.FC = function () {
   return (

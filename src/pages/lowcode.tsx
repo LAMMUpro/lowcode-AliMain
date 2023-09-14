@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { buildComponents, assetBundle, AssetLevel, AssetLoader } from '@alilc/lowcode-utils';
 import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
@@ -13,7 +13,7 @@ const getNodeId = function () {
   return 0;
 }
 
-const SamplePreview = () => {
+const SamplePreview: React.FC = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
 

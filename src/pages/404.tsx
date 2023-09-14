@@ -1,6 +1,6 @@
+import React from 'react';
 
-function page404() {
-
+const page404: React.FC = () => {
   return (
     <h2>
       404
