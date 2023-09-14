@@ -1,9 +1,11 @@
 import { AppstoreOutlined, ContainerOutlined, DesktopOutlined, LeftOutlined, MailOutlined, MenuFoldOutlined, MenuUnfoldOutlined, PieChartOutlined, RightOutlined } from "@ant-design/icons";
-import { Menu, Empty } from "antd";
+import { Empty, Menu, MenuProps } from "antd";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import type { MenuProps } from 'antd';
 import { findManyPageNode } from "@/api/PageNode";
+
+const MenuIgnoreError = (Menu as any);
+
 type MenuItem = Required<MenuProps>['items'][number];
 
 const Aside: React.FC = () => {
@@ -68,7 +70,7 @@ const Aside: React.FC = () => {
       
       {
         menuItems?.length ? 
-        <Menu
+        <MenuIgnoreError
           mode="inline"
           style={{flex: 1}}
           defaultSelectedKeys={['1']}
