@@ -27,6 +27,8 @@ yarn.lock
 # 忽略软链接文件夹
 /src/types/dto
 /src/types/node_modules
+/src/plugins/plugin-remote-handle
+
 # /src/types/node_modules
 # /src/types/.prisma/**
 # !/src/types/.prisma/**/*.ts
