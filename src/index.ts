@@ -21,7 +21,7 @@ import LogoSamplePlugin from './plugins/plugin-logo-sample';
 import PagesManagePlugin from './plugins/plugin-pages-manage';
 import BlockPlugin from './plugins/plugin-block-manage';
 import saveAsBlock from './actions/saveAsBlock';
-import RemoteHandlePanePlugin from './plugins/plugin-remote-handle';
+import RemoteHandlePanePlugin from '@lammu/lowcode-plugin-remote-handle';
 import './global.scss';
 import { findAllApplication } from './api/Application';
 
