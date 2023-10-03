@@ -4,9 +4,10 @@ import EditorInitPlugin from './plugins/plugin-editor-init';
 import UndoRedoPlugin from '@alilc/lowcode-plugin-undo-redo';
 import ZhEnPlugin from '@alilc/lowcode-plugin-zh-en';
 import CodeGenPlugin from '@alilc/lowcode-plugin-code-generator';
-import DataSourcePanePlugin from '@lammu/lowcode-plugin-datasource-pane';
 import SchemaPlugin from '@alilc/lowcode-plugin-schema';
 import CodeEditorPlugin from "@lammu/lowcode-plugin-code-editor";
+import DataSourcePanePlugin from '@lammu/lowcode-plugin-datasource-pane';
+import RemoteHandlePanePlugin from '@lammu/lowcode-plugin-remote-handle';
 import ManualPlugin from "@alilc/lowcode-plugin-manual";
 import InjectPlugin from '@alilc/lowcode-plugin-inject';
 import SimulatorResizerPlugin from '@alilc/lowcode-plugin-simulator-select';
@@ -21,7 +22,6 @@ import LogoSamplePlugin from './plugins/plugin-logo-sample';
 import PagesManagePlugin from './plugins/plugin-pages-manage';
 import BlockPlugin from './plugins/plugin-block-manage';
 import saveAsBlock from './actions/saveAsBlock';
-import RemoteHandlePanePlugin from '@lammu/lowcode-plugin-remote-handle';
 import './global.scss';
 import { findAllApplication } from './api/Application';
 
@@ -89,6 +89,7 @@ async function registerPlugins() {
     ]
   });
 
+  /** 增删改API */
   await plugins.register(RemoteHandlePanePlugin, {
     importPlugins: [],
     dataSourceTypes: [
