@@ -1,5 +1,5 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
-import AliLowCodeEngineExt from '@alilc/lowcode-engine-ext';
+import AliLowCodeEngineExt from '@lammu/lowcode-engine-ext';
 
 // 设置内置 setter 和事件绑定、插件绑定面板
 const DefaultSettersRegistryPlugin = (ctx: IPublicModelPluginContext) => {
@@ -28,22 +28,17 @@ const DefaultSettersRegistryPlugin = (ctx: IPublicModelPluginContext) => {
         props: {
           extraDataMap: {
             props: {
-              name: '请求处理事件', // 变量组展示名
+              name: '自定义', // 变量组展示名
               key: '', // 属性名，例如 this.props
               getChildren: () => [
+                { label: 'deleteActivityById()' },
                 {
-                  label: 'deleteActivityById',
-                  value: 'deleteActivityById()',
+                  label: 'state.pageInfo',
+                  children: [
+                    { label: 'pageSize' },
+                    { label: 'total' }
+                  ]
                 }
-                // {
-                //   label: '活动处理',
-                //   children: [
-                //     {
-                //       label: 'delteActivityById',
-                //       value: 'delteActivityById()',
-                //     }
-                //   ]
-                // }
               ],
             }
           }
