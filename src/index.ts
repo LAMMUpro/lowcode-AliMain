@@ -6,7 +6,7 @@ import ZhEnPlugin from '@alilc/lowcode-plugin-zh-en';
 import CodeGenPlugin from '@alilc/lowcode-plugin-code-generator';
 import DataSourcePanePlugin from '@lammu/lowcode-plugin-datasource-pane';
 import SchemaPlugin from '@alilc/lowcode-plugin-schema';
-import CodeEditorPlugin from "@alilc/lowcode-plugin-code-editor";
+import CodeEditorPlugin from "@lammu/lowcode-plugin-code-editor";
 import ManualPlugin from "@alilc/lowcode-plugin-manual";
 import InjectPlugin from '@alilc/lowcode-plugin-inject';
 import SimulatorResizerPlugin from '@alilc/lowcode-plugin-simulator-select';
@@ -101,6 +101,7 @@ async function registerPlugins() {
     ]
   })
 
+  /** 源码面板 */
   await plugins.register(CodeEditorPlugin);
 
   // 注册出码插件
@@ -128,6 +129,23 @@ async function registerPlugins() {
     supportVariableGlobally: true,
     requestHandlersMap: {
       fetch: createFetchHandler()
+    }
+  });
+
+  /**
+   * 通过此方法来执行更新schema的代码, 可以恢复选中的节点
+   */
+  event.on('common:reset:selectNode', (func: Function) => {
+    /** 记录当前选中的节点 */
+    const currentNodeId = project?.currentDocument?.selection.node?.id;
+
+    /** 执行带有取消节点选中副作用的代码 */
+    func();
+
+    /** 更新schema后选中的节点会取消选中, 得手动设置回来 */
+    if (currentNodeId) {
+      /** 恢复之前选中的节点 */
+      project?.currentDocument?.selection.select(currentNodeId);
     }
   });
 
