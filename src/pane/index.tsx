@@ -155,7 +155,11 @@ export default class DataSourcePanePlugin extends PureComponent<
         })
         
         _set(docSchema, 'componentsTree[0].remoteHandle.list', apiList);
-        project.importSchema(docSchema);
+
+        /** 修复更新schema节点取消选中的问题 */
+        this.props.event.emit('reset:selectNode', ()=>{
+          project.importSchema(docSchema);
+        });
       }
     }
 
