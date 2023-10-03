@@ -4,7 +4,7 @@ import EditorInitPlugin from './plugins/plugin-editor-init';
 import UndoRedoPlugin from '@alilc/lowcode-plugin-undo-redo';
 import ZhEnPlugin from '@alilc/lowcode-plugin-zh-en';
 import CodeGenPlugin from '@alilc/lowcode-plugin-code-generator';
-import DataSourcePanePlugin from '@alilc/lowcode-plugin-datasource-pane';
+import DataSourcePanePlugin from '@lammu/lowcode-plugin-datasource-pane';
 import SchemaPlugin from '@alilc/lowcode-plugin-schema';
 import CodeEditorPlugin from "@alilc/lowcode-plugin-code-editor";
 import ManualPlugin from "@alilc/lowcode-plugin-manual";
@@ -76,6 +76,7 @@ async function registerPlugins() {
 
 
   // 插件参数声明 & 传递，参考：https://lowcode-engine.cn/site/docs/api/plugins#设置插件参数版本示例
+  /** 数据源 */
   await plugins.register(DataSourcePanePlugin, {
     importPlugins: [],
     dataSourceTypes: [
