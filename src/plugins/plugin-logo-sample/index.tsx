@@ -24,16 +24,16 @@ const Logo: React.FC<IProps> = (props): React.ReactElement => {
   })
   
   return (
-    <div className="lowcode-plugin-logo" style={{width: '400px'}}>
+    <div className="lowcode-plugin-logo">
       <a className="logo" target="blank" href={props.href || 'https://lowcode-engine.cn'} style={{ backgroundImage: `url(${props.logo})`, flexShrink: '0' }} />
       {/* <div className="scenario-name">当前路径:{scenarioDisplayName}</div> */}
-      <div style={{flex: 1, overflow: 'hidden'}}>
+      {/* <div style={{flex: 1, overflow: 'hidden'}}>
         <span style={{display: 'block', fontSize: '14px', fontWeight: 'bold', textWrap: 'nowrap'}}>
           当前编辑页面:
           <a style={{color: '#3e71f7', cursor: "pointer"}}>{nodePath}</a>
         </span>
         <span>{nodeDescribe}</span>
-      </div>
+      </div> */}
       {/* {
         urls && (
           <Dropdown
