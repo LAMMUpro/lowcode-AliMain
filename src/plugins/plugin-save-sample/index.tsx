@@ -27,19 +27,19 @@ const SaveSamplePlugin = (ctx: IPublicModelPluginContext) => {
           </Button>
         ),
       });
-      skeleton.add({
-        name: 'resetSchema',
-        area: 'topArea',
-        type: 'Widget',
-        props: {
-          align: 'right',
-        },
-        content: (
-          <Button onClick={() => resetSchema(scenarioName)}>
-            重置页面
-          </Button>
-        ),
-      });
+      // skeleton.add({
+      //   name: 'resetSchema',
+      //   area: 'topArea',
+      //   type: 'Widget',
+      //   props: {
+      //     align: 'right',
+      //   },
+      //   content: (
+      //     <Button onClick={() => resetSchema(scenarioName)}>
+      //       重置页面
+      //     </Button>
+      //   ),
+      // });
       hotkey.bind('command+s', (e) => {
         e.preventDefault();
         updatePageInfo();

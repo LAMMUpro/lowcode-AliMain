@@ -22,6 +22,7 @@ import { SpaceAppVersionDto } from 'src/types/dtoExt/AppVersion';
 import SaveAsBlockDialog from 'src/actions/SaveAsBlockDialog';
 import { BlockDtoCreate } from 'src/types/dto/Block';
 import { parseLocalInt } from 'src/utils';
+import { resetSchema } from 'src/services/pageManage';
 
 const { Item, Divider } = Menu;
 
@@ -466,6 +467,11 @@ class PageManagePane extends React.Component {
     }
   }
 
+  /** 重置页面为空页面 */
+  resetPageInfo(nodeId: number) {
+    resetSchema(nodeId);
+  }
+
   deletePageInfo(nodeId: number) {
     Dialog.confirm({
       content: '确定要删除该节点页面数据吗？',
@@ -525,6 +531,7 @@ class PageManagePane extends React.Component {
           disabled={!pageNode?.hasSchema}
         >预览</Item>,
         <Divider key="divider-1" />,
+        <Item key="6" onClick={()=>this.resetPageInfo(node.props.eventKey)} disabled={!pageNode?.hasSchema}>重置页面</Item>,
         <Item key="4" onClick={()=>this.deletePageInfo(node.props.eventKey)}>删除页面</Item>,
         <Item key="3" onClick={()=>this.deleteNode(node.props.eventKey)}>删除节点</Item>
       ]
