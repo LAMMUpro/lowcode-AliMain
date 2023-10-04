@@ -9,6 +9,7 @@ import { config } from '@alilc/lowcode-engine';
 import { generateRemoteHandleMap } from './utils/data-helper';
 import { findPageSchemaByNodeId } from './api/PageSchema';
 import { message } from 'antd';
+import { host } from './utils';
 
 const getScenarioName = function () {
   if (location.search) {
@@ -94,6 +95,9 @@ const SamplePreview: React.FC = () => {
             message: function (msg: string) {
               message.info(msg);
             }
+          },
+          constants: {
+            host
           }
         }}
       />

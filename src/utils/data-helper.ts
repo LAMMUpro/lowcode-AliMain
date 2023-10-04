@@ -21,7 +21,6 @@ const EXPRESSION_TYPE = {
 // TODO
 const host = {}
 
-
 export function generateRemoteHandleMap(ajaxList: Array<{id: string}>) {
   const res: any = {};
   ajaxList.forEach((item) => {
