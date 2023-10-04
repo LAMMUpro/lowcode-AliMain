@@ -31,18 +31,18 @@ async function registerPlugins() {
 
   await plugins.register(InjectPlugin);
 
-  // await plugins.register(EditorInitPlugin, {
-  //   scenarioName: '/index',
-  //   displayName: '/index',
-  //   info: {
-  //     urls: [
-  //       {
-  //         key: "AntD 物料",
-  //         value: "https://github.com/alibaba/lowcode-materials/tree/main/packages/antd-lowcode-materials"
-  //       }
-  //     ],
-  //   },
-  // });
+  await plugins.register(EditorInitPlugin, {
+    scenarioName: '/index',
+    displayName: '/index',
+    info: {
+      urls: [
+        {
+          key: "AntD 物料",
+          value: "https://github.com/alibaba/lowcode-materials/tree/main/packages/antd-lowcode-materials"
+        }
+      ],
+    },
+  });
 
   /** 页面管理器 */
   await plugins.register(PagesManagePlugin);
