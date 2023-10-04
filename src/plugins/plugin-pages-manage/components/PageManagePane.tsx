@@ -94,7 +94,7 @@ class PageManagePane extends React.Component {
       blockDom: undefined,
       appDialogType: 'add',
       applicationId: parseLocalInt(localStorage.getItem("active:applicationId")),
-      applicationList: config.get("applicationList"),
+      applicationList: [],
       applicationInfo: getDefaultApplication(),
       appVersionInfo: getDefaultAppVersion(),
       appAddEnvInfo: getDefaultAppEnv(),
@@ -154,14 +154,21 @@ class PageManagePane extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState({
-      loading: true
-    })
-    const callback = () => {
-      this.setState({
-        loading: false
-      })
+    this.setState({ loading: true });
+    const callback = () => this.setState({ loading: false });
+
+    /**
+     * 获取应用列表, 如果config有(预加载完成了)则直接用
+     */
+    const applicationList = config.get("applicationList");
+    if (applicationList) {
+      this.setState({ applicationList });
+    } else {
+      this.updateApplicationList();
     }
+    /**
+     * 回显之前的选项
+     */
     setTimeout(async () => {
       if (!this.state.applicationList?.length) return callback();
       if (!this.state.applicationList.find(app=>app.id===this.state.applicationId)) return callback();
