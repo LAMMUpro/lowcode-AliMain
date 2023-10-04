@@ -47,6 +47,9 @@ async function registerPlugins() {
   /** 页面管理器 */
   await plugins.register(PagesManagePlugin);
   
+  /** 组件库 */
+  await plugins.register(ComponentPanelPlugin);
+  
   /** 区块管理器 */
   await plugins.register(BlockPlugin);
 
@@ -55,8 +58,6 @@ async function registerPlugins() {
 
   // Logo + pageInfo
   await plugins.register(LogoSamplePlugin);
-
-  await plugins.register(ComponentPanelPlugin);
 
   await plugins.register(SchemaPlugin);
 
