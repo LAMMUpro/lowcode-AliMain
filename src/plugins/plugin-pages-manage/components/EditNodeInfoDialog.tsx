@@ -66,13 +66,23 @@ class EditNodeInfoDialog extends React.Component<PropsType> {
             {...{labelCol: { fixedSpan: 6 }, wrapperCol: { span: 18 }}}
           >
             <Form.Item
-              label="节点名称"
+              label="节点英文名"
               required
-              requiredMessage="节点名称不能为空"
+              requiredMessage="节点英文名不能为空"
             >
               <Input 
                 name="name" 
                 defaultValue={this.props.originInfo.name}
+              />
+            </Form.Item>
+            <Form.Item
+              label="节点中文名"
+              required
+              requiredMessage="节点中文名不能为空"
+            >
+              <Input 
+                name="nameCh"
+                defaultValue={this.props.originInfo.nameCh}
               />
             </Form.Item>
             <Form.Item

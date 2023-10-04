@@ -1,4 +1,4 @@
-import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Tag, Select, Message } from '@alifd/next';
+import { Tree, Icon, Search, Dialog, Menu, Loading, Button, Tag, Select, Message, Balloon } from '@alifd/next';
 import React from 'react';
 import EditNodeInfoDialog from './EditNodeInfoDialog';
 import AddEditApplicationDialog from './AddEditApplicationDialog';
@@ -689,6 +689,33 @@ class PageManagePane extends React.Component {
       blockDom,
     })
   }
+  renderNode(node: PageNode) {
+    return <Tree.Node key={node.id} label={
+      <Balloon.Tooltip 
+        v2 
+        align="r"
+        trigger={
+          <span>
+            <span style={{marginRight: '4px'}}>{node.nameCh}</span> 
+            { 
+              this.state.nodeId == node.id ? 
+              <Tag size="small" type="primary" color="turquoise">当前编辑</Tag> :
+              <span>{ node.hasSchema && <Icon type="select" style={{color: "#5992f2"}}/> }</span>
+            }
+          </span>
+        }
+      >
+        <div>
+          <span style={{display: 'block'}}>{node.path}</span>
+          <span style={{color: '#6b6b6b'}}>{node.describe}</span>
+        </div>
+      </Balloon.Tooltip>
+    }>
+      {
+        node.children.map(node=> this.renderNode(node))
+      }
+    </Tree.Node>
+  }
 
   render() {
     const { expandedKeys, autoExpandParent } = this.state;
@@ -837,7 +864,6 @@ class PageManagePane extends React.Component {
         {
           (this.state.applicationId && this.state.appVersionId) && <Tree
             draggable
-            editable
             showLine
             isNodeBlock
             defaultExpandAll 
@@ -848,11 +874,10 @@ class PageManagePane extends React.Component {
             onRightClick={this.onRightClick}
           >
             {
-              this.state.pageNodes.map(item=> renderNode(item))
+              this.state.pageNodes.map(item=> this.renderNode(item))
             }
           </Tree>
         }
-        
 
         <EditNodeInfoDialog 
           visible={this.state.isShowEditNodeInfoDialog}
@@ -908,30 +933,6 @@ class PageManagePane extends React.Component {
       </Loading>
     );
   }
-}
-
-function renderNode(node: PageNode) {
-  return <Tree.Node key={node.id} label={
-    <span>
-      <span>{node.name}</span> 
-      { node.hasSchema && <Icon type="detail"/> }
-    </span>
-  }>
-    {
-      node.children.map(item=> (
-        <Tree.Node key={item.id} label={
-          <span>
-            <span>{item.name}</span> 
-            { item.hasSchema && <Icon type="detail"/> }
-          </span>
-        }>
-          {
-            item.children.map(item2 => renderNode(item2))
-          }
-        </Tree.Node>
-      ))
-    }
-  </Tree.Node>
 }
 
 export default PageManagePane;
