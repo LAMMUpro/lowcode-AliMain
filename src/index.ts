@@ -31,18 +31,18 @@ async function registerPlugins() {
 
   await plugins.register(InjectPlugin);
 
-  await plugins.register(EditorInitPlugin, {
-    scenarioName: '/index',
-    displayName: '/index',
-    info: {
-      urls: [
-        {
-          key: "AntD 物料",
-          value: "https://github.com/alibaba/lowcode-materials/tree/main/packages/antd-lowcode-materials"
-        }
-      ],
-    },
-  });
+  // await plugins.register(EditorInitPlugin, {
+  //   scenarioName: '/index',
+  //   displayName: '/index',
+  //   info: {
+  //     urls: [
+  //       {
+  //         key: "AntD 物料",
+  //         value: "https://github.com/alibaba/lowcode-materials/tree/main/packages/antd-lowcode-materials"
+  //       }
+  //     ],
+  //   },
+  // });
 
   /** 页面管理器 */
   await plugins.register(PagesManagePlugin);
@@ -53,15 +53,16 @@ async function registerPlugins() {
   /** 区块管理器 */
   await plugins.register(BlockPlugin);
 
-  // 设置内置 setter 和事件绑定、插件绑定面板
+  /** 设置内置 setter 和事件绑定、插件绑定面板 */
   await plugins.register(DefaultSettersRegistryPlugin);
 
-  // Logo + pageInfo
+  /** Logo + pageInfo */
   await plugins.register(LogoSamplePlugin);
 
   await plugins.register(SchemaPlugin);
 
   await plugins.register(ManualPlugin);
+
   // 注册回退/前进
   await plugins.register(UndoRedoPlugin);
 
@@ -72,11 +73,9 @@ async function registerPlugins() {
 
   await plugins.register(SimulatorResizerPlugin);
 
-  // 异步加载资源
+  /** 异步加载资源??? */
   // await plugins.register(LoadIncrementalAssetsWidgetPlugin);
 
-
-  // 插件参数声明 & 传递，参考：https://lowcode-engine.cn/site/docs/api/plugins#设置插件参数版本示例
   /** 数据源 */
   await plugins.register(DataSourcePanePlugin, {
     importPlugins: [],
@@ -109,10 +108,13 @@ async function registerPlugins() {
   // 注册出码插件
   // await plugins.register(CodeGenPlugin);
 
+  /** 保存页面 */
   await plugins.register(SaveSamplePlugin);
 
+  /** 预览页面 */
   await plugins.register(PreviewSamplePlugin);
 
+  /** ??? */
   await plugins.register(CustomSetterSamplePlugin);
 };
 
