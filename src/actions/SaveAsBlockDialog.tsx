@@ -7,6 +7,9 @@ import { findAllBlockStyle } from 'src/api/BlockStyle';
 import { BlockDtoCreate } from 'src/types/dto/Block';
 import { BlockCategoryDto } from 'src/types/dto/BlockCategory';
 import { BlockStyleDto } from 'src/types/dto/BlockStyle';
+import AddBlockCategoryDialog from "src/plugins/plugin-block-manage/components/AddBlockCategoryDialog.tsx";
+import { BlockCategoryDtoCreate } from 'src/types/dto/BlockCategory';
+import { getDefaultBlockCategory } from 'src/plugins/plugin-block-manage/BlockManagePane';
 
 interface PropsType {
   visible: boolean
@@ -25,8 +28,12 @@ class AddVersionDialog extends React.Component<PropsType> {
       styleList: [],
       imgBase64: '',
       field: new Field(this),
+      blockCategoryInfo: getDefaultBlockCategory(),
+      isShowAddBlockCategoryDialog: false,
     }
     this.updateCategoryList = this.updateCategoryList.bind(this);
+    this.handleAddBlockCategory = this.handleAddBlockCategory.bind(this);
+    this.handleAddBlockCategorySuccess = this.handleAddBlockCategorySuccess.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -36,6 +43,8 @@ class AddVersionDialog extends React.Component<PropsType> {
     styleList: Array<BlockStyleDto>
     imgBase64: string
     field: any
+    isShowAddBlockCategoryDialog: boolean
+    blockCategoryInfo: BlockCategoryDtoCreate
   }
 
   async componentDidMount() {
@@ -59,14 +68,32 @@ class AddVersionDialog extends React.Component<PropsType> {
     if (!preProps.visible && this.props.visible) {
       this.setState({ categoryList: [] });
       if (this.props.originInfo.styleId && this.state.styleList.find(item => item.id == this.props.originInfo.styleId)) {
+        this.setState({
+          blockCategoryInfo: getDefaultBlockCategory(this.props.originInfo.styleId)
+        })
         this.updateCategoryList(this.props.originInfo.styleId);
       }
     }
   }
 
+  /** 添加分类 */
+  handleAddBlockCategory() {
+    this.setState({
+      isShowAddBlockCategoryDialog: true
+    })
+  }
+
+  /** 添加分类成功 */
+  handleAddBlockCategorySuccess() {
+    this.updateCategoryList(this.state.blockCategoryInfo.styleId);
+  }
+
   async updateCategoryList(styleId: number) {
     /** 清空选中的categoryId */
     this.state.field.setValue('categoryId', '');
+    this.setState({
+      blockCategoryInfo: getDefaultBlockCategory(styleId)
+    })
     const res = await findAllBlockCategory({styleId});
     this.setState({
       categoryList: res.data
@@ -168,7 +195,7 @@ class AddVersionDialog extends React.Component<PropsType> {
                 <Select 
                   name="categoryId" 
                   placeholder="请选择分类"
-                  style={{ width: '100%' }}
+                  style={{ width: '50%' }}
                 >
                   {
                     this.state.categoryList.map(item=>(
@@ -176,6 +203,13 @@ class AddVersionDialog extends React.Component<PropsType> {
                     ))
                   }
                 </Select>
+                <Button
+                  onClick={this.handleAddBlockCategory} 
+                  style={{marginLeft: '8px'}}
+                  disabled={!this.state.blockCategoryInfo.styleId}
+                >
+                  添加分类
+                </Button>
               </Form.Item>
               <Form.Item
                 label="优先级"
@@ -203,6 +237,12 @@ class AddVersionDialog extends React.Component<PropsType> {
               </Form.Item>
             </Form>
           </div>
+          <AddBlockCategoryDialog 
+            visible={this.state.isShowAddBlockCategoryDialog}
+            originInfo={this.state.blockCategoryInfo}
+            onClose={()=>this.setState({isShowAddBlockCategoryDialog: false})}
+            success={this.handleAddBlockCategorySuccess}
+          ></AddBlockCategoryDialog>
         </Dialog>
       )
   }

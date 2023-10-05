@@ -23,7 +23,7 @@ function getDefaultBlockStyle(): BlockStyleDtoCreate {
     priority: 10,
   }
 }
-function getDefaultBlockCategory(styleId: number = 0): BlockCategoryDtoCreate {
+export function getDefaultBlockCategory(styleId: number = 0): BlockCategoryDtoCreate {
   return {
     styleId,
     name: '',
