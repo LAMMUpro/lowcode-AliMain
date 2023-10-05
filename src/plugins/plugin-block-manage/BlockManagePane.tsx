@@ -154,13 +154,14 @@ export class BlockManagePane extends React.Component {
   async updateStyleBlockList(refresh:boolean = false, options: {styleId?: number} = {}) {
     /** 有缓存了 */
     if (!refresh && Object.keys(this.state.blockMap).includes(''+this.state.blockStyleId)) return;
-
+    debugger
+    const styleId = options.styleId || this.state.blockStyleId;
     const res = await findAllBlock({
-      styleId: options.styleId || this.state.blockStyleId
+      styleId,
     });
     if (res.code == 1) {
       const blockMap = JSON.parse(JSON.stringify(this.state.blockMap));
-      blockMap[this.state.blockStyleId] = res.data;
+      blockMap[styleId] = res.data;
 
       this.setState({
         blockMap: []
