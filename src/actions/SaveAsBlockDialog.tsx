@@ -1,4 +1,4 @@
-import { Icon, Dialog, Select, Form, Input, NumberPicker, Button, Message } from '@alifd/next';
+import { Icon, Dialog, Select, Form, Input, NumberPicker, Button, Message, Field } from '@alifd/next';
 import html2canvas from 'html2canvas';
 import React from 'react';
 import { createBlock } from 'src/api/Block';
@@ -24,6 +24,7 @@ class AddVersionDialog extends React.Component<PropsType> {
       categoryList: [],
       styleList: [],
       imgBase64: '',
+      field: new Field(this),
     }
     this.updateCategoryList = this.updateCategoryList.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,6 +35,7 @@ class AddVersionDialog extends React.Component<PropsType> {
     categoryList: Array<BlockCategoryDto>
     styleList: Array<BlockStyleDto>
     imgBase64: string
+    field: any
   }
 
   async componentDidMount() {
@@ -52,16 +54,24 @@ class AddVersionDialog extends React.Component<PropsType> {
       this.setState({
         imgBase64: data
       })
-    })
+    });
+
+    if (!preProps.visible && this.props.visible) {
+      this.setState({ categoryList: [] });
+      if (this.props.originInfo.styleId && this.state.styleList.find(item => item.id == this.props.originInfo.styleId)) {
+        this.updateCategoryList(this.props.originInfo.styleId);
+      }
+    }
   }
 
   async updateCategoryList(styleId: number) {
+    /** 清空选中的categoryId */
+    this.state.field.setValue('categoryId', '');
     const res = await findAllBlockCategory({styleId});
     this.setState({
       categoryList: res.data
     })
   }
-
 
   async handleSubmit(values: BlockDtoCreate, isNotPass: boolean) {
     if (isNotPass) return;
@@ -107,8 +117,10 @@ class AddVersionDialog extends React.Component<PropsType> {
         >
           <div style={{width: '400px'}}>
             <Form
-              style={{ width: "90%" }} {...{labelCol: { fixedSpan: 6 }, wrapperCol: { span: 18 }}}
+              style={{ width: "90%" }} 
+              {...{labelCol: { fixedSpan: 6 }, wrapperCol: { span: 18 }}}
               colon
+              field={this.state.field}
             >
               <div style={{width: '110%', marginTop: '-30px'}}>
                 <p style={{textAlign: 'center'}}>预览图</p>
