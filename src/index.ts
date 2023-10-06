@@ -22,8 +22,9 @@ import LogoSamplePlugin from './plugins/plugin-logo-sample';
 import PagesManagePlugin from './plugins/plugin-pages-manage';
 import BlockPlugin from './plugins/plugin-block-manage';
 import saveAsBlock from './actions/saveAsBlock';
-import './global.scss';
 import { findAllApplication } from './api/Application';
+import { tipSchema } from './services/pageManage';
+import './global.scss';
 
 async function registerPlugins() {
   /** 保存为区块 */
@@ -152,5 +153,15 @@ async function registerPlugins() {
       project?.currentDocument?.selection.select(currentNodeId);
     }
   });
+
+  /**
+   * 加载默认页面
+   */
+  if (project.getCurrentDocument()) {
+    project.getCurrentDocument()?.importSchema(tipSchema as any);
+  } else {
+    project.openDocument(tipSchema as any);
+  }
+  project.simulatorHost?.rerender();
 
 })();
