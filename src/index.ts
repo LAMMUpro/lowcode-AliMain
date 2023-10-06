@@ -83,9 +83,6 @@ async function registerPlugins() {
     dataSourceTypes: [
       {
         type: 'fetch',
-      },
-      {
-        type: 'jsonp',
       }
     ]
   });
@@ -96,9 +93,6 @@ async function registerPlugins() {
     dataSourceTypes: [
       {
         type: 'fetch',
-      },
-      {
-        type: 'jsonp',
       }
     ]
   })
