@@ -208,9 +208,6 @@ export class BlockManagePane extends React.Component {
                       </div>))
                       // this.state.blockCategoryMap[blockStyle.id]?.map(category=>category.name).join(',')
                     }
-                    {
-
-                    }
                   </Tab.Item>
                 ))
               }
