@@ -21,45 +21,66 @@ const EXPRESSION_TYPE = {
 // TODO
 const host = {}
 
-export function generateRemoteHandleMap(ajaxList: Array<{id: string}>) {
+export function generateRemoteHandleMap(ajaxList: Array<{id: string, options: any, shouldFetch: any, errorHandler: any, willFetch: any, dataHandler: any}>, ctx: any) {
   const res: any = {};
   ajaxList.forEach((item) => {
     res[item.id] = {
       status: DS_STATUS.INIT,
-      load: (...args: any) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      load: function (...args: any) {
         // @ts-ignore
-        return getDataSource(ajaxList, item.id, ...args);
+        
+        let shouldFetch = true;
+        let errorHandler = (err: any) => {};
+
+        /** 是否发送请求函数 */
+        if (item.shouldFetch && isJSFunction(item.shouldFetch)) {
+          shouldFetch = transformStringToFunction(item.shouldFetch.value).call(ctx);
+        }
+        /** 是否请求判定为false, 则返回失败 */
+        if (shouldFetch === false) return Promise.reject();
+
+        /** 错误处理函数 */
+        if (item.errorHandler && isJSFunction(item.errorHandler)) {
+          errorHandler = transformStringToFunction(item.errorHandler.value).bind(ctx);
+        }
+
+        /** 请求参数处理函数 */
+        if (item.willFetch && isJSFunction(item.willFetch)) {
+          item.options = transformStringToFunction(item.willFetch.value).call(ctx, item.options);
+        }
+
+        return getDataSource.call(ctx, ajaxList, item.id, errorHandler, ...args);
       },
+      item,
     };
   });
   return res;
 }
 
-function parser (config: any) {
-  return parseData(config);
+function parser (config: any, ctx: any) {
+  return parseData(config, ctx);
 }
 
 interface IParseOptions {
   thisRequiredInJSE?: boolean;
   logScope?: string;
 }
-function parseData(schema: unknown, self?: any, options: IParseOptions = {}): any {
+function parseData(schema: unknown, ctx?: any, options: IParseOptions = {}): any {
   if (isJSExpression(schema)) {
     return parseExpression({
       str: schema,
-      self,
+      self: ctx,
       thisRequired: options.thisRequiredInJSE,
       logScope: options.logScope,
     });
   } else if (isI18nData(schema)) {
-    return parseI18n(schema, self);
+    return parseI18n(schema, ctx);
   } else if (typeof schema === 'string') {
     return schema.trim();
   } else if (Array.isArray(schema)) {
-    return schema.map((item) => parseData(item, self, options));
+    return schema.map((item) => parseData(item, ctx, options));
   } else if (typeof schema === 'function') {
-    return schema.bind(self);
+    return schema.bind(ctx);
   } else if (typeof schema === 'object') {
     // 对于undefined及null直接返回
     if (!schema) {
@@ -70,7 +91,7 @@ function parseData(schema: unknown, self?: any, options: IParseOptions = {}): an
       if (key.startsWith('__')) {
         return;
       }
-      res[key] = parseData(val, self, options);
+      res[key] = parseData(val, ctx, options);
     });
     return res;
   }
@@ -170,9 +191,9 @@ function transformArrayToMap(arr: any[], key: string, overwrite = true) {
   return res;
 }
 
-function getDataSource(ajaxList: Array<{id: string}>, id: string, params: any, otherOptions: any, callback: any) {
+function getDataSource(ajaxList: Array<{id: string}>, id: string, errorHandler: Function, params: any, otherOptions: any, callback: any) {
   const ajaxMap = transformArrayToMap(ajaxList, 'id')
-  const req = parser(ajaxMap[id]);
+  const req = parser(ajaxMap[id], this);
   const options = req.options || {};
   let callbackFn = callback;
   let otherOptionsObj = otherOptions;
@@ -221,6 +242,7 @@ function getDataSource(ajaxList: Array<{id: string}>, id: string, params: any, o
     } catch (e) {
       console.error('load请求回调函数报错', e);
     }
+    errorHandler.call(this, err);
     return err;
   });
 }

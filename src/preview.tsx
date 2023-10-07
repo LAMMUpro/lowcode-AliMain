@@ -25,6 +25,9 @@ const getNodeId = function () {
   return 1;
 }
 
+/** 只赋值一次上下文! */
+let isSeted = false;
+
 const SamplePreview: React.FC = () => {
   const [data, setData] = useState({});
 
@@ -65,7 +68,15 @@ const SamplePreview: React.FC = () => {
     });
   }
 
-  const { schema, components } = data;
+  function onCompGetCtx(schema:any, ctx:any) {
+    if (!isSeted && schema.componentName == 'Page') {
+      // console.log('>>>上下文', ctx);
+      ctx.remoteHandleMap = generateRemoteHandleMap(schema?.remoteHandle?.list||[], ctx);
+      isSeted = true;
+    }
+  }
+
+  const { schema, components, ctx } = data;
 
   if (!schema || !components) {
     init();
@@ -78,18 +89,20 @@ const SamplePreview: React.FC = () => {
         className="lowcode-plugin-sample-preview-content"
         schema={schema}
         components={components}
-        onCompGetRef={onCompGetRef}
+        // onCompGetRef={onCompGetRef}
+        onCompGetCtx={onCompGetCtx}
         appHelper={{
           requestHandlersMap: {
             fetch: createFetchHandler()
           },
           utils: {
-            generateRemoteHandleMap: function () {
-              /** 初始化this.utils.remoteHandles */
-              this.remoteHandles = {
-                ...generateRemoteHandleMap(schema?.remoteHandle?.list||[])
-              }
-            },
+            /** 在onCompGetCtx获取ctx上下文直接进行初始化! */
+            // generateRemoteHandleMap: function () {
+            //   /** 初始化this.utils.remoteHandles */
+            //   this.remoteHandles = {
+            //     ...generateRemoteHandleMap(schema?.remoteHandle?.list||[], ctx)
+            //   }
+            // },
             /** api方法 */
             remoteHandles: {},
             message: function (msg: string) {
@@ -104,11 +117,5 @@ const SamplePreview: React.FC = () => {
     </div>
   );
 };
-
-function onCompGetRef(schema, ref) {
-  // console.log('schema, ref');
-  // console.log(schema, ref);
-  
-}
 
 ReactDOM.render(<SamplePreview />, document.getElementById('ice-container'));
