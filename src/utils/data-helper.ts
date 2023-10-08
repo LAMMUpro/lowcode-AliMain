@@ -46,6 +46,13 @@ export function generateRemoteHandleMap(ajaxList: Array<{id: string, options: an
 
         /** 请求参数处理函数 */
         if (item.willFetch && isJSFunction(item.willFetch)) {
+          /** 合并load({})传入的第一个params参数 */
+          if (Object.prototype.toString.call(args[0])==='[object Object]') {
+            item.options.params = {
+              ...item.options.params,
+              ...args[0],
+            }
+          }
           item.options = transformStringToFunction(item.willFetch.value).call(ctx, item.options);
         }
 
