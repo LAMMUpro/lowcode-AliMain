@@ -4,7 +4,7 @@ import { Message, Dialog } from '@alifd/next';
 import { IPublicEnumTransformStage } from '@alilc/lowcode-types';
 import { updatePageSchemaById } from 'src/api/PageSchema';
 import _tipSchema from 'schema/tipSchema.json';
-import _defaultSchema from 'schema/tipSchema.json';
+import _defaultSchema from 'schema/defaultSchema.json';
 
 export const tipSchema = _tipSchema;
 export const defaultSchema = _defaultSchema;
