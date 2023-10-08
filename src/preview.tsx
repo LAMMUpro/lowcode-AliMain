@@ -107,6 +107,13 @@ const SamplePreview: React.FC = () => {
             remoteHandles: {},
             message: function (msg: string) {
               message.info(msg);
+            },
+            usePageInfo() {
+              return {
+                pageSize: 10,
+                current: 1,
+                total: 0,
+              }
             }
           },
           constants: {
