@@ -66,6 +66,15 @@ const SCHEMA = {
       title: '请求配置',
       required: true,
       properties: {
+        host: {
+          type: 'string',
+          title: '指定域名',
+          required: false,
+          default: '',
+          'x-decorator-props': {
+            addonAfter: <ComponentSwitchBtn component="LowcodeExpression" />,
+          },
+        },
         uri: {
           type: 'string',
           title: '请求地址',
