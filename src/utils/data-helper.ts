@@ -1,78 +1,134 @@
 import { isI18nData, isJSExpression } from '@alilc/lowcode-utils';
 import { isJSFunction } from '@alilc/lowcode-utils';
 import { isEmpty } from 'lodash';
-import { jsonp, _request, get, post } from './request';
+import { _request, get, post } from './request';
 
-const DS_STATUS = {
-  INIT: 'init',
-  LOADING: 'loading',
-  LOADED: 'loaded',
-  ERROR: 'error',
-};
+/**
+ * 请求options
+ */
+interface Options {
+  params: BaseObj<any>
+  headers: BaseObj<any>
+}
 
-const EXPRESSION_TYPE = {
-  JSEXPRESSION: 'JSExpression',
-  JSFUNCTION: 'JSFunction',
-  JSSLOT: 'JSSlot',
-  JSBLOCK: 'JSBlock',
-  I18N: 'i18n',
-};
+/**
+ * 低代码类型
+ */
+interface LowCodeType<T> {
+  type: T,
+  value: string
+}
 
-// TODO
-const host = {}
+/**
+ * 增删改API 配置
+ */
+interface RemoteHandleItem {
+  /** 函数名 */
+  id: string
+  /** (自定义)域名 */
+  host?: string | LowCodeType<'JSExpression'>
+  /** 额外参数 */
+  options: Options
+  /** 是否发起处理函数 */
+  shouldFetch?: LowCodeType<'JSFunction'> //() => boolean
+  /** 请求失败处理函数 */
+  errorHandler?: LowCodeType<'JSFunction'> //(err: Error) => void 
+  /** 请求前参数处理函数 */
+  willFetch?: LowCodeType<'JSFunction'> //(options: Options) => Options
+  /** 请求成功处理函数 */
+  dataHandler?: LowCodeType<'JSFunction'> //(res: any) => any
+}
 
-export function generateRemoteHandleMap(ajaxList: Array<{id: string, options: any, shouldFetch: any, errorHandler: any, willFetch: any, dataHandler: any}>, ctx: any) {
-  const res: any = {};
-  ajaxList.forEach((item) => {
-    res[item.id] = {
-      status: DS_STATUS.INIT,
-      load: function (...args: any) {
-        // @ts-ignore
-        
+/**
+ * 增删改API map
+ */
+interface RemoteHandleMap {
+  [key: string]: {
+    /** 请求状态 */
+    status: 'init' | 'error' | 'loading' | 'loaded'
+    /** 请求执行函数, otherOptions主要用于设置header */
+    load: (extParams: Array<any> | {[key: string]: any}, otherOptions?: Partial<Options>, callback?: (response: any) => void) => Promise<any> | undefined
+  }
+}
+
+/**
+ * 根据remoteHandleList生成对应的调用函数, 挂在this.remoteHandleMap对象下
+ * @param remoteHandleList 增删改API 列表
+ * @param ctx React页面组件上下文
+ * @returns 
+ */
+export function generateRemoteHandleMap(remoteHandleList: Array<RemoteHandleItem>, ctx: any) {
+  const remoteHandleMap: RemoteHandleMap = {};
+  remoteHandleList.forEach((remoteHandleItem) => {
+    remoteHandleMap[remoteHandleItem.id] = {
+      status: 'init',
+      /** 调用时支持load(params, otherOptions, callback) | load(params, callback) */
+      load: function (extParams, otherOptions, callback) {
+        /** 
+         * 判断是否要发起函数
+         */
         let shouldFetch = true;
-        let errorHandler = (err: any) => {};
-
-        /** 是否发送请求函数 */
-        if (item.shouldFetch && isJSFunction(item.shouldFetch)) {
-          shouldFetch = transformStringToFunction(item.shouldFetch.value).call(ctx);
+        if (remoteHandleItem.shouldFetch && isJSFunction(remoteHandleItem.shouldFetch)) {
+          shouldFetch = transformStringToFunction(remoteHandleItem.shouldFetch.value).call(ctx);
         }
-        /** 是否请求判定为false, 则返回失败 */
-        if (shouldFetch === false) return Promise.reject();
+        if (!shouldFetch) return Promise.reject();
 
-        /** 错误处理函数 */
-        if (item.errorHandler && isJSFunction(item.errorHandler)) {
-          errorHandler = transformStringToFunction(item.errorHandler.value).bind(ctx);
-        }
-
-        /** 请求参数处理函数 */
-        if (item.willFetch && isJSFunction(item.willFetch)) {
-          /** 合并load({})传入的第一个params参数 */
-          if (Object.prototype.toString.call(args[0])==='[object Object]') {
-            item.options.params = {
-              ...item.options.params,
-              ...args[0],
+        /** 
+         * 请求参数处理函数
+         */
+        if (remoteHandleItem.willFetch && isJSFunction(remoteHandleItem.willFetch)) {
+          /** 
+           * 合并load({})传入的第一个params参数
+           */
+          let isMergeParams = Object.prototype.toString.call(extParams)==='[object Object]';
+          /** options处理前params参数合并 */
+          const originParamsKeys = Object.keys(remoteHandleItem.options.params);
+          if (isMergeParams) {
+            remoteHandleItem.options.params = {
+              ...remoteHandleItem.options.params,
+              ...extParams,
             }
+          } else if (Object.prototype.toString.call(extParams)==='[object Array]') {
+            /**
+             * 如果load(params)参数是Array, 直接赋值options.params
+             */
+            remoteHandleItem.options.params = extParams;
           }
-          item.options = transformStringToFunction(item.willFetch.value).call(ctx, item.options);
+          /** options = willFetch(options) */
+          remoteHandleItem.options = transformStringToFunction(remoteHandleItem.willFetch.value).call(ctx, remoteHandleItem.options);
+          /** options处理后删除load(params)__开头的参数 */
+          if (isMergeParams) {
+            Object.keys(extParams).filter(key=>key.startsWith('__')).forEach(key=>{
+              /** 原先params有__开头的参数不删 */
+              if (!originParamsKeys.find(originKey => originKey===key)) {
+                delete remoteHandleItem.options.params[key];
+              }
+            })
+          }
         }
 
-        return getDataSource.call(ctx, ajaxList, item.id, errorHandler, ...args);
+        return loadRemoteHandleApi.call(ctx, remoteHandleItem, otherOptions, callback);
       },
-      item,
     };
   });
-  return res;
+  return remoteHandleMap;
 }
 
-function parser (config: any, ctx: any) {
-  return parseData(config, ctx);
-}
-
-interface IParseOptions {
-  thisRequiredInJSE?: boolean;
-  logScope?: string;
-}
-function parseData(schema: unknown, ctx?: any, options: IParseOptions = {}): any {
+/**
+ * 解析schema, 把字符串表达式转为对应值
+ * @param schema 需要转换的值
+ * @param ctx 上下文
+ * @param options 
+ * @returns 
+ */
+function parseData(
+  schema: unknown, 
+  ctx?: any, 
+  options: {
+    thisRequiredInJSE?: boolean;
+    logScope?: string;
+  } = {}
+): any {
   if (isJSExpression(schema)) {
     return parseExpression({
       str: schema,
@@ -81,7 +137,10 @@ function parseData(schema: unknown, ctx?: any, options: IParseOptions = {}): any
       logScope: options.logScope,
     });
   } else if (isI18nData(schema)) {
-    return parseI18n(schema, ctx);
+    return parseExpression({
+      type: 'JSExpression',
+      value: `this.i18n('${schema.key}')`,
+    }, ctx);
   } else if (typeof schema === 'string') {
     return schema.trim();
   } else if (Array.isArray(schema)) {
@@ -113,15 +172,16 @@ function forEach(targetObj: any, fn: any, context?: any) {
   Object.keys(targetObj).forEach((key) => fn.call(context, targetObj[key], key));
 }
 
+/** 是否是字符串 */
 function isString(str: any): boolean {
   return {}.toString.call(str) === '[object String]';
 }
 
 /**
- * 对象类型JSExpression，支持省略this
+ * 解析JSExpression (对象类型表达式)，支持省略this
  * @param str expression in string form
- * @param self scope object
- * @returns funtion
+ * @param self 函数作用域
+ * @returns any
  */
 
 function parseExpression(options: {
@@ -147,7 +207,6 @@ function parseExpression(a: any, b?: any, c = false) {
     const contextArr = ['"use strict";', 'var __self = arguments[0];'];
     contextArr.push('return ');
     let tarStr: string;
-
     tarStr = (str.value || '').trim();
 
     // NOTE: use __self replace 'this' in the original function str
@@ -166,6 +225,11 @@ function parseExpression(a: any, b?: any, c = false) {
     return undefined;
   }
 }
+
+/**
+ * 是否是相同的域名??
+ * 默认调用顶层窗口的parseObj, 保障new Function的window对象是顶层的window对象
+ */
 function inSameDomain() {
   try {
     return window.parent !== window && window.parent.location.host === window.location.host;
@@ -173,88 +237,60 @@ function inSameDomain() {
     return false;
   }
 }
-function parseI18n(i18nInfo: any, self: any) {
-  return parseExpression({
-    type: EXPRESSION_TYPE.JSEXPRESSION,
-    value: `this.i18n('${i18nInfo.key}')`,
-  }, self);
-}
 
-function transformArrayToMap(arr: any[], key: string, overwrite = true) {
-  if (isEmpty(arr) || !Array.isArray(arr)) {
-    return {};
+/**
+ * this.remoteHandleMap['xxx'].load({})调用时触发
+ * @param this 上下文
+ * @param _remoteHandleItem 对应的配置
+ * @param params load(params)
+ * @param otherOptions 其他options
+ * @param callback 
+ * @returns 
+ */
+function loadRemoteHandleApi(this: any, _remoteHandleItem: RemoteHandleItem, otherOptions?: Partial<Options>, callback?: (response:any) => void) {
+  /** 解析变量表达式 */
+  const remoteHandleItem: RemoteHandleItem = parseData(_remoteHandleItem, this);
+  if (!remoteHandleItem) {
+    console.warn(`remoteHandle API named ${_remoteHandleItem.id} not exist`);
+    return ;
   }
-  const res: any = {};
-  arr.forEach((item) => {
-    const curKey = item[key];
-    if (item[key] === undefined) {
-      return;
-    }
-    if (res[curKey] && !overwrite) {
-      return;
-    }
-    res[curKey] = item;
-  });
-  return res;
-}
 
-function getDataSource(ajaxList: Array<{id: string}>, id: string, errorHandler: Function, params: any, otherOptions: any, callback: any) {
-  const ajaxMap = transformArrayToMap(ajaxList, 'id')
-  const req = parser(ajaxMap[id], this);
-  const options = req.options || {};
-  let callbackFn = callback;
+  const options = remoteHandleItem.options || {};
+  let callbackFn = callback || ((response:any) => void 0) ;
   let otherOptionsObj = otherOptions;
   if (typeof otherOptions === 'function') {
     callbackFn = otherOptions;
     otherOptionsObj = {};
   }
-  const { headers, ...otherProps } = otherOptionsObj || {};
-  if (!req) {
-    console.warn(`getDataSource API named ${id} not exist`);
-    return;
-  }
-
-  return asyncDataHandler([
-    {
-      ...req,
-      options: {
-        ...options,
-        // 支持参数为array的情况，当参数为array时，不做参数合并
-        params:
-          Array.isArray(options.params) || Array.isArray(params)
-            ? params || options.params
-            : {
-              ...options.params,
-              ...params,
-            },
-        headers: {
-          ...options.headers,
-          ...headers,
-        },
-        ...otherProps,
+  const { headers: extHeaders, ...otherProps } = otherOptionsObj || {};
+  
+  return asyncDataHandler({
+    ...remoteHandleItem,
+    options: {
+      ...options,
+      headers: {
+        ...options.headers,
+        ...extHeaders,
       },
+      ...otherProps,
     },
-  ])
-  .then((res: any) => {
-    try {
-      callbackFn && callbackFn(res && res[id]);
-    } catch (e) {
-      console.error('load请求回调函数报错', e);
+  }, callbackFn).then((res: any) => {
+    return res;
+  }).catch((err: any) => {
+    console.error(err);
+    /** 错误处理函数 */
+    if (remoteHandleItem.errorHandler && isJSFunction(remoteHandleItem.errorHandler)) {
+      const errorHandler = transformStringToFunction(remoteHandleItem.errorHandler.value);
+      errorHandler.call(this, err);
     }
-    return res && res[id];
-  })
-  .catch((err: any) => {
-    try {
-      callbackFn && callbackFn(null, err);
-    } catch (e) {
-      console.error('load请求回调函数报错', e);
-    }
-    errorHandler.call(this, err);
     return err;
   });
 }
 
-function transformStringToFunction(str: string) {
+/**
+ * 字符串函数 转函数, 使用的时候用call给作用域
+ */
+function transformStringToFunction(str: string): Function {
   if (typeof str !== 'string') {
     return str;
   }
@@ -265,110 +301,54 @@ function transformStringToFunction(str: string) {
   }
 }
 
-/**
-* process data using dataHandler
-*
-* @param {(string | null)} id request id, will be used in error message, can be null
-* @param {*} dataHandler
-* @param {*} data
-* @param {*} error
-* @returns
-* @memberof DataHelper
-*/
-function handleData(id: string | null, dataHandler: any, data: any, error: any) {
-  let dataHandlerFun = dataHandler;
-  if (isJSFunction(dataHandler)) {
-    dataHandlerFun = transformStringToFunction(dataHandler.value);
-  }
-  if (!dataHandlerFun || typeof dataHandlerFun !== 'function') {
-    return data;
-  }
-  try {
-    return dataHandlerFun.call(host, data, error);
-  } catch (e) {
-    if (id) {
-      console.error(`[${id}]单个请求数据处理函数运行出错`, e);
-    } else {
-      console.error('请求数据处理函数运行出错', e);
-    }
-  }
-}
-
-function updateDataSourceMap(id: string, data: any, error: any) {
-  // this.dataSourceMap[id].error = error || undefined;
-  // this.dataSourceMap[id].data = data;
-  // this.dataSourceMap[id].status = error ? DS_STATUS.ERROR : DS_STATUS.LOADED;
-}
-
-function asyncDataHandler(asyncDataList: any[]) {
+/** 
+ * 异步函数处理
+ * //TODO load(params, callback)处理response.header, 上下文
+ */
+function asyncDataHandler(asyncRequestData: any, loadCallback: (response: any) => void) {
   return new Promise((resolve, reject) => {
-    const allReq: any[] = [];
-    asyncDataList.forEach((req) => {
-      const { id, type } = req;
-      // TODO: need refactoring to remove 'legao' related logic
-      if (!id || !type || type === 'legao') {
-        return;
+    /** 异常情况 */
+    if (!asyncRequestData.id || !asyncRequestData.type || asyncRequestData.type === 'legao') reject('函数id或type不存在或不合法!');
+
+    /** 发送请求, 这里的data已经不包含header这些信息了!! */
+    request(asyncRequestData.options)?.then((data: any) => {
+      fetchDataHandler(data, undefined);
+    }).catch((err: Error) => {
+      fetchDataHandler(undefined, err);
+    });
+
+    /** 响应处理 */
+    const fetchDataHandler = (data: any, error: any) => {
+      asyncRequestData.error = error || undefined;
+      asyncRequestData.data = data;
+      asyncRequestData.status = error ? 'error' : 'loaded';
+      if (error) reject(error);
+      /** 请求结果处理函数 */
+      if (asyncRequestData.dataHandler && isJSFunction(asyncRequestData.dataHandler)) {
+        try {
+          // TODO上下文
+          const _data = transformStringToFunction(asyncRequestData.dataHandler.value)?.(data);
+          resolve(_data);
+        } catch (e) {
+          console.error(`请求数据处理函数${asyncRequestData.id}运行出错`, e);
+        }
       }
-      allReq.push(req);
-    });
-
-    if (allReq.length === 0) {
-      resolve({});
-    }
-    const res: any = {};
-    Promise.all(
-      allReq.map((item: any) => {
-        return new Promise((innerResolve) => {
-          const { type, id, dataHandler, options } = item;
-
-          const fetchHandler = (data: any, error: any) => {
-            res[id] = handleData(id, dataHandler, data, error);
-            updateDataSourceMap(id, res[id], error);
-            innerResolve({});
-          };
-
-          const doFetch = (innerType: string, innerOptions: any) => {
-            doRequest(innerType as any, innerOptions)
-              ?.then((data: any) => {
-                fetchHandler(data, undefined);
-              })
-              .catch((err: Error) => {
-                fetchHandler(undefined, err);
-              });
-          };
-
-          // TODO
-          // this.dataSourceMap[id].status = DS_STATUS.LOADING;
-          doFetch(type, options);
-        });
-      }),
-    ).then(() => {
-      resolve(res);
-    }).catch((e) => {
-      reject(e);
-    });
+      resolve(data);
+    };
   });
 }
 
-type DataSourceType = 'fetch' | 'jsonp';
-
-function doRequest(type: DataSourceType, options: any) {
-  // eslint-disable-next-line prefer-const
+/** 发送fetch请求 */
+function request(options: any) {
   let { uri, url, method = 'GET', headers, params, ...otherProps } = options;
   otherProps = otherProps || {};
-  // if (type === 'jsonp') {
-  //   return jsonp(uri, params, otherProps);
-  // }
 
-  if (type === 'fetch') {
-    switch (method.toUpperCase()) {
-      case 'GET':
-        return get(uri, params, headers, otherProps);
-      case 'POST':
-        return post(uri, params, headers, otherProps);
-      default:
-        return _request(uri, method, params, headers, otherProps);
-    }
+  switch (method.toUpperCase()) {
+    case 'GET':
+      return get(options.host + uri, params, headers, otherProps);
+    case 'POST':
+      return post(options.host + uri, params, headers, otherProps);
+    default:
+      return _request(options.host + uri, method, params, headers, otherProps);
   }
-
 }
