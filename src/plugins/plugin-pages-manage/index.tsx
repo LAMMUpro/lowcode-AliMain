@@ -12,6 +12,7 @@ const PagesManagePlugin = (ctx: IPublicModelPluginContext) => {
         area: 'leftArea',
         name: _PluginName_,
         type: 'PanelDock',
+        index: -10,
         props: {
           icon: "fabu1",
           description: '页面管理',
