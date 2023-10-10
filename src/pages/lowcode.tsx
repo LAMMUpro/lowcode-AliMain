@@ -70,7 +70,7 @@ const SamplePreview = () => {
   function onCompGetCtx(schema:any, ctx:any) {
     if (!isSeted && schema.componentName == 'Page') {
       // console.log('>>>上下文', ctx);
-      ctx.remoteHandleMap = generateRemoteHandleMap(schema?.remoteHandle?.list||[], ctx);
+      ctx.remoteHandleMap = generateRemoteHandleMap.call(ctx, schema?.remoteHandle?.list||[]);
       isSeted = true;
     }
   }
