@@ -264,7 +264,7 @@ function loadRemoteHandleApi(this: any, _remoteHandleItem: RemoteHandleItem, oth
   }
   const { headers: extHeaders, ...otherProps } = otherOptionsObj || {};
   
-  return asyncDataHandler({
+  return asyncDataHandler.call(this, {
     ...remoteHandleItem,
     options: {
       ...options,
@@ -304,7 +304,7 @@ function transformStringToFunction(str: string): Function {
  * 异步函数处理
  * //TODO load(params, callback)处理response.header, 上下文
  */
-function asyncDataHandler(asyncRequestData: any, loadCallback: (response: any) => void) {
+function asyncDataHandler(this: any, asyncRequestData: any, loadCallback: (response: any) => void) {
   return new Promise((resolve, reject) => {
     /** 异常情况 */
     if (!asyncRequestData.id || !asyncRequestData.type || asyncRequestData.type === 'legao') reject('函数id或type不存在或不合法!');
@@ -326,7 +326,7 @@ function asyncDataHandler(asyncRequestData: any, loadCallback: (response: any) =
       if (asyncRequestData.dataHandler && isJSFunction(asyncRequestData.dataHandler)) {
         try {
           // TODO上下文
-          const _data = transformStringToFunction(asyncRequestData.dataHandler.value)?.(data);
+          const _data = transformStringToFunction(asyncRequestData.dataHandler.value)?.call(this, data);
           resolve(_data);
         } catch (e) {
           console.error(`请求数据处理函数${asyncRequestData.id}运行出错`, e);
