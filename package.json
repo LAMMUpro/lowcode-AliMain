@@ -19,6 +19,8 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-router-dom": "^5.3.4",
+    "whatwg-fetch": "^3.6.19",
+    "@alilc/lowcode-utils": "^1.1.10",
     "@alilc/lowcode-datasource-fetch-handler": "^1.1.4",
     "@alilc/lowcode-react-renderer": "^1.1.2",
     "@alilc/lowcode-plugin-inject": "^1.1.2",

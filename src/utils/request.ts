@@ -1,18 +1,30 @@
+/** 基于fetch封装的 */
 import 'whatwg-fetch';
-import fetchJsonp from 'fetch-jsonp';
 
+/** 
+ * 该文件导出3个函数, get | post | request
+ */
+
+/** 
+ * 是否字符串
+ */
 function isString(str: any): boolean {
   return {}.toString.call(str) === '[object String]';
 }
 
+/** 
+ * 循环序列化
+ */
 function forEach(targetObj: any, fn: any, context?: any) {
   if (!targetObj || Array.isArray(targetObj) || isString(targetObj) || typeof targetObj !== 'object') {
     return;
   }
-
   Object.keys(targetObj).forEach((key) => fn.call(context, targetObj[key], key));
 }
 
+/** 
+ * 序列化参数
+ */
 function serializeParams(obj: any) {
   let result: any = [];
   forEach(obj, (val: any, key: any) => {
@@ -29,14 +41,9 @@ function serializeParams(obj: any) {
 }
 
 /**
- * this is a private method, export for testing purposes only.
- *
- * @export
- * @param {*} dataAPI
- * @param {*} params
- * @returns
+ * 路径拼接
  */
-export function buildUrl(dataAPI: any, params: any) {
+function buildUrl(dataAPI: any, params: any) {
   const paramStr = serializeParams(params);
   if (paramStr) {
     return dataAPI.indexOf('?') > 0 ? `${dataAPI}&${paramStr}` : `${dataAPI}?${paramStr}`;
@@ -45,35 +52,21 @@ export function buildUrl(dataAPI: any, params: any) {
 }
 
 /**
- * do Get request
- *
- * @export
- * @param {*} dataAPI
- * @param {*} [params={}]
- * @param {*} [headers={}]
- * @param {*} [otherProps={}]
- * @returns
+ * get请求封装
  */
- export function get(dataAPI: any, params = {}, headers = {}, otherProps = {}) {
+ export function get(dataAPI: any, params = {}, headers = {}, otherProps = {}, loadCallback: (response: any) => any) {
   const processedHeaders = {
     Accept: 'application/json',
     ...headers,
   };
   const url = buildUrl(dataAPI, params);
-  return _request(url, 'GET', null, processedHeaders, otherProps);
+  return request(url, 'GET', null, processedHeaders, otherProps, loadCallback);
 }
 
 /**
- * do Post request
- *
- * @export
- * @param {*} dataAPI
- * @param {*} [params={}]
- * @param {*} [headers={}]
- * @param {*} [otherProps={}]
- * @returns
+ * post请求封装
  */
-export function post(dataAPI: any, params = {}, headers: any = {}, otherProps = {}) {
+export function post(dataAPI: any, params = {}, headers: any = {}, otherProps = {}, loadCallback: (response: any) => any) {
   const processedHeaders = {
     Accept: 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded',
@@ -83,27 +76,20 @@ export function post(dataAPI: any, params = {}, headers: any = {}, otherProps = 
   ? JSON.stringify(params)
   : serializeParams(params);
 
-  return _request(
+  return request(
     dataAPI,
     'POST',
     body,
     processedHeaders,
     otherProps,
+    loadCallback
   );
 }
 
 /**
- * do request
- *
- * @export
- * @param {*} dataAPI
- * @param {string} [method='GET']
- * @param {*} data
- * @param {*} [headers={}]
- * @param {*} [otherProps={}]
- * @returns
+ * 增删改API 请求
  */
-export function _request(dataAPI: any, method = 'GET', data: any, headers = {}, otherProps: any = {}) {
+export function request(dataAPI: any, method = 'GET', data: any, headers = {}, otherProps: any = {}, loadCallback: (response: any) => any) {
   let processedHeaders = headers || {};
   let payload = data;
   if (method === 'PUT' || method === 'DELETE') {
@@ -128,6 +114,8 @@ export function _request(dataAPI: any, method = 'GET', data: any, headers = {}, 
       ...otherProps,
     })
       .then((response) => {
+        /** load(params, loadCallback), 如果回调返回false, 则中断, 抛出异常err = {breack: true} */
+        if (loadCallback(response) === false) return { __success: false, breack: true };
         switch (response.status) {
           case 200:
           case 201:
@@ -182,39 +170,6 @@ export function _request(dataAPI: any, method = 'GET', data: any, headers = {}, 
           // eslint-disable-next-line no-param-reassign
           delete json.__success;
           reject(json);
-        }
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
-}
-
-/**
- * do jsonp request
- *
- * @export
- * @param {*} dataAPI
- * @param {*} [params={}]
- * @param {*} [otherProps={}]
- * @returns
- */
-export function jsonp(dataAPI: any, params = {}, otherProps = {}) {
-  return new Promise((resolve, reject) => {
-    const processedOtherProps = {
-      timeout: 5000,
-      ...otherProps,
-    };
-    const url = buildUrl(dataAPI, params);
-    fetchJsonp(url, processedOtherProps)
-      .then((response) => {
-        response.json();
-      })
-      .then((json: any) => {
-        if (json) {
-          resolve(json);
-        } else {
-          reject();
         }
       })
       .catch((err) => {
