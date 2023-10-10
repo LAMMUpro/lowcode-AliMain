@@ -1,6 +1,9 @@
-import { isI18nData, isJSExpression } from '@alilc/lowcode-utils';
-import { isJSFunction } from '@alilc/lowcode-utils';
-import { _request, get, post } from './request';
+import { isI18nData, isJSExpression, isJSFunction } from '@alilc/lowcode-utils';
+import { request, get, post } from './request';
+
+/** 
+ * 该文件导出generateRemoteHandleMap函数供增删改API初始化使用
+ */
 
 /**
  * 请求options
@@ -323,7 +326,7 @@ function asyncDataHandler(this: any, asyncRequestData: any, loadCallback: (respo
     if (!asyncRequestData.id || !asyncRequestData.type || asyncRequestData.type === 'legao') reject('函数id或type不存在或不合法!');
 
     /** 发送请求, 这里的data已经不包含header这些信息了!! */
-    request(asyncRequestData.options, loadCallback)?.then((data: any) => {
+    doRequest(asyncRequestData.options, loadCallback)?.then((data: any) => {
       fetchDataHandler(data, undefined);
     }).catch((err: Error) => {
       fetchDataHandler(undefined, err);
@@ -351,7 +354,7 @@ function asyncDataHandler(this: any, asyncRequestData: any, loadCallback: (respo
 }
 
 /** 发送fetch请求 */
-function request(options: any, loadCallback: (response: any) => void) {
+function doRequest(options: any, loadCallback: (response: any) => void) {
   let { uri, url, method = 'GET', headers, params, ...otherProps } = options;
   otherProps = otherProps || {};
 
@@ -361,6 +364,6 @@ function request(options: any, loadCallback: (response: any) => void) {
     case 'POST':
       return post(options.host + uri, params, headers, otherProps, loadCallback);
     default:
-      return _request(options.host + uri, method, params, headers, otherProps, loadCallback);
+      return request(options.host + uri, method, params, headers, otherProps, loadCallback);
   }
 }
