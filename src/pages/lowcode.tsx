@@ -18,7 +18,7 @@ const getNodeId = function () {
 /** 只赋值一次上下文! */
 let isSeted = false;
 
-const SamplePreview: React.FC = () => {
+const SamplePreview = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
 
