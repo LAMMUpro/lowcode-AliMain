@@ -1,14 +1,24 @@
 import { isI18nData, isJSExpression } from '@alilc/lowcode-utils';
 import { isJSFunction } from '@alilc/lowcode-utils';
-import { isEmpty } from 'lodash';
 import { _request, get, post } from './request';
 
 /**
  * 请求options
  */
 interface Options {
-  params: BaseObj<any>
   headers: BaseObj<any>
+  /** (自定义)域名 */
+  host: string | LowCodeType<'JSExpression'>
+  /** 是否跨域 */
+  isCors: boolean
+  /** 请求方法 */
+  method: "GET" | "POST" | "DELETE" | "PUT" | "PATCH" | "OPTIONS"
+  /** 请求参数, get时是query, post时是body */
+  params: BaseObj<any>
+  /** 超时时间 */
+  timeout: Number
+  /** 请求路径, 不带域名! */
+  uri: string | LowCodeType<'JSExpression'>
 }
 
 /**
@@ -25,8 +35,10 @@ interface LowCodeType<T> {
 interface RemoteHandleItem {
   /** 函数名 */
   id: string
-  /** (自定义)域名 */
-  host?: string | LowCodeType<'JSExpression'>
+  /** 是否立即执行 */
+  isInit: boolean
+  /** 请求类型, 这里只用fetch */
+  type: 'fetch'
   /** 额外参数 */
   options: Options
   /** 是否发起处理函数 */
@@ -59,6 +71,7 @@ interface RemoteHandleMap {
  */
 export function generateRemoteHandleMap(this: any, remoteHandleList: Array<RemoteHandleItem>) {
   const remoteHandleMap: RemoteHandleMap = {};
+  console.log(remoteHandleList);
   remoteHandleList.forEach((remoteHandleItem) => {
     remoteHandleMap[remoteHandleItem.id] = {
       status: 'init',

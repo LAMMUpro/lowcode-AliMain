@@ -13,7 +13,7 @@ interface PageInfo {
 }
 
 /** 请求方法 */
-type requestMethods = "GET" | "POST" | "DELETE" | "PUT" | "PATCH";
+type requestMethods = "GET" | "POST" | "DELETE" | "PUT" | "PATCH" | "OPTIONS";
 
 type ApiResponse = {
   code: 1 | -1
