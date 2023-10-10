@@ -77,7 +77,7 @@ const SCHEMA = {
         },
         uri: {
           type: 'string',
-          title: '请求地址',
+          title: '请求路径',
           required: true,
           'x-decorator-props': {
             addonAfter: <ComponentSwitchBtn component="LowcodeExpression" />,
