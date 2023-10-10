@@ -57,19 +57,19 @@ interface RemoteHandleMap {
  * @param ctx React页面组件上下文
  * @returns 
  */
-export function generateRemoteHandleMap(remoteHandleList: Array<RemoteHandleItem>, ctx: any) {
+export function generateRemoteHandleMap(this: any, remoteHandleList: Array<RemoteHandleItem>) {
   const remoteHandleMap: RemoteHandleMap = {};
   remoteHandleList.forEach((remoteHandleItem) => {
     remoteHandleMap[remoteHandleItem.id] = {
       status: 'init',
       /** 调用时支持load(params, otherOptions, callback) | load(params, callback) */
-      load: function (extParams, otherOptions, callback) {
+      load: (extParams, otherOptions, callback) => {
         /** 
          * 判断是否要发起函数
          */
         let shouldFetch = true;
         if (remoteHandleItem.shouldFetch && isJSFunction(remoteHandleItem.shouldFetch)) {
-          shouldFetch = transformStringToFunction(remoteHandleItem.shouldFetch.value).call(ctx);
+          shouldFetch = transformStringToFunction(remoteHandleItem.shouldFetch.value).call(this);
         }
         if (!shouldFetch) return Promise.reject();
 
@@ -95,7 +95,7 @@ export function generateRemoteHandleMap(remoteHandleList: Array<RemoteHandleItem
             remoteHandleItem.options.params = extParams;
           }
           /** options = willFetch(options) */
-          remoteHandleItem.options = transformStringToFunction(remoteHandleItem.willFetch.value).call(ctx, remoteHandleItem.options);
+          remoteHandleItem.options = transformStringToFunction(remoteHandleItem.willFetch.value).call(this, remoteHandleItem.options);
           /** options处理后删除load(params)__开头的参数 */
           if (isMergeParams) {
             Object.keys(extParams).filter(key=>key.startsWith('__')).forEach(key=>{
@@ -107,7 +107,7 @@ export function generateRemoteHandleMap(remoteHandleList: Array<RemoteHandleItem
           }
         }
 
-        return loadRemoteHandleApi.call(ctx, remoteHandleItem, otherOptions, callback);
+        return loadRemoteHandleApi.call(this, remoteHandleItem, otherOptions, callback);
       },
     };
   });
@@ -247,7 +247,7 @@ function inSameDomain() {
  * @param callback 
  * @returns 
  */
-function loadRemoteHandleApi(this: any, _remoteHandleItem: RemoteHandleItem, otherOptions?: Partial<Options>, callback?: (response:any) => void) {
+function loadRemoteHandleApi(this: any, _remoteHandleItem: RemoteHandleItem, otherOptions?: Partial<Options>, callback?: (response:any) => any) {
   /** 解析变量表达式 */
   const remoteHandleItem: RemoteHandleItem = parseData(_remoteHandleItem, this);
   if (!remoteHandleItem) {
@@ -256,7 +256,7 @@ function loadRemoteHandleApi(this: any, _remoteHandleItem: RemoteHandleItem, oth
   }
 
   const options = remoteHandleItem.options || {};
-  let callbackFn = callback || ((response:any) => void 0) ;
+  let callbackFn = callback || ((response:any) => undefined) ;
   let otherOptionsObj = otherOptions;
   if (typeof otherOptions === 'function') {
     callbackFn = otherOptions;
@@ -277,7 +277,6 @@ function loadRemoteHandleApi(this: any, _remoteHandleItem: RemoteHandleItem, oth
   }, callbackFn).then((res: any) => {
     return res;
   }).catch((err: any) => {
-    console.error(err);
     /** 错误处理函数 */
     if (remoteHandleItem.errorHandler && isJSFunction(remoteHandleItem.errorHandler)) {
       const errorHandler = transformStringToFunction(remoteHandleItem.errorHandler.value);
@@ -311,7 +310,7 @@ function asyncDataHandler(asyncRequestData: any, loadCallback: (response: any) =
     if (!asyncRequestData.id || !asyncRequestData.type || asyncRequestData.type === 'legao') reject('函数id或type不存在或不合法!');
 
     /** 发送请求, 这里的data已经不包含header这些信息了!! */
-    request(asyncRequestData.options)?.then((data: any) => {
+    request(asyncRequestData.options, loadCallback)?.then((data: any) => {
       fetchDataHandler(data, undefined);
     }).catch((err: Error) => {
       fetchDataHandler(undefined, err);
@@ -339,16 +338,16 @@ function asyncDataHandler(asyncRequestData: any, loadCallback: (response: any) =
 }
 
 /** 发送fetch请求 */
-function request(options: any) {
+function request(options: any, loadCallback: (response: any) => void) {
   let { uri, url, method = 'GET', headers, params, ...otherProps } = options;
   otherProps = otherProps || {};
 
   switch (method.toUpperCase()) {
     case 'GET':
-      return get(options.host + uri, params, headers, otherProps);
+      return get(options.host + uri, params, headers, otherProps, loadCallback);
     case 'POST':
-      return post(options.host + uri, params, headers, otherProps);
+      return post(options.host + uri, params, headers, otherProps, loadCallback);
     default:
-      return _request(options.host + uri, method, params, headers, otherProps);
+      return _request(options.host + uri, method, params, headers, otherProps, loadCallback);
   }
 }

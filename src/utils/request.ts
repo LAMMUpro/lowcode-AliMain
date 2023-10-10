@@ -54,13 +54,13 @@ export function buildUrl(dataAPI: any, params: any) {
  * @param {*} [otherProps={}]
  * @returns
  */
- export function get(dataAPI: any, params = {}, headers = {}, otherProps = {}) {
+ export function get(dataAPI: any, params = {}, headers = {}, otherProps = {}, loadCallback: (response: any) => any) {
   const processedHeaders = {
     Accept: 'application/json',
     ...headers,
   };
   const url = buildUrl(dataAPI, params);
-  return _request(url, 'GET', null, processedHeaders, otherProps);
+  return _request(url, 'GET', null, processedHeaders, otherProps, loadCallback);
 }
 
 /**
@@ -73,7 +73,7 @@ export function buildUrl(dataAPI: any, params: any) {
  * @param {*} [otherProps={}]
  * @returns
  */
-export function post(dataAPI: any, params = {}, headers: any = {}, otherProps = {}) {
+export function post(dataAPI: any, params = {}, headers: any = {}, otherProps = {}, loadCallback: (response: any) => any) {
   const processedHeaders = {
     Accept: 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded',
@@ -89,6 +89,7 @@ export function post(dataAPI: any, params = {}, headers: any = {}, otherProps = 
     body,
     processedHeaders,
     otherProps,
+    loadCallback
   );
 }
 
@@ -103,7 +104,7 @@ export function post(dataAPI: any, params = {}, headers: any = {}, otherProps = 
  * @param {*} [otherProps={}]
  * @returns
  */
-export function _request(dataAPI: any, method = 'GET', data: any, headers = {}, otherProps: any = {}) {
+export function _request(dataAPI: any, method = 'GET', data: any, headers = {}, otherProps: any = {}, loadCallback: (response: any) => any) {
   let processedHeaders = headers || {};
   let payload = data;
   if (method === 'PUT' || method === 'DELETE') {
@@ -128,6 +129,8 @@ export function _request(dataAPI: any, method = 'GET', data: any, headers = {}, 
       ...otherProps,
     })
       .then((response) => {
+        /** load(params, loadCallback), 如果回调返回false, 则中断, 抛出异常err = {breack: true} */
+        if (loadCallback(response) === false) return { __success: false, breack: true };
         switch (response.status) {
           case 200:
           case 201:
