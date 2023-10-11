@@ -24,7 +24,7 @@ import BlockPlugin from './plugins/plugin-block-manage';
 import saveAsBlock from './actions/saveAsBlock';
 import { findAllApplication } from './api/Application';
 import { tipSchema } from './services/pageManage';
-import { host } from './utils';
+import { appHelper } from './utils/initRenderParams';
 import './global.scss';
 
 async function registerPlugins() {
@@ -130,20 +130,7 @@ async function registerPlugins() {
     requestHandlersMap: {
       fetch: createFetchHandler()
     },
-    appHelper: {
-      utils: {
-        usePageInfo() {
-          return {
-            pageSize: 10,
-            current: 1,
-            total: 0,
-          }
-        }
-      },
-      constants: {
-        host
-      }
-    }
+    appHelper: appHelper
   });
 
   /**

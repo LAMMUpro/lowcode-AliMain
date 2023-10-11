@@ -4,12 +4,9 @@ import { Loading } from '@alifd/next';
 import { buildComponents, assetBundle, AssetLevel, AssetLoader } from '@alilc/lowcode-utils';
 import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
-import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
-import { config } from '@alilc/lowcode-engine';
-import { generateRemoteHandleMap } from './utils/data-helper';
+import { generateRemoteHandleMap } from '@lammu/lowcode-plugin-remote-handle';
 import { findPageSchemaByNodeId } from './api/PageSchema';
-import { message } from 'antd';
-import { host } from './utils';
+import { appHelper } from './utils/initRenderParams';
 
 const getScenarioName = function () {
   if (location.search) {
@@ -91,35 +88,7 @@ const SamplePreview: React.FC = () => {
         components={components}
         // onCompGetRef={onCompGetRef}
         onCompGetCtx={onCompGetCtx}
-        appHelper={{
-          requestHandlersMap: {
-            fetch: createFetchHandler()
-          },
-          utils: {
-            /** 在onCompGetCtx获取ctx上下文直接进行初始化! */
-            // generateRemoteHandleMap: function () {
-            //   /** 初始化this.utils.remoteHandles */
-            //   this.remoteHandles = {
-            //     ...generateRemoteHandleMap(schema?.remoteHandle?.list||[], ctx)
-            //   }
-            // },
-            /** api方法 */
-            remoteHandles: {},
-            message: function (msg: string) {
-              message.info(msg);
-            },
-            usePageInfo() {
-              return {
-                pageSize: 10,
-                current: 1,
-                total: 0,
-              }
-            }
-          },
-          constants: {
-            host
-          }
-        }}
+        appHelper={appHelper}
       />
     </div>
   );
