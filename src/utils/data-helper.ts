@@ -343,8 +343,8 @@ function asyncDataHandler(this: any, asyncRequestData: any, loadCallback: (respo
       asyncRequestData.data = data;
       asyncRequestData.status = error ? 'error' : 'loaded';
       if (error) reject(error);
-      /** 处理res.data.code = -1的情况, 需要在utils上实现handleResCodeError函数 */
-      if (data.code===-1) this.utils.handleResCodeError.call(this, data);
+      /** 处理res.data.code = -1的情况, 需要在utils上实现__handleResCodeError函数 */
+      if (data.code===-1) this.utils.__handleResCodeError.call(this, data);
       /** 请求结果处理函数 */
       if (asyncRequestData.dataHandler && isJSFunction(asyncRequestData.dataHandler)) {
         try {
