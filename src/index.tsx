@@ -1,4 +1,3 @@
-import { ILowCodePluginContext } from '@alilc/lowcode-engine';
 import RemoteHandlePane from './pane';
 
 import {
@@ -13,7 +12,7 @@ export interface Options {
 }
 
 // TODO: 2.0插件传参修改，不支持直接options: Options
-const plugin = (ctx: ILowCodePluginContext, options: Options) => {
+const plugin = (ctx: any, options: Options) => {
   return {
     name: 'com.lammu.lowcode.remote.handlePane.pane',
     width: 300,
@@ -79,3 +78,9 @@ plugin.meta = {
 };
 
 export default plugin;
+
+/** 供主项目调用, 初始化this.remoteHandleMap */
+export { generateRemoteHandleMap } from './utils/data-helper';
+
+/** 内部封装的fetch方法, 谁爱用谁用 */
+export { get, post, request } from './utils/request';
