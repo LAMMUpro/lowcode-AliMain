@@ -4,7 +4,7 @@ import home from './pages/home';
 import Header from './layouts/Header';
 import Aside from './layouts/Aside';
 import Footer from './layouts/Footer';
-import lowcode from './pages/lowcode';
+import LowcodeSchemaRender from './pages/LowcodeSchemaRender';
 import { Breadcrumb } from 'antd';
 import 'antd/dist/antd.css'
 import '@/style/index.scss'
@@ -54,7 +54,7 @@ const App: React.FC = () => {
               }}
             >
               <Switch>
-                <Route path='/lowcode' component={lowcode}></Route>
+                <Route path='/render' component={LowcodeSchemaRender}></Route>
                 <Route path='/404' component={page404}></Route>
                 <Route path='/' component={home}></Route>
                 <Redirect from="/index" to="/"/>

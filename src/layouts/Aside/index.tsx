@@ -15,7 +15,7 @@ const Aside: React.FC = () => {
   const history = useHistory();
 
   function handleMenuItemClick(e:MenuItem) {
-    history.push('/lowcode' + `?nodeId=${e?.key}`);
+    history.push('/render' + `?nodeId=${e?.key}`);
   }
 
   async function updatePageNodes() {

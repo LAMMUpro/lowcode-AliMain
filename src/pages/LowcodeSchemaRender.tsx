@@ -4,9 +4,10 @@ import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
 import { findPageSchemaByNodeId } from '@/api/PageSchema';
 import { useLocation } from 'react-router-dom';
-import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler';
-import { Spin, message } from 'antd';
-import { generateRemoteHandleMap } from '@/utils/data-helper';
+import { Spin } from 'antd';
+import { appHelper } from '@/utils/__initRenderParams';
+// import { generateRemoteHandleMap } from '@/utils/data-helper';
+import { generateRemoteHandleMap } from '@lammu/lowcode-plugin-remote-handle';
 
 const getNodeId = function () {
   if (location.search) {
@@ -89,35 +90,7 @@ const SamplePreview = () => {
         schema={schema}
         components={components}
         onCompGetCtx={onCompGetCtx}
-        appHelper={{
-          requestHandlersMap: {
-            fetch: createFetchHandler()
-          },
-          utils: {
-            /** 在onCompGetCtx获取ctx上下文直接进行初始化! */
-            // generateRemoteHandleMap: function () {
-            //   /** 初始化this.utils.remoteHandles */
-            //   this.remoteHandles = {
-            //     ...generateRemoteHandleMap(schema?.remoteHandle?.list||[], ctx)
-            //   }
-            // },
-            /** api方法 */
-            remoteHandles: {},
-            message: function (msg: string) {
-              message.info(msg);
-            },
-            usePageInfo() {
-              return {
-                pageSize: 10,
-                current: 1,
-                total: 0,
-              }
-            }
-          },
-          constants: {
-            host: 'http://localhost:9000'
-          }
-        }}
+        appHelper={appHelper}
       />
     </Spin>
   );
