@@ -17,9 +17,9 @@ export const env = _env;
 /** 服务器域名 */
 export const host = {
   'localhost': 'http://localhost:9000',
-  'test': 'https://lowcodenest.test.lammu.cn',
-  'dev': 'https://lowcodenest.dev.lammu.cn',
-  'master': 'https://lowcodenest.lammu.cn',
+  'test': 'https://lowcodebase.test.nodeservice.cn',
+  'dev': 'https://lowcodebase.dev.nodeservice.cn',
+  'master': 'https://lowcodebase.nodeservice.cn',
 }[env];
 
 /** ReactRenderer的appHelper配置 */
