@@ -6,8 +6,7 @@ import { findPageSchemaByNodeId } from '@/api/PageSchema';
 import { useLocation } from 'react-router-dom';
 import { Spin } from 'antd';
 import { appHelper } from '@/utils/__initRenderParams';
-// import { generateRemoteHandleMap } from '@/utils/data-helper';
-import { generateRemoteHandleMap } from '@lammu/lowcode-plugin-remote-handle';
+import { generateRemoteHandleMap } from '@lammu/lowcode-utils';
 
 const getNodeId = function () {
   if (location.search) {
