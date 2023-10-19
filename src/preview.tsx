@@ -4,7 +4,7 @@ import { Loading } from '@alifd/next';
 import { buildComponents, assetBundle, AssetLevel, AssetLoader } from '@alilc/lowcode-utils';
 import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
-import { generateRemoteHandleMap } from '@lammu/lowcode-plugin-remote-handle';
+import { generateRemoteHandleMap } from '@lammu/lowcode-utils';
 import { findPageSchemaByNodeId } from './api/PageSchema';
 import { appHelper } from './utils/initRenderParams';
 
@@ -42,7 +42,7 @@ const SamplePreview: React.FC = () => {
     const schema = componentsTree[0];
 
     const libraryMap = {};
-    const libraryAsset = [];
+    const libraryAsset: Array<any> = [];
     packages.forEach(({ package: _package, library, urls, renderUrls }) => {
       libraryMap[_package] = library;
       if (renderUrls) {
