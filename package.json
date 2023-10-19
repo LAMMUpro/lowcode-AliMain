@@ -3,7 +3,6 @@
   "version": "0.1.5",
   "description": "低代码引擎处理增删改请求面板插件",
   "main": "lib/index.js",
-  "module": "es/index.js",
   "files": [
     "lib"
   ],
