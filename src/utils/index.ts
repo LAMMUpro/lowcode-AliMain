@@ -30,7 +30,7 @@ export async function request(
   } = {
     headers: {
       /** 将Content-Type设置成application/json会受到同源政策的限制。他会先发送一个option请求嗅探服务器是否具有应答的能力，然后才会发送真正的请求。 */
-      // 'Content-Type':'application/json;'
+      'Content-Type':'application/json'
     }
   }
 ) {
