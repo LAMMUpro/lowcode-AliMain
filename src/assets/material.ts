@@ -9,21 +9,21 @@ interface Meterial {
 const CustomMeterial:Meterial = {
   "packages": [
     {
-      "package": "@lammu/lowcode-component",
+      "package": "@lammu/lowcode-component-use",
       "version": "0.1.6",
       "library": "BizComps",
       "urls": [
-        "/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.js",
-        "/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.css"
+        "/@lammu/lowcode-component-use/build/lowcode/render/default/view.js",
+        "/@lammu/lowcode-component-use/build/lowcode/render/default/view.css"
       ],
       "editUrls": [
-        "/@lammu/lowcode-component@0.1.6/build/lowcode/view.js",
-        "/@lammu/lowcode-component@0.1.6/build/lowcode/view.css"
+        "/@lammu/lowcode-component-use/build/lowcode/view.js",
+        "/@lammu/lowcode-component-use/build/lowcode/view.css"
       ],
       "advancedUrls": {
         "default": [
-          "/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.js",
-          "/@lammu/lowcode-component@0.1.6/build/lowcode/render/default/view.css"
+          "/@lammu/lowcode-component-use/build/lowcode/render/default/view.js",
+          "/@lammu/lowcode-component-use/build/lowcode/render/default/view.css"
         ]
       },
       "advancedEditUrls": {}
@@ -31,18 +31,18 @@ const CustomMeterial:Meterial = {
   ],
   "components": [
     {
-      "exportName": "LammuLowcodeComponentMeta",
+      "exportName": "LammuLowcodeComponentUseMeta",
       "npm": {
-        "package": "@lammu/lowcode-component",
+        "package": "@lammu/lowcode-component-use",
         "version": "0.1.6"
       },
-      "url": "/@lammu/lowcode-component@0.1.6/build/lowcode/meta.js",
+      "url": "/@lammu/lowcode-component-use/build/lowcode/meta.js",
       "urls": {
-        "default": "/@lammu/lowcode-component@0.1.6/build/lowcode/meta.js"
+        "default": "/@lammu/lowcode-component-use/build/lowcode/meta.js"
       },
       "advancedUrls": {
         "default": [
-          "/@lammu/lowcode-component@0.1.6/build/lowcode/meta.js"
+          "/@lammu/lowcode-component-use/build/lowcode/meta.js"
         ]
       }
     }
