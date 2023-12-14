@@ -1,14 +1,9 @@
-export type { ColorfulButtonProps } from './components/colorful-button';
-export { default as ColorfulButton } from './components/colorful-button';
+/**
+ * 自定义组件
+ */
+export { default as UseButton } from './components/use-button';
 
-export type { ColorfulInputProps } from './components/colorful-input';
-export { default as ColorfulInput } from './components/colorful-input';
-
-export type { UseContainerProps } from './components/use-container';
 export { default as UseContainer } from './components/use-container';
 
-const bizCssPrefix = 'bizpack';
 
-export {
-  bizCssPrefix
-}
+export const bizCssPrefix = 'bizpack';

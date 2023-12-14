@@ -2,9 +2,9 @@
 import packageJson from '../../package.json';
 
 /** 组件英文名 */
-const componentName = "ColorfulButton";
+const componentName = "UseButton";
 /** 组件中文名 */
-const componentNameCh = "多彩按钮";
+const componentNameCh = "自定义按钮";
 
 const ComponentMeta: LowcodeSpace.Meta<typeof componentName> = {
   "componentName": componentName, /** 组件名 */
@@ -83,7 +83,7 @@ const ComponentMeta: LowcodeSpace.Meta<typeof componentName> = {
         "setter": {
           "componentName": "StringSetter",
           "isRequired": false,
-          "initialValue": "按钮"
+          "initialValue": "fusion按钮"
         }
       },
       {
