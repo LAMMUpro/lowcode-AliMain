@@ -1,4 +1,4 @@
-# @lammu/lowcode-component
+# 阿里低代码引擎物料工程模板（集成antd版）
 
 一个面向 PC 的业务组件库
 
