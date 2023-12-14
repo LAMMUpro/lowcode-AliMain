@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "esnext", // esnext, es2020
+    "target": "es5",
+    "lib": ["esnext", "dom"],
+    "outDir": "dist",
+    "strict": true,
+    "sourceMap": false,
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "skipLibCheck": true,
+    "moduleResolution": "Node",
+    "baseUrl": "./",
+    "paths": {},
+  },
+  "include": ["utils/**/*.ts"],
+  "exclude": ["node_modules"],
+}
