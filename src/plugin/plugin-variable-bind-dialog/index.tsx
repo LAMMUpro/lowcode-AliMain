@@ -253,6 +253,28 @@ export default class VariableBindDialog extends Component<PluginProps> {
 
     return dataSource;
   }
+  /**
+   * 获取数据源面板中的数据
+   * @param  {String}
+   * @return {Array}
+   */
+  getRemoteHandles(): any[] {
+    const schema = this.exportSchema();
+    const stateMap = schema.componentsTree[0]?.remoteHandle;
+    const list = stateMap?.list || [];
+    const remoteHandle = [];
+
+    for (const item of list) {
+      if (item && item.id) {
+        // dataSource.push(`this.state.${item.id}`);
+        remoteHandle.push({
+          label: `${item.id}`,
+          key: item.id,
+        });
+      }
+    }
+    return remoteHandle;
+  }
 
   /**
    * 获取输入的上下文信息
@@ -289,6 +311,7 @@ export default class VariableBindDialog extends Component<PluginProps> {
         const methods = this.getMethods();
         const stateVaroableList = this.getVarableList();
         const dataSource = this.getDataSource();
+        const remoteHandles = this.getRemoteHandles();
 
         this.setState({
           variableListMap: {
@@ -303,6 +326,10 @@ export default class VariableBindDialog extends Component<PluginProps> {
             dataSource: {
               name: '数据源',
               childrens: dataSource,
+            },
+            remoteHandle: {
+              name: '增删改API',
+              childrens: remoteHandles,
             },
             ...this.extraDataMap,
           },
@@ -511,6 +538,8 @@ export default class VariableBindDialog extends Component<PluginProps> {
       selectLabel = `this.${label}()`;
     } else if (selParentVariable == 'dataSource') {
       selectLabel = `this.state.${label}`;
+    } else if (selParentVariable == 'remoteHandle') {
+      selectLabel = `this.${label}()`;
     } else {
       const fondKey = Object.keys(this.extraDataMap || {}).find((k) => k === selParentVariable);
       if (fondKey) {
