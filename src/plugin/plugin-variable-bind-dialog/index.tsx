@@ -688,7 +688,6 @@ export default class VariableBindDialog extends Component<PluginProps> {
             <div className="dialog-right-container">
               <div className="dialog-small-title">绑定 {this.renderErrorMessage()}</div>
               <div id="jsEditorDom" className={isOverFlowMaxSize?"editor-context editor-context-error":"editor-context"} ref={this.editorJsRef}>
-                <div className="editor-type-tag">=</div>
                 <MonacoEditor
                   value={jsCode}
                   {...defaultEditorProps}
