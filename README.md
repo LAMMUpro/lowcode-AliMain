@@ -36,3 +36,14 @@
 > 需要下载到packages/*
 > original: https://github.com/LAMMUpro/lowcode-component-template.git的antd分支
 
+### [lowcode-engine-ext](https://github.com/LAMMUpro/lowcode-engine-ext.git)
+> 需要下载到packages/*
+> original: https://github.com/alibaba/lowcode-engine-ext.git的main分支
+
+### [lowcode-plugin-code-editor](https://github.com/LAMMUpro/lowcode-plugin-code-editor.git)
+> 需要下载到packages/*
+> 源: https://github.com/alibaba/lowcode-plugins
+> 目录：packages/plugin-code-editor
+> 版本号：@alilc/lowcode-plugin-code-editor@1.0.8
+> 复制点：30aaf6631dbbee45a3dad908b6b7fd10d8e9651e
+
