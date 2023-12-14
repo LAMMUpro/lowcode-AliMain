@@ -520,7 +520,7 @@ export default class VariableBindDialog extends Component<PluginProps> {
           (data: any) => data.key === key,
           'label',
         );
-        selectLabel = `this.${propKey}.${pathList.join('.')}`;
+        selectLabel = `this${propKey?'.':''}${propKey}.${pathList.join('.')}`;
       }
     }
     this.onSelectItem(selectLabel);
