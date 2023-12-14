@@ -128,7 +128,7 @@ export default class VariableBindDialog extends Component<PluginProps> {
     const remoteHandleNameList = schema.componentsTree[0]?.remoteHandle?.list?.map((item:any) => item.id)?.filter(Boolean);
     const methods = [];
     for (const key in methodsMap) {
-      if (remoteHandleNameList.includes(key)) continue;
+      if (remoteHandleNameList?.includes(key)) continue;
       if (Object.prototype.hasOwnProperty.call(methodsMap, key) && key) {
         // methods.push(`${key}()`);
         methods.push({
