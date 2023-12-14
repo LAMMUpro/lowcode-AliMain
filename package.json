@@ -1,0 +1,25 @@
+{
+  "name": "lammu",
+  "version": "1.0.0",
+  "description": "基于阿里低代码二次开发的低代码平台",
+  "private": true,
+  "scripts": {
+    "dev:design": "./scripts/run_design.sh",
+    "watch:nest": "./scripts/watch_nest.sh",
+    "dev:nest": "./scripts/run_nest.sh"
+  },
+  "workspaces": {
+    "packages": [
+      "admin",
+      "design",
+      "nest",
+      "!packages/antd5"
+    ],
+    "nohoist": [
+      "@lammu/lowcode-component-use/@types/react",
+      "@lammu/lowcode-component-antd5/@types/react",
+      "@lammu/lowcode-component-antd5/antd"
+    ]
+  },
+  "author": "lammu"
+}
