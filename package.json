@@ -1,7 +1,7 @@
 {
-  "name": "@lammu/lowcode-component-template",
+  "name": "@lammu/lowcode-component-antd5",
   "version": "0.1.6",
-  "description": "阿里低代码引擎物料工程模板",
+  "description": "阿里低代码引擎物料工程-antd@5组件",
   "main": "lib/index.js",
   "module": "es/index.js",
   "typings": "types/index.d.ts",
