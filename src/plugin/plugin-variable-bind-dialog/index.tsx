@@ -297,7 +297,7 @@ export default class VariableBindDialog extends Component<PluginProps> {
               childrens: stateVaroableList,
             },
             methods: {
-              name: '自定义处理函数',
+              name: '自定义组件函数',
               childrens: methods,
             },
             dataSource: {
