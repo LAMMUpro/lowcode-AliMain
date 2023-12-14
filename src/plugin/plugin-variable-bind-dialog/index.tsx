@@ -125,8 +125,10 @@ export default class VariableBindDialog extends Component<PluginProps> {
   getMethods(): any[] {
     const schema = this.exportSchema();
     const methodsMap = schema.componentsTree[0]?.methods;
+    const remoteHandleNameList = schema.componentsTree[0]?.remoteHandle?.list?.map((item:any) => item.id)?.filter(Boolean);
     const methods = [];
     for (const key in methodsMap) {
+      if (remoteHandleNameList.includes(key)) continue;
       if (Object.prototype.hasOwnProperty.call(methodsMap, key) && key) {
         // methods.push(`${key}()`);
         methods.push({
@@ -237,8 +239,8 @@ export default class VariableBindDialog extends Component<PluginProps> {
    */
   getDataSource(): any[] {
     const schema = this.exportSchema();
-    const stateMap = schema.componentsTree[0]?.dataSource;
-    const list = stateMap?.list || [];
+    const remoteHandleMap = schema.componentsTree[0]?.remoteHandle;
+    const list = remoteHandleMap?.list || [];
     const dataSource = [];
 
     for (const item of list) {
