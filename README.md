@@ -1,9 +1,9 @@
 ## monorepo目录结构
 
 ```sh
-- Admin // 低代码后台管理 (独立仓库)
+- Admin // 低代码后台管理 [独立仓库]
 - Designer // 设计器
-- Nest // 后端 (独立仓库)
+- Nest // 后端 [独立仓库]
 - ...
 - packages
   - antd5 // antd@5.x 的 npm包

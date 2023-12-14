@@ -13,8 +13,7 @@
       "admin",
       "design",
       "nest",
-      "packages/*",
-      "!packages/antd5"
+      "packages/*"
     ],
     "nohoist": [
       "@lammu/lowcode-component-use/@types/react",
