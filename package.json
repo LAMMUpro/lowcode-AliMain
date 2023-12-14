@@ -1,7 +1,7 @@
 {
-  "name": "@lammu/lowcode-component-use",
+  "name": "@lammu/lowcode-component-template",
   "version": "0.1.6",
-  "description": "有用的通用组件",
+  "description": "阿里低代码引擎物料工程模板",
   "main": "lib/index.js",
   "module": "es/index.js",
   "typings": "types/index.d.ts",
