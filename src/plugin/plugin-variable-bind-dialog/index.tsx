@@ -310,10 +310,10 @@ export default class VariableBindDialog extends Component<PluginProps> {
         visiable: true,
       },
       () => {
-        const methods = this.getMethods();
-        const stateVaroableList = this.getVarableList();
-        const dataSource = this.getDataSource();
-        const remoteHandles = this.getRemoteHandles();
+        const methods = this.getMethods().sort((a,b) => a.label.localeCompare(b.label));
+        const stateVaroableList = this.getVarableList().sort((a,b) => a.label.localeCompare(b.label));
+        const dataSource = this.getDataSource().sort((a,b) => a.label.localeCompare(b.label));
+        const remoteHandles = this.getRemoteHandles().sort((a,b) => a.label.localeCompare(b.label));
 
         this.setState({
           variableListMap: {
