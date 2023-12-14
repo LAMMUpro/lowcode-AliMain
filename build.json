@@ -1,5 +1,5 @@
 {
-  "library": "LammuUseComponent",
+  "library": "LammuComponent",
   "libraryTarget": "umd",
   "sourceMap": true,
   "alias": {
@@ -10,6 +10,14 @@
       "build-plugin-component",
       {
         "themePackage": "@alifd/theme-2"
+      }
+    ],
+    [
+      "@alilc/build-plugin-alt",
+      {
+        "type": "plugin",
+        "inject": true,
+        "openUrl": "https://lowcode-engine.cn/demo/demo-basic-antd/index.html?debug"
       }
     ]
   ]
