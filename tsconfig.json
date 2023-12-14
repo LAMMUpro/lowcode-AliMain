@@ -3,7 +3,6 @@
     "module": "ESNext",
     "target": "ESNext",
     "jsx": "react",
-    "jsxFactory": "createElement",
     "declaration": false,
     "outDir": "./lib",
     "removeComments": true,
