@@ -501,8 +501,8 @@ export default class VariableBindDialog extends Component<PluginProps> {
   onSelectTreeNode = (selectedKeys, extra) => {
     const { selParentVariable, childrenVariableList } = this.state;
 
-    const label = extra.selectedNodes[0]?.props?.label;
-    const key = extra.selectedNodes[0]?.key;
+    const label = extra.node?.props?.label;
+    const key = extra.node?.props?.eventKey;
     let selectLabel;
     if (selParentVariable == 'stateVaroableList') {
       const pathList = this.treeFindPath(childrenVariableList, (data) => data.key == key, 'label');
