@@ -1,5 +1,5 @@
 {
-  "library": "LammuComponent",
+  "library": "LammuAntd5",
   "libraryTarget": "umd",
   "sourceMap": true,
   "alias": {
