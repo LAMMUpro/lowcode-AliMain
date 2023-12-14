@@ -1,3 +1,5 @@
+# 低代码平台
+> 该项目使用monorepo管理，包含了前端(前台+后台)、后端代码、插件代码
 ## monorepo目录结构
 
 ```sh
@@ -14,8 +16,12 @@
 ```
 
 ## 项目环境
-- node版本：`16.18.0`
-
+- node16.18.0
+- yarn(必须)
+- wsl (windows环境下)
+- vscode-wsl插件 (使用wsl)
+- s
+- ncc
 
 ## 相关仓库
 
@@ -24,6 +30,9 @@
 
 ### [lowcode-component-use](https://github.com/LAMMUpro/lowcode-component-use.git)自定义物料
 > 需要下载到packages/*
+> original: https://github.com/LAMMUpro/lowcode-component-template.git的master分支
 
 ### [lowcode-component-antd5](https://github.com/LAMMUpro/lowcode-component-antd5.git)antd@5物料
 > 需要下载到packages/*
+> original: https://github.com/LAMMUpro/lowcode-component-template.git的antd分支
+
