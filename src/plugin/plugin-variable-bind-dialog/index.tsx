@@ -155,15 +155,27 @@ export default class VariableBindDialog extends Component<PluginProps> {
       if (Object.prototype.hasOwnProperty.call(stateMap, key) && key) {
         dataSource.push(`this.state.${key}`);
         const valueString = stateMap[key].value;
-        let value;
-        try {
-          value = eval(`(${valueString})`);
-        } catch (e) {}
-
-        // 属性为false 或者 为"" 也显示到dialog中
-        if (value || value === false || value === '') {
-          dataSourceMap[key] = value;
+        let value = '';
+        /** 
+         * 如果是调用自身的函数, 执行一下, 如果是复杂函数的话有可能会失败!
+         */
+        const funRegExp = /^this\.(.*?)\(\)$/;
+        const match = valueString.match(funRegExp);
+        if (match?.[1]) {
+          const funName = match[1];
+          const methodsMap = schema.componentsTree[0]?.methods;
+          try {
+            /** 调用函数拿到对应的初始值 */
+            value = eval(`(${methodsMap[funName]?.value})()`);
+          } catch (e) {}
+        } else {
+          try {
+            value = eval(`(${valueString})`);
+          } catch (e) {}
         }
+
+        // 不管属性是什么都显示到dialog中
+        dataSourceMap[key] = value;
       }
     }
     const treeList = [];
