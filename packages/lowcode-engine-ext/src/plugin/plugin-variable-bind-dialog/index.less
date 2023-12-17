@@ -1,0 +1,236 @@
+.variable-dialog-body {
+  width: 730px;
+  height: 450px;
+
+  .dialog-small-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--color-title, rgb(0, 0, 0));
+    display: flex;
+    justify-content: space-between;
+    .error-message{
+      color:var(--color-function-error, rgba(255,97,96));
+      font-weight: 400;
+    }
+  }
+
+
+  .dialog-help-tip-input {
+    height: 180px;
+    border: 1px solid var(--color-field-border, rgba(31, 56, 88, 0.3));
+    border-top: none;
+    border-radius: 0 0 3px 3px;
+    padding: 8px;
+    overflow: auto;
+    user-select: text;
+    font-size: 12px;
+    line-height: 20px;
+    .vs-variable-content-desc-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+  }
+
+  .dialog-left-container {
+    float: left;
+
+    .vs-variable-selector-inner {
+      border: 1px solid var(--color-field-border, rgba(31, 56, 88, 0.3));
+      display: flex;
+      height: 389px;
+      border-radius: 3px;
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .tree-container{
+        padding-left: 10px;
+      }
+
+      .vs-variable-selector-ul {
+        li {
+          height: 28px;
+          line-height: 28px;
+          padding: 0 12px;
+          cursor: pointer;
+          position: relative;
+          white-space: nowrap;
+          &:hover {
+            background: var(--color-block-background-light, rgba(128, 128, 128, 0.15));
+          }
+        }
+        .active {
+          background: var(--color-block-background-light, rgba(128, 128, 128, 0.15));
+        }
+      }
+      .vs-variable-selector-category {
+        width: 110px;
+        border-right: 1px solid var(--color-field-border, rgba(31, 56, 88, 0.3));
+        height: 100%;
+        overflow: auto;
+      }
+      .vs-variable-selector-items-container {
+        width: 197px;
+        overflow-y: auto;
+        .ve-search-control {
+          height: 28px;
+          margin: 10px;
+        }
+        .vs-variable-selector-ul {
+          height: calc(100% - 48px);
+          width: 100%;
+          overflow: auto;
+        }
+      }
+    }
+
+    .dialog-left-context {
+      width: 270px;
+      height: 392px;
+      border: 1px solid var(--color-field-border, rgba(31, 56, 88, 0.3));
+      border-radius: 3px;
+
+      .variable-type-container {
+        width: 200px;
+        height: 390px;
+        float: left;
+      }
+
+      .select-item {
+        font-size: 12px;
+        height: 28px;
+        line-height: 28px;
+        padding: 0 30px 0 12px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .select-item-active {
+        background: var(--color-block-background-light, rgba(128, 128, 128, 0.15));
+      }
+
+      .event-select-container {
+        width: 156px;
+        float: left;
+
+        .event-search-box {
+          width: 135px;
+          margin: 10px;
+        }
+      }
+
+      .event-list {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 342px;
+      }
+
+      .variable-list {
+        font-size: 13px;
+        .variable-item {
+          padding-left: 30px;
+          cursor: pointer;
+          height: 30px;
+          line-height: 30px;
+        }
+
+        .variable-item:hover {
+          background-color: var(--color-block-background-light, rgba(31, 56, 88, 0.06));
+        }
+      }
+    }
+  }
+
+  .dialog-right-container {
+    width: 420px;
+    padding-left: 12px;
+    float: left;
+    position: relative;
+
+    .event-input-container {
+      margin-bottom: 20px;
+    }
+    textarea {
+      height: 100%;
+    }
+
+    .editor-type-tag {
+      width: 18px;
+      height: 18px;
+      background-color: var(--color-layer-mask-background, rgba(17, 105, 247, 0.18));
+      border-radius: 2px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 35px;
+      z-index: 100;
+      left: 17px;
+    }
+
+    .editor-context{
+      border: 1px solid var(--color-field-border, rgba(31, 56, 88, 0.3));
+      padding: 5px;
+      border-top-right-radius: 3px;
+      border-top-left-radius: 3px;
+    }
+
+    .editor-context-error{
+      border-color:var(--color-function-error, rgba(255,97,96,0.7));
+    }
+  }
+}
+
+.variable-bind-dialog-bottom {
+  .bottom-left-container {
+    float: left;
+  }
+}
+
+.variable-dialog-title {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 12px;
+  img {
+    cursor: pointer;
+  }
+}
+
+.vs-variable-minimize {
+  width: 120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  bottom: 10px;
+  right: 286px;
+  z-index: 100;
+  background: var(--color-block-background-normal, #fff);
+  padding: 8px 12px;
+  border-radius: 3px;
+  border: 1px solid var(--color-field-border, #ddd);
+  box-shadow: 0 0 8px #aaa;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  img {
+    width: 12px;
+  }
+}
+
+.next-tree.next-node-indent .next-tree-node-inner.next-selected .next-tree-node-label {
+  color: var(--color-text-reverse, #fff);
+  background-color: var(--color-brand, #4576f5);
+}
+
+.lc-code-control:hover {
+  border-color: transparent;
+}
+
+.lc-code-control.ve-focused {
+  border-color: transparent;
+}
