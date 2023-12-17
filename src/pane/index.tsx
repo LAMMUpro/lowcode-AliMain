@@ -170,7 +170,7 @@ export default class DataSourcePanePlugin extends PureComponent<
         <DataSourcePaneContext.Provider
           value={{ stateService: this.stateService, dataSourceTypes }}
         >
-          <DndProvider backend={HTML5Backend}>
+          <DndProvider backend={HTML5Backend} context={window}>
             <ErrorBoundary
               onError={onError}
               FallbackComponent={ErrorFallback}
