@@ -51,8 +51,10 @@ export const CodeEditorPane = memo(({ project, event, skeleton }: CodeEditorPane
         pageNode.originCode = originCode;
 
         pageNode.css = css;
-        lowcodeProjectRef.current?.importSchema(currentSchema);
 
+        event.emit('reset:selectNode', ()=>{
+          lowcodeProjectRef.current?.importSchema(currentSchema);
+        });
         setSchema(currentSchema);
 
         Message.success({
