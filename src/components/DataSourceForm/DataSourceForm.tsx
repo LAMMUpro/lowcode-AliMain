@@ -324,11 +324,12 @@ export class DataSourceForm extends PureComponent<DataSourceFormProps, { form: F
               type: 'void',
               'x-component': 'Space',
               properties: {
-                sort: {
-                  type: 'void',
-                  'x-decorator': 'FormItem',
-                  'x-component': 'ArrayItems.SortHandle',
-                },
+                // 请求参数是用object存的，排序没有意义，而且排序key和value会错位
+                // sort: {
+                //   type: 'void',
+                //   'x-decorator': 'FormItem',
+                //   'x-component': 'ArrayItems.SortHandle',
+                // },
                 name: {
                   title: '',
                   type: 'string',
