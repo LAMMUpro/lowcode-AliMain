@@ -1,0 +1,9 @@
+{
+  "extends": [
+    "development"
+  ],
+  "hints": {
+    // 允许内联样式
+    "no-inline-styles": "off"
+  }
+}

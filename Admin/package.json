@@ -1,0 +1,42 @@
+{
+  "name": "microapp-react-main",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+
+    "deploy:test": "s deploy -t s.test.yaml",
+    "deploy:dev": "s deploy -t s.dev.yaml",
+    "deploy:master": "s deploy -t s.master.yaml"
+  },
+  "dependencies": {    
+    "@ant-design/icons": "^4.5.0",
+    "antd": "^4.23.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-router-dom": "^5.3.4",
+    "whatwg-fetch": "^3.6.19",
+    "@alilc/lowcode-utils": "^1.1.10",
+    "@alilc/lowcode-datasource-fetch-handler": "^1.1.4",
+    "@alilc/lowcode-react-renderer": "^1.1.2",
+    "@alilc/lowcode-plugin-inject": "^1.1.2",
+    "@micro-zoe/micro-app": "^1.0.0-beta.5"
+  },
+  "devDependencies": {
+    "@types/react": "^16.14.0",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-router-dom": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "typescript": "^4.0.0",
+    "vite": "^4.4.5"
+  }
+}
