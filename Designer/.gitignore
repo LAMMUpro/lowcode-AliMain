@@ -1,0 +1,41 @@
+.DS_Store
+node_modules
+/dist
+/build
+.s
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+package-lock.json
+yarn.lock
+
+# 忽略软链接文件夹
+/src/types/dto
+/src/types/node_modules
+/src/plugins/plugin-remote-handle
+
+# /src/types/node_modules
+# /src/types/.prisma/**
+# !/src/types/.prisma/**/*.ts
+# !/src/types/.prisma/**/*.d.ts
+# !/src/types/.prisma/**/
+
+# /src/types/@prisma/**
+# !/src/types/@prisma/**/*.ts
+# !/src/types/@prisma/**/*.d.ts
+# !/src/types/@prisma/**/
