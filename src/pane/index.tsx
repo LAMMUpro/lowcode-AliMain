@@ -120,14 +120,18 @@ export default class DataSourcePanePlugin extends PureComponent<
   }
 
   handleSchemaChange = (schema: DataSource) => {
-    const { project, onSchemaChange } = this.props;
+    const { project, onSchemaChange, event } = this.props;
     if (project) {
       const docSchema = project.exportSchema(common.designerCabin.TransformStage.Save);
       if (!_isEmpty(docSchema)) {
         _set(docSchema, 'componentsTree[0].dataSource', schema);
-        project.importSchema(docSchema);
+        /** 修复更新schema节点取消选中的问题 */
+        event.emit('reset:selectNode', ()=>{
+          project.importSchema(docSchema);
+        });
       }
     }
+
 
     onSchemaChange?.(schema);
   };
