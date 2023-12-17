@@ -50,7 +50,7 @@ const SCHEMA = {
     },
     id: {
       type: 'string',
-      title: '数据源 ID',
+      title: 'ID this.state.',
       required: true,
     },
     isInit: {
@@ -140,7 +140,7 @@ const SCHEMA = {
           'x-component': 'JSFunction',
           default: {
             type: 'JSFunction',
-            value: 'function() { return true; }',
+            value: 'function shouldFetch() {\n  return true; \n}',
           },
         },
         willFetch: {
@@ -149,7 +149,7 @@ const SCHEMA = {
           'x-component': 'JSFunction',
           default: {
             type: 'JSFunction',
-            value: 'function(options) { return options; }',
+            value: 'function willFetch(options) {\n  return options; \n}',
           },
         },
         dataHandler: {
@@ -158,7 +158,7 @@ const SCHEMA = {
           'x-component': 'JSFunction',
           default: {
             type: 'JSFunction',
-            value: 'function(res) { return res.data }',
+            value: 'function dataHandler(res) {\n  return res;\n}',
           },
         },
         errorHandler: {
@@ -167,7 +167,7 @@ const SCHEMA = {
           'x-component': 'JSFunction',
           default: {
             type: 'JSFunction',
-            value: 'function(err) {}',
+            value: 'function errorHandler(err) {\n  console.log(err);\n}',
           },
         },
       },
