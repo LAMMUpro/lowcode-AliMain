@@ -1,5 +1,5 @@
 {
-  "name": "@alilc/lowcode-plugin-code-editor",
+  "name": "@lammu/lowcode-plugin-code-editor",
   "author": "59174526@qq.com & humphry.huang9@gmail.com",
   "version": "1.0.9",
   "description": "CodeEditor",
@@ -31,6 +31,7 @@
     "@babel/traverse": "^7.15.4",
     "@babel/types": "^7.15.6",
     "babel-plugin-transform-remove-strict-mode": "^0.0.2",
+    "@babel/plugin-proposal-private-property-in-object": "^7.0.0",
     "classnames": "^2.3.1",
     "js-beautify": "^1.14.0",
     "lodash": "^4.17.21",
