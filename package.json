@@ -1,5 +1,5 @@
 {
-  "name": "@alilc/lowcode-plugin-datasource-pane",
+  "name": "@lammu/lowcode-plugin-datasource-pane",
   "version": "1.0.11",
   "description": "低代码引擎数据源面板",
   "main": "lib/index.js",
