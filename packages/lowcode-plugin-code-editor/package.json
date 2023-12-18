@@ -1,6 +1,5 @@
 {
   "name": "@lammu/lowcode-plugin-code-editor",
-  "author": "59174526@qq.com & humphry.huang9@gmail.com",
   "version": "1.0.9",
   "description": "CodeEditor",
   "files": [
@@ -10,6 +9,8 @@
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "lib/index.d.ts",
+  "author": "lammu 59174526@qq.com & humphry.huang9@gmail.com",
+  "license": "MIT",
   "README": "README.md",
   "scripts": {
     "start": "build-scripts start --config build.js",
@@ -51,7 +52,6 @@
     "@types/react-dom": "^16.9.4",
     "build-plugin-fusion": "^0.1.22"
   },
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/alibaba/lowcode-plugins.git",

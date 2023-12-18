@@ -2,7 +2,6 @@
   "name": "@lammu/lowcode-utils",
   "version": "1.0.1",
   "description": "低代码公共函数",
-  "author": "lammu",
   "main": "dist/index.esm.js",
   "types": "dist/types/index.d.ts",
   "type": "module",
@@ -11,12 +10,13 @@
     "example",
     "global.d.ts"
   ],
+  "author": "lammu",
+  "license": "MIT",
   "scripts": {
     "dev": "rollup -w -c",
     "build:lib": "tsc -b ./tsconfig.lib.json",
     "build": "rollup -c"
   },
-  "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-node-resolve": "^15.1.0",

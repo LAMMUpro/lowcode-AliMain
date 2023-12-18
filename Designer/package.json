@@ -3,6 +3,7 @@
   "version": "0.9.1",
   "description": "魔改Low-Code Engine 低代码搭建引擎 - antd",
   "repository": "git@gitee.com:LAMMUpro/low-code-lammu.git",
+  "author": "lammu",
   "license": "MIT",
   "main": "index.js",
   "files": [

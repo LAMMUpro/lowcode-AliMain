@@ -6,6 +6,8 @@
   "files": [
     "lib"
   ],
+  "author": "lammu",
+  "license": "MIT",
   "scripts": {
     "start": "build-scripts start --config build.js",
     "build": "build-scripts build --config build.js",
@@ -22,7 +24,6 @@
       "ts-node/register"
     ]
   },
-  "license": "MIT",
   "devDependencies": {
     "@alib/build-scripts": "^0.1.32",
     "@alifd/theme-lowcode-light": "^0.2.1",

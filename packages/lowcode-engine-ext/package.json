@@ -10,6 +10,8 @@
   "main": "lib/index.js",
   "module": "es/index.js",
   "stylePath": "style.js",
+  "author": "lammu",
+  "license": "MIT",
   "scripts": {
     "start": "build-scripts start --config build.cloud.json --port 4008",
     "build": "build-scripts build && build-scripts build --config build.cloud.json",
@@ -71,7 +73,6 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "license": "MIT",
   "homepage": "https://unpkg.com/@alilc/lowcode-engine-ext@1.0.6/build/index.html",
   "repository": "git@github.com:alibaba/lowcode-engine-ext.git"
 }
