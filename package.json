@@ -4,6 +4,7 @@
   "description": "基于阿里低代码二次开发的低代码平台",
   "private": true,
   "author": "lammu",
+  "license": "MIT",
   "scripts": {
 
   },
